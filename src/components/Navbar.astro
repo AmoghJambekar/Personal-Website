@@ -1,14 +1,31 @@
-<script>
-  const toggleDarkMode = () => {
-    const html = document.documentElement;
-    html.classList.toggle("dark");
-  };
-</script>
+---
+const links = [
+  { name: 'Home', href: '#top' },
+  { name: 'Blog', href: '/blog' },
+  { name: 'Portfolio', href: '/portfolio' },
+];
+const socials = [
+  { name: 'LinkedIn', href: 'https://www.linkedin.com/in/amoghjambekar/', icon: '🔗' },
+  { name: 'GitHub', href: 'https://github.com/AmoghJambekar', icon: '🐱' },
+  { name: 'Camera', href: '/photos', icon: '📷' },
+];
+---
 
-<nav class="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-gray-100 dark:bg-gray-800 p-3 rounded-full shadow-lg flex gap-6 items-center z-50">
-  <a href="#bio">Bio</a>
-  <a href="#projects">Projects</a>
-  <a href="#experience">Experience</a>
-  <a href="#education">Education</a>    🌓
-  </button>
+<nav class="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-900 border-t border-gray-300 dark:border-gray-700 flex justify-between items-center px-6 py-3 z-50">
+  <ul class="flex space-x-6">
+    {links.map(link => (
+      <li>
+        <a href={link.href} class="text-gray-800 dark:text-gray-200 hover:text-blue-500 transition">{link.name}</a>
+      </li>
+    ))}
+  </ul>
+  <ul class="flex space-x-4 text-xl">
+    {socials.map(social => (
+      <li>
+        <a href={social.href} target="_blank" rel="noopener noreferrer" aria-label={social.name} class="text-gray-800 dark:text-gray-200 hover:text-blue-500 transition">
+          {social.icon}
+        </a>
+      </li>
+    ))}
+  </ul>
 </nav>
