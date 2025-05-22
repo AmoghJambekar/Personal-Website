@@ -1,34 +1,37 @@
 ---
-import '../styles/global.css';
 import Navbar from '../components/Navbar.astro';
 import Section from '../components/Section.astro';
 ---
 
-<html lang="en" class="font-sans">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Your Name - Portfolio</title>
+    <title>Amogh Jambekar</title>
+    <link rel="stylesheet" href="/styles/global.css" />
   </head>
-  <body class="bg-white text-gray-900">
+  <body class="bg-white text-gray-800 font-sans scroll-smooth">
     <Navbar />
 
-    <main class="max-w-4xl mx-auto px-6 py-10 space-y-12">
-      <Section title="Bio">
-        <p><!-- Your bio text here --></p>
-      </Section>
+    <main class="flex flex-col gap-32">
+      <section id="bio" class="min-h-screen flex flex-col justify-center items-end pr-[10vw]">
+        <h2 class="text-xl font-medium tracking-wide mb-4">BIO</h2>
+        <p class="max-w-md text-sm text-gray-600 leading-relaxed">Your bio content here.</p>
+      </section>
 
-      <Section title="Projects">
-        <p><!-- Brief intro or clickable dropdown placeholder --></p>
-      </Section>
+      <section id="projects" class="min-h-screen flex flex-col justify-center items-end pr-[10vw]">
+        <h2 class="text-xl font-medium tracking-wide mb-4">PROJECTS</h2>
+        <p class="max-w-md text-sm text-gray-600 leading-relaxed">Your projects here.</p>
+      </section>
 
-      <Section title="Experience">
-        <p><!-- Your experience summary --></p>
-      </Section>
+      <section id="experience" class="min-h-screen flex flex-col justify-center items-end pr-[10vw]">
+        <h2 class="text-xl font-medium tracking-wide mb-4">EXPERIENCE</h2>
+        <p class="max-w-md text-sm text-gray-600 leading-relaxed">Your experience here.</p>
+      </section>
 
-      <Section title="Education">
-        <p><!-- Your education info --></p>
-      </Section>
+      <section id="education" class="min-h-screen flex flex-col justify-center items-end pr-[10vw]">
+        <h2 class="text-xl font-medium tracking-wide mb-4">EDUCATION</h2>
+        <p class="max-w-md text-sm text-gray-600 leading-relaxed">Your education here.</p>
+      </section>
     </main>
   </body>
 </html>
