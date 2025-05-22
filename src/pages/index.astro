@@ -21,33 +21,34 @@ import Navbar from '../components/Navbar.astro';
       
       html {
         height: 100%;
-        display: flex;
-        justify-content: center;
+        scroll-behavior: smooth;
       }
       
       body {
         width: 100%;
-        max-width: 36rem;
-        margin: 0 auto;
+        max-width: 100%;
+        margin: 0;
         padding: 3.5rem 1.5rem 5rem;
-        position: relative;
         min-height: 100vh;
         display: flex;
         flex-direction: column;
-        align-items: stretch;
+        align-items: center;
+        justify-content: flex-start;
       }
 
       .container {
         width: 100%;
         max-width: 36rem;
-        margin: 0 auto;
+        margin-top: 5rem;
+        text-align: left;
       }
       
       h1 {
-        font-size: 2rem;
-        font-weight: 600;
+        font-size: 3.5rem;
+        font-weight: 700;
         margin-bottom: 0.75rem;
         color: #1a1a1a;
+        text-align: left;
       }
       
       h2 {
@@ -55,6 +56,7 @@ import Navbar from '../components/Navbar.astro';
         font-weight: 600;
         margin: 1.5rem 0 1rem;
         color: #1a1a1a;
+        text-align: left;
       }
       
       h3 {
@@ -65,25 +67,28 @@ import Navbar from '../components/Navbar.astro';
       }
       
       p {
-        color: #4a4a4a;
+        color: #6b7280;
         line-height: 1.6;
         margin-bottom: 1rem;
+        font-size: 0.95rem;
       }
       
       .subtitle {
-        font-size: 1.125rem;
-        color: #4a4a4a;
+        font-size: 1.25rem;
+        color: #4b5563;
         margin-bottom: 2rem;
       }
       
       .intro {
-        font-size: 1.125rem;
+        font-size: 1rem;
         margin-bottom: 2rem;
+        color: #6b7280;
       }
       
       .section {
         margin-bottom: 2rem;
         width: 100%;
+        text-align: left;
       }
       
       .item {
@@ -112,17 +117,19 @@ import Navbar from '../components/Navbar.astro';
         display: flex;
         align-items: baseline;
         gap: 0.5rem;
+        justify-content: flex-start;
         flex: 1;
       }
       
       .meta {
-        color: #4a4a4a;
-        font-size: 1rem;
+        color: #6b7280;
+        font-size: 0.95rem;
       }
       
       .date {
-        color: #4a4a4a;
+        color: #6b7280;
         margin-left: auto;
+        font-size: 0.95rem;
       }
       
       .arrow {
@@ -137,6 +144,7 @@ import Navbar from '../components/Navbar.astro';
         transition: all 0.3s ease-out;
         background: #f9f9f9;
         width: 100%;
+        text-align: left;
       }
       
       .item-content.active {
@@ -149,11 +157,12 @@ import Navbar from '../components/Navbar.astro';
         gap: 0.5rem;
         flex-wrap: wrap;
         margin-top: 0.75rem;
+        justify-content: flex-end;
       }
       
       .tag {
         background: #f5f5f5;
-        color: #4a4a4a;
+        color: #6b7280;
         padding: 0.25rem 0.75rem;
         border-radius: 9999px;
         font-size: 0.875rem;
@@ -164,6 +173,7 @@ import Navbar from '../components/Navbar.astro';
         padding-top: 2rem;
         border-top: 1px solid #eaeaea;
         width: 100%;
+        text-align: left;
       }
       
       .nav {
