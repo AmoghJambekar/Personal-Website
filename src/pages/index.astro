@@ -312,6 +312,69 @@ import Navbar from '../components/Navbar.astro';
         border-radius: 6px;
       }
 
+      html.dark .nav a[href="#"] {
+        color: #FFA500;
+        text-shadow: 0 0 10px rgba(255, 165, 0, 0.7);
+      }
+
+      html.dark .nav a[href="#"] svg {
+        filter: drop-shadow(0 0 4px rgba(255, 165, 0, 0.7));
+      }
+
+      html.dark .nav a[href*="github"] {
+        color: #FFD700;
+        text-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
+      }
+
+      html.dark .nav a[href*="github"] svg {
+        filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.7));
+      }
+
+      html.dark .nav a[href*="linkedin"] {
+        color: #0077B5;
+        text-shadow: 0 0 10px rgba(0, 119, 181, 0.7);
+      }
+
+      html.dark .nav a[href*="linkedin"] svg {
+        filter: drop-shadow(0 0 4px rgba(0, 119, 181, 0.7));
+      }
+
+      html.dark .nav a[href="/blog"] {
+        color: #FF0000;
+        text-shadow: 0 0 10px rgba(255, 0, 0, 0.7);
+      }
+
+      html.dark .nav a[href="/blog"] svg {
+        filter: drop-shadow(0 0 4px rgba(255, 0, 0, 0.7));
+      }
+
+      html.dark .nav a[href="/photos"] {
+        color: #00FF00;
+        text-shadow: 0 0 10px rgba(0, 255, 0, 0.7);
+      }
+
+      html.dark .nav a[href="/photos"] svg {
+        filter: drop-shadow(0 0 4px rgba(0, 255, 0, 0.7));
+      }
+
+      html.dark .nav a[href*="resume"] {
+        color: #9333EA;
+        text-shadow: 0 0 10px rgba(147, 51, 234, 0.7);
+      }
+
+      html.dark .nav a[href*="resume"] svg {
+        filter: drop-shadow(0 0 4px rgba(147, 51, 234, 0.7));
+      }
+
+      html.dark .theme-toggle {
+        color: #FFFFFF;
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+      }
+
+      html.dark .theme-toggle svg {
+        filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.7));
+      }
+
       .nav a svg {
         width: 18px;
         height: 18px;
@@ -461,7 +524,7 @@ import Navbar from '../components/Navbar.astro';
             <div class="meta-container">
               <div class="title-row">
                 <div class="company-logo">
-                  <img src="/logos/northeastern.png" alt="Northeastern University Logo" />
+                  <img src="/logos/northeasternYellow.png" alt="Northeastern University Logo" />
                 </div>
                 <h3>Northeastern University</h3>
               </div>
