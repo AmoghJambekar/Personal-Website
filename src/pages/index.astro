@@ -10,7 +10,7 @@ import Navbar from '../components/Navbar.astro';
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
     <style>
       :root {
         --text-primary: #111827;
@@ -20,6 +20,18 @@ import Navbar from '../components/Navbar.astro';
         --bg-secondary: #F3F4F6;
         --border-color: #E5E7EB;
         --link-color: #2563EB;
+        --nav-bg: rgba(255, 255, 255, 0.8);
+      }
+
+      html.dark {
+        --text-primary: #F9FAFB;
+        --text-secondary: #D1D5DB;
+        --text-tertiary: #9CA3AF;
+        --bg-primary: #111827;
+        --bg-secondary: #1F2937;
+        --border-color: #374151;
+        --link-color: #60A5FA;
+        --nav-bg: rgba(17, 24, 39, 0.8);
       }
 
       * {
@@ -32,7 +44,6 @@ import Navbar from '../components/Navbar.astro';
       html {
         height: 100%;
         scroll-behavior: smooth;
-        background-color: var(--bg-primary);
       }
       
       body {
@@ -41,7 +52,9 @@ import Navbar from '../components/Navbar.astro';
         margin: 0;
         padding: 0;
         min-height: 100vh;
+        background-color: var(--bg-primary);
         color: var(--text-primary);
+        transition: background-color 0.3s ease, color 0.3s ease;
       }
 
       .container {
@@ -112,46 +125,61 @@ import Navbar from '../components/Navbar.astro';
       }
 
       .item:hover .arrow-icon {
-        opacity: 1;
-        transform: translateX(0);
+        color: var(--text-primary);
       }
       
       .arrow-icon {
         position: absolute;
         right: 16px;
-        top: 50%;
-        transform: translateY(-50%) translateX(-10px);
-        opacity: 0;
-        transition: all 0.2s ease;
+        top: 16px;
+        transform: rotate(0deg);
+        opacity: 1;
+        transition: all 0.3s ease;
         color: var(--text-tertiary);
+        display: flex;
+        align-items: center;
+        height: 20px;
+      }
+      
+      .item.active .arrow-icon {
+        transform: rotate(90deg);
       }
       
       .item-header {
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         justify-content: space-between;
         width: 100%;
+        gap: 16px;
       }
       
       .meta-container {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        flex: 1;
+      }
+      
+      .title-row {
         display: flex;
         align-items: center;
         gap: 12px;
       }
       
-      .company-icon {
-        width: 20px;
-        height: 20px;
-        background: var(--bg-secondary);
+      .company-logo {
+        width: 24px;
+        height: 24px;
         border-radius: 4px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 600;
-        font-size: 12px;
+        overflow: hidden;
       }
       
-      .meta {
+      .company-logo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      
+      .role {
         color: var(--text-tertiary);
         font-size: 14px;
       }
@@ -159,8 +187,7 @@ import Navbar from '../components/Navbar.astro';
       .date {
         color: var(--text-tertiary);
         font-size: 14px;
-        margin-left: auto;
-        margin-right: 32px;
+        white-space: nowrap;
       }
       
       .item-content {
@@ -251,21 +278,23 @@ import Navbar from '../components/Navbar.astro';
         bottom: 24px;
         left: 50%;
         transform: translateX(-50%);
-        background: rgba(255, 255, 255, 0.8);
+        background: var(--nav-bg);
         backdrop-filter: blur(12px);
-        padding: 12px 20px;
+        padding: 8px 16px;
         border-radius: 9999px;
         display: flex;
         align-items: center;
-        gap: 20px;
+        gap: 12px;
         z-index: 1000;
         border: 1px solid var(--border-color);
+        transition: background-color 0.3s ease, border-color 0.3s ease;
       }
 
       .nav-divider {
         width: 1px;
-        height: 20px;
+        height: 16px;
         background: var(--border-color);
+        transition: background-color 0.3s ease;
       }
       
       .nav a {
@@ -274,8 +303,15 @@ import Navbar from '../components/Navbar.astro';
         align-items: center;
         justify-content: center;
         transition: all 0.2s ease;
-        padding: 8px;
-        border-radius: 8px;
+        padding: 6px;
+        border-radius: 6px;
+      }
+
+      .nav a svg {
+        width: 18px;
+        height: 18px;
+        stroke: currentColor;
+        stroke-width: 2.25;
       }
       
       .nav a:hover {
@@ -283,19 +319,30 @@ import Navbar from '../components/Navbar.astro';
       }
 
       .nav a:hover ~ a {
-        transform: translateX(4px);
+        transform: translateX(6px);
       }
       
       .theme-toggle {
-        padding: 8px;
-        border-radius: 8px;
         color: var(--text-primary);
+        background: none;
+        border: none;
+        padding: 6px;
+        border-radius: 6px;
         cursor: pointer;
         transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .theme-toggle svg {
+        width: 18px;
+        height: 18px;
+        stroke: currentColor;
+        stroke-width: 2.25;
       }
 
       .theme-toggle:hover {
-        color: var(--text-primary);
         transform: scale(1.15);
       }
       
@@ -322,8 +369,18 @@ import Navbar from '../components/Navbar.astro';
         }
 
         .nav {
-          padding: 10px 16px;
-          gap: 16px;
+          padding: 6px 12px;
+          gap: 8px;
+        }
+
+        .nav a svg,
+        .theme-toggle svg {
+          width: 16px;
+          height: 16px;
+        }
+
+        .nav-divider {
+          height: 14px;
         }
       }
     </style>
@@ -344,14 +401,17 @@ import Navbar from '../components/Navbar.astro';
         <div class="item" onclick="toggleContent(this)">
           <div class="item-header">
             <div class="meta-container">
-              <div class="company-icon">C</div>
-              <h3>Company Name</h3>
-              <span class="meta">•</span>
-              <span class="meta">Software Engineering Intern</span>
-              <span class="date">Summer 2024</span>
+              <div class="title-row">
+                <div class="company-logo">
+                  <img src="/logos/company-name.png" alt="Company Name Logo" />
+                </div>
+                <h3>Company Name</h3>
+              </div>
+              <div class="role">Software Engineering Intern</div>
             </div>
-            <i data-feather="chevron-right" class="arrow-icon"></i>
+            <span class="date">Summer 2024</span>
           </div>
+          <i data-feather="chevron-right" class="arrow-icon" stroke-width="2.5"></i>
           <div class="item-content">
             <p>Description of your role and achievements.</p>
             <ul>
@@ -366,11 +426,16 @@ import Navbar from '../components/Navbar.astro';
       <div class="section">
         <h2>Projects</h2>
         <div class="project-item">
-          <div class="item-header" onclick="toggleContent(this)">
+          <div class="item-header" onclick="toggleContent(this.parentElement)">
             <div class="meta-container">
-              <h3>Project Name</h3>
-              <span class="date">April 2024</span>
+              <div class="title-row">
+                <div class="company-logo">
+                  <img src="/logos/project-name.png" alt="Project Logo" />
+                </div>
+                <h3>Project Name</h3>
+              </div>
             </div>
+            <span class="date">April 2024</span>
           </div>
           <div class="item-content">
             <p>Project description and your role in it.</p>
@@ -389,12 +454,17 @@ import Navbar from '../components/Navbar.astro';
         <div class="item" onclick="toggleContent(this)">
           <div class="item-header">
             <div class="meta-container">
-              <div class="company-icon">N</div>
-              <h3>Northeastern University</h3>
-              <span class="date">2024 - 2028</span>
+              <div class="title-row">
+                <div class="company-logo">
+                  <img src="/logos/northeastern.png" alt="Northeastern University Logo" />
+                </div>
+                <h3>Northeastern University</h3>
+              </div>
+              <div class="role">Computer Engineering</div>
             </div>
-            <i data-feather="chevron-right" class="arrow-icon"></i>
+            <span class="date">2024 - 2028</span>
           </div>
+          <i data-feather="chevron-right" class="arrow-icon"></i>
           <div class="item-content">
             <p>Bachelor's Degree of Computer Engineering (BS)</p>
             <ul>
@@ -407,12 +477,17 @@ import Navbar from '../components/Navbar.astro';
         <div class="item" onclick="toggleContent(this)">
           <div class="item-header">
             <div class="meta-container">
-              <div class="company-icon">B</div>
-              <h3>Bridgewater-Raritan High School</h3>
-              <span class="date">2020 - 2024</span>
+              <div class="title-row">
+                <div class="company-logo">
+                  <img src="/logos/brhs.png" alt="BRHS Logo" />
+                </div>
+                <h3>Bridgewater-Raritan High School</h3>
+              </div>
+              <div class="role">High School Diploma</div>
             </div>
-            <i data-feather="chevron-right" class="arrow-icon"></i>
+            <span class="date">2020 - 2024</span>
           </div>
+          <i data-feather="chevron-right" class="arrow-icon"></i>
           <div class="item-content">
             <p>High School Diploma</p>
             <ul>
@@ -427,51 +502,76 @@ import Navbar from '../components/Navbar.astro';
 
     <nav class="nav">
       <a href="#" title="Home">
-        <i data-feather="home"></i>
+        <i data-feather="home" stroke-width="2.5"></i>
       </a>
       <div class="nav-divider"></div>
       <a href="https://github.com/yourusername" target="_blank" rel="noopener noreferrer" title="GitHub">
-        <i data-feather="github"></i>
+        <i data-feather="github" stroke-width="2.5"></i>
       </a>
       <a href="https://linkedin.com/in/yourusername" target="_blank" rel="noopener noreferrer" title="LinkedIn">
-        <i data-feather="linkedin"></i>
+        <i data-feather="linkedin" stroke-width="2.5"></i>
       </a>
       <a href="/blog" title="Blog">
-        <i data-feather="edit-3"></i>
+        <i data-feather="edit-3" stroke-width="2.5"></i>
       </a>
       <a href="/photos" title="Photos">
-        <i data-feather="camera"></i>
+        <i data-feather="camera" stroke-width="2.5"></i>
       </a>
       <a href="/resume.pdf" target="_blank" title="Resume">
-        <i data-feather="file-text"></i>
+        <i data-feather="file-text" stroke-width="2.5"></i>
       </a>
       <div class="nav-divider"></div>
       <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
-        <i data-feather="moon"></i>
+        <i data-feather="moon" stroke-width="2.5"></i>
       </button>
     </nav>
+
+    <script is:inline>
+      // Check for saved theme preference immediately
+      const savedTheme = localStorage.getItem('theme') || 'light';
+      document.documentElement.classList.toggle('dark', savedTheme === 'dark');
+
+      // Define toggleContent globally
+      function toggleContent(element) {
+        const content = element.querySelector('.item-content');
+        if (content) {
+          content.classList.toggle('active');
+          element.classList.toggle('active');
+        }
+      }
+
+      // Define toggleTheme globally
+      function toggleTheme() {
+        const html = document.documentElement;
+        const isDark = html.classList.toggle('dark');
+        const themeToggle = document.querySelector('.theme-toggle i');
+        
+        // Save theme preference
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        
+        // Update icon
+        themeToggle.setAttribute('data-feather', isDark ? 'sun' : 'moon');
+        feather.replace();
+      }
+    </script>
 
     <script>
       declare const feather: {
         replace: () => void;
       };
 
-      // Initialize Feather Icons
-      feather.replace();
-
-      // Toggle content visibility
-      function toggleContent(element: HTMLElement) {
-        const content = element.querySelector('.item-content') as HTMLElement;
-        content.classList.toggle('active');
-      }
-
-      // Toggle theme
-      function toggleTheme() {
-        const themeToggle = document.querySelector('.theme-toggle i') as HTMLElement;
-        const isDark = document.documentElement.classList.toggle('dark');
-        themeToggle.setAttribute('data-feather', isDark ? 'sun' : 'moon');
+      // Initialize Feather Icons after DOM loads
+      document.addEventListener('DOMContentLoaded', () => {
         feather.replace();
-      }
+        
+        // Update theme toggle icon based on current theme
+        const isDark = document.documentElement.classList.contains('dark');
+        const themeToggle = document.querySelector('.theme-toggle i');
+        if (themeToggle) {
+          themeToggle.setAttribute('data-feather', isDark ? 'sun' : 'moon');
+          feather.replace();
+        }
+      });
     </script>
   </body>
 </html>
