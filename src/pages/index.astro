@@ -485,12 +485,12 @@ import Navbar from '../components/Navbar.astro';
       <p class="intro">
         I'm an incoming Computer Engineering student at Northeastern University and a senior at Bridgewater-Raritan High School. I've previously worked at [Company X], where I [brief impactful contribution]. I also recently created [Project X], [Project Y], and [Project Z], and currently research [Topic Y] under [Professor X].
         <br><br>
-        Outside of tech, I love <a href="https://strava.app.link/qCsjlvhPyTb" target="_blank" rel="noopener noreferrer">running</a>, working out, and playing basketball, tennis, cricket and pickleball. I'm a fan of the Knicks, Mumbai Indians, and the Indian Cricket Team. I also love capturing moments with my camera, <a href="https://obscurifymusic.com/profile?id=di82yeudoy32fxdlble93z00e&code=6b8a4a1d0a735a23" target="_blank" rel="noopener noreferrer">exploring music</a>, and documenting life on my blog.
+        Outside of tech, I love <a href="https://strava.app.link/qCsjlvhPyTb" target="_blank" rel="noopener noreferrer">running</a>, working out, and playing basketball, tennis, cricket and pickleball. I'm a fan of the Knicks, Mumbai Indians, and the Indian Cricket Team. I also love capturing moments with my camera, <a href="https://obscurifymusic.com/profile?id=di82yeudoy32fxdlble93z00e&code=6b8a4a1d0a735a23" target="_blank" rel="noopener noreferrer">exploring music</a>, and documenting life on my <a href="/blog">blog</a>.
       </p>
       
       <div class="section">
         <h2>Experience</h2>
-        <div class="item" onclick="toggleContent(this)">
+        <div class="item">
           <div class="item-header">
             <div class="meta-container">
               <div class="title-row">
@@ -517,7 +517,7 @@ import Navbar from '../components/Navbar.astro';
       <div class="section">
         <h2>Projects</h2>
         <div class="project-item">
-          <div class="item-header" onclick="toggleContent(this.parentElement)">
+          <div class="item-header">
             <div class="meta-container">
               <div class="title-row">
                 <div class="company-logo">
@@ -541,7 +541,7 @@ import Navbar from '../components/Navbar.astro';
       
       <div class="section">
         <h2>Education</h2>
-        <div class="item" onclick="toggleContent(this)">
+        <div class="item">
           <div class="item-header">
             <div class="meta-container">
               <div class="title-row">
@@ -558,11 +558,10 @@ import Navbar from '../components/Navbar.astro';
           <div class="item-content">
             <ul>
               <li>• Incoming Fall 2025 (First Semester Abroad @ Univ. College Dublin)</li>
-
             </ul>
           </div>
         </div>
-        <div class="item" onclick="toggleContent(this)">
+        <div class="item">
           <div class="item-header">
             <div class="meta-container">
               <div class="title-row">
@@ -587,77 +586,36 @@ import Navbar from '../components/Navbar.astro';
       </div>
     </div>
 
-    <nav class="nav">
-      <a href="#" title="Home">
-        <i data-feather="home" stroke-width="2.5"></i>
-      </a>
-      <div class="nav-divider"></div>
-      <a href="https://github.com/AmoghJambekar" target="_blank" rel="noopener noreferrer" title="GitHub">
-        <i data-feather="github" stroke-width="2.5"></i>
-      </a>
-      <a href="https://linkedin.com/in/amoghjambekar" target="_blank" rel="noopener noreferrer" title="LinkedIn">
-        <i data-feather="linkedin" stroke-width="2.5"></i>
-      </a>
-      <a href="/blog" title="Blog">
-        <i data-feather="edit-3" stroke-width="2.5"></i>
-      </a>
-      <a href="/photos" title="Photos">
-        <i data-feather="camera" stroke-width="2.5"></i>
-      </a>
-      <a href="/resume.pdf" target="_blank" title="Resume">
-        <i data-feather="file-text" stroke-width="2.5"></i>
-      </a>
-      <div class="nav-divider"></div>
-      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
-        <i data-feather="moon" stroke-width="2.5"></i>
-      </button>
-    </nav>
-
-    <script is:inline>
-      // Check for saved theme preference immediately
-      const savedTheme = localStorage.getItem('theme') || 'light';
-      document.documentElement.classList.toggle('dark', savedTheme === 'dark');
-
-      // Define toggleContent globally
-      function toggleContent(element) {
-        const content = element.querySelector('.item-content');
-        if (content) {
-          content.classList.toggle('active');
-          element.classList.toggle('active');
-        }
-      }
-
-      // Define toggleTheme globally
-      function toggleTheme() {
-        const html = document.documentElement;
-        const isDark = html.classList.toggle('dark');
-        const themeToggle = document.querySelector('.theme-toggle i');
-        
-        // Save theme preference
-        localStorage.setItem('theme', isDark ? 'dark' : 'light');
-        
-        // Update icon
-        themeToggle.setAttribute('data-feather', isDark ? 'sun' : 'moon');
-        feather.replace();
-      }
-    </script>
+    <Navbar />
 
     <script>
       declare const feather: {
         replace: () => void;
       };
 
-      // Initialize Feather Icons after DOM loads
+      // Initialize Feather Icons and handle expandable sections
       document.addEventListener('DOMContentLoaded', () => {
         feather.replace();
-        
-        // Update theme toggle icon based on current theme
-        const isDark = document.documentElement.classList.contains('dark');
-        const themeToggle = document.querySelector('.theme-toggle i');
-        if (themeToggle) {
-          themeToggle.setAttribute('data-feather', isDark ? 'sun' : 'moon');
-          feather.replace();
-        }
+
+        // Add click handlers to all expandable items
+        document.querySelectorAll('.item, .project-item').forEach(item => {
+          item.addEventListener('click', (event: Event) => {
+            const e = event.target as HTMLElement;
+            // Don't toggle if clicking a link
+            if (e && e.closest('a')) return;
+            
+            const content = item.querySelector('.item-content');
+            const arrow = item.querySelector('.arrow-icon') as HTMLElement;
+            
+            if (content) {
+              content.classList.toggle('active');
+              item.classList.toggle('active');
+              if (arrow) {
+                arrow.style.transform = content.classList.contains('active') ? 'rotate(90deg)' : 'rotate(0deg)';
+              }
+            }
+          });
+        });
       });
     </script>
   </body>

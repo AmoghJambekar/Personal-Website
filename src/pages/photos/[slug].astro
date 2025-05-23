@@ -1,29 +1,85 @@
-import { getCollection, type CollectionEntry } from 'astro:content';
+import { getCollection } from 'astro:content';
+import Navbar from '../../components/Navbar.astro';
 
+// Generate static paths for all photo albums
 export async function getStaticPaths() {
-  const photoCollections = await getCollection('photos');
-  return photoCollections.map((entry: CollectionEntry<'photos'>) => ({
-    params: { slug: entry.slug },
-    props: { entry },
+  const albums = await getCollection('photos');
+  return albums.map(album => ({
+    params: { slug: album.slug },
+    props: { album },
   }));
 }
 
-interface Props {
-  entry: CollectionEntry<'photos'>;
-}
+// Get the current album data
+const { album } = Astro.props;
+const { Content } = await album.render();
 
-const { entry } = Astro.props as Props;
-const { Content } = await entry.render();
-
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{entry.data.title} | Photos | Amogh Jambekar</title>
+    <meta name="description" content={album.data.description} />
+    <title>{album.data.title} | Photos | Amogh Jambekar</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
+  </head>
+  <body class="bg-white dark:bg-gray-900">
+    <Navbar />
+    
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <!-- Back Button -->
+      <a href="/photos" class="inline-flex items-center text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white mb-8">
+        <i data-feather="arrow-left" class="w-4 h-4 mr-2"></i>
+        Back to Albums
+      </a>
+
+      <!-- Album Header -->
+      <header class="mb-12">
+        <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+          {album.data.title}
+        </h1>
+        <time class="text-gray-600 dark:text-gray-400 mb-4 block">
+          {new Date(album.data.date).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          })}
+        </time>
+        <p class="text-lg text-gray-600 dark:text-gray-400">
+          {album.data.description}
+        </p>
+      </header>
+
+      <!-- Photo Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {album.data.images.map(image => (
+          <figure class="relative group">
+            <img
+              src={image.url}
+              alt={image.caption || album.data.title}
+              class="w-full h-auto rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-[1.02]"
+              loading="lazy"
+            />
+            {image.caption && (
+              <figcaption class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                {image.caption}
+              </figcaption>
+            )}
+          </figure>
+        ))}
+      </div>
+
+      <!-- Additional Content -->
+      <div class="prose dark:prose-invert max-w-none mt-12">
+        <Content />
+      </div>
+    </main>
+
     <style>
+      /* Base styles */
       :root {
         --text-primary: #111827;
         --text-secondary: #4B5563;
@@ -32,7 +88,7 @@ const { Content } = await entry.render();
         --border-color: #E5E7EB;
       }
 
-      html.dark {
+      .dark {
         --text-primary: #F9FAFB;
         --text-secondary: #D1D5DB;
         --bg-primary: #111827;
@@ -40,162 +96,72 @@ const { Content } = await entry.render();
         --border-color: #374151;
       }
 
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-      }
-
       body {
-        background-color: var(--bg-primary);
+        font-family: 'Inter', sans-serif;
         color: var(--text-primary);
-        transition: background-color 0.3s ease, color 0.3s ease;
+        background: var(--bg-primary);
       }
 
-      .container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 40px 20px;
+      /* Transitions */
+      .transition {
+        transition-property: all;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        transition-duration: 300ms;
       }
 
-      .header {
-        margin-bottom: 40px;
+      /* Image hover effects */
+      figure img {
+        transition: transform 0.3s ease;
       }
 
-      h1 {
-        font-size: 2.5rem;
-        font-weight: 700;
-        margin-bottom: 8px;
-        letter-spacing: -0.025em;
+      figure:hover img {
+        transform: scale(1.02);
       }
 
-      .date {
+      /* Typography */
+      .prose {
+        max-width: 65ch;
         color: var(--text-secondary);
-        font-size: 1rem;
       }
 
-      .description {
-        color: var(--text-secondary);
-        font-size: 1.125rem;
-        line-height: 1.6;
-        margin: 24px 0;
-      }
-
-      .photo-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 24px;
-      }
-
-      .photo-item {
-        position: relative;
-      }
-
-      .photo-item img {
-        width: 100%;
-        height: auto;
-        border-radius: 12px;
-        cursor: zoom-in;
-      }
-
-      .caption {
-        margin-top: 8px;
-        color: var(--text-secondary);
-        font-size: 0.875rem;
-      }
-
-      .back-button {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        color: var(--text-secondary);
-        text-decoration: none;
-        font-size: 0.875rem;
-        margin-bottom: 24px;
-      }
-
-      .back-button:hover {
+      .prose h1,
+      .prose h2,
+      .prose h3 {
         color: var(--text-primary);
       }
 
-      .content {
-        margin-top: 40px;
-        color: var(--text-secondary);
-        line-height: 1.6;
-      }
-
-      .content h2 {
-        color: var(--text-primary);
-        font-size: 1.5rem;
-        font-weight: 600;
-        margin: 24px 0 16px;
-      }
-
-      .content ul {
-        list-style-type: none;
-        margin: 16px 0;
-      }
-
-      .content li {
-        margin-bottom: 8px;
-      }
-
+      /* Responsive adjustments */
       @media (max-width: 768px) {
-        .container {
-          padding: 24px 16px;
+        .grid {
+          gap: 1rem;
         }
 
         h1 {
           font-size: 2rem;
         }
-
-        .photo-grid {
-          grid-template-columns: 1fr;
-          gap: 16px;
-        }
       }
     </style>
-  </head>
-  <body>
-    <div class="container">
-      <a href="/photos" class="back-button">
-        <i data-feather="arrow-left"></i>
-        Back to Photos
-      </a>
-      
-      <div class="header">
-        <h1>{entry.data.title}</h1>
-        <div class="date">
-          {new Date(entry.data.date).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-          })}
-        </div>
-        <p class="description">{entry.data.description}</p>
-      </div>
-
-      <div class="photo-grid">
-        {entry.data.images.map((image) => (
-          <div class="photo-item">
-            <img src={image.url} alt={image.caption || entry.data.title} />
-            {image.caption && <p class="caption">{image.caption}</p>}
-          </div>
-        ))}
-      </div>
-
-      <div class="content">
-        <Content />
-      </div>
-    </div>
 
     <script>
       // Initialize Feather icons
       document.addEventListener('DOMContentLoaded', () => {
-        // @ts-ignore
         feather?.replace();
+      });
+
+      // Image lazy loading
+      document.addEventListener('DOMContentLoaded', () => {
+        const images = document.querySelectorAll('img[loading="lazy"]');
+        if ('loading' in HTMLImageElement.prototype) {
+          images.forEach(img => {
+            img.loading = 'lazy';
+          });
+        } else {
+          // Fallback for browsers that don't support lazy loading
+          const script = document.createElement('script');
+          script.src = 'https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.3.2/lazysizes.min.js';
+          document.body.appendChild(script);
+        }
       });
     </script>
   </body>
-</html>
+</html> 

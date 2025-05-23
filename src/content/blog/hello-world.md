@@ -1,36 +1,37 @@
 ---
-title: "Hello World"
-date: 2024-03-20
-excerpt: "Welcome to my blog! Here's what I'll be writing about."
+title: "Hello World: My First Blog Post"
+date: 2024-03-21
 tags: ["personal", "tech"]
-coverImage: "/blog/hello-world.jpg"
+excerpt: "Welcome to my blog! In this first post, I'll share why I started this blog and what you can expect to read about here."
 ---
 
 # Hello World!
 
-Welcome to my blog! This is where I'll be sharing my thoughts on technology, engineering, and my personal journey.
-
-## What to expect
+Welcome to my blog! I'm excited to start sharing my thoughts, experiences, and journey here. This space will be a mix of:
 
 - Tech insights and learnings
-- Project updates and deep dives
-- Personal experiences and growth
-- Photography and travel stories
+- Personal projects and experiments
+- Photography adventures
+- Running and sports experiences
+- And much more!
 
-You can write in standard markdown format, including:
+## Why Start a Blog?
 
-- **Bold text**
-- *Italic text*
-- [Links](https://example.com)
-- `Code snippets`
-- Images:
+I believe in documenting and sharing experiences. Whether it's:
 
-![Example Image](/blog/example.jpg)
+1. Technical discoveries while working on projects
+2. Insights from my journey in computer engineering
+3. Photography tips and stories
+4. Sports and fitness progress
 
-```python
-# Even code blocks
-def hello_world():
-    print("Hello, World!")
-```
+Writing helps me organize my thoughts and maybe helps others learn from my experiences.
 
-Stay tuned for more posts! 
+## What's Next?
+
+Stay tuned for posts about:
+- My latest tech projects
+- Photography guides and galleries
+- Running tips and race reports
+- And more!
+
+Feel free to explore the site and check out my [photos](/photos) as well! 
