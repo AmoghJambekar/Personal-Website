@@ -1,0 +1,201 @@
+import { getCollection, type CollectionEntry } from 'astro:content';
+
+export async function getStaticPaths() {
+  const photoCollections = await getCollection('photos');
+  return photoCollections.map((entry: CollectionEntry<'photos'>) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+interface Props {
+  entry: CollectionEntry<'photos'>;
+}
+
+const { entry } = Astro.props as Props;
+const { Content } = await entry.render();
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{entry.data.title} | Photos | Amogh Jambekar</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+      :root {
+        --text-primary: #111827;
+        --text-secondary: #4B5563;
+        --bg-primary: #FFFFFF;
+        --bg-secondary: #F3F4F6;
+        --border-color: #E5E7EB;
+      }
+
+      html.dark {
+        --text-primary: #F9FAFB;
+        --text-secondary: #D1D5DB;
+        --bg-primary: #111827;
+        --bg-secondary: #1F2937;
+        --border-color: #374151;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      }
+
+      body {
+        background-color: var(--bg-primary);
+        color: var(--text-primary);
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 20px;
+      }
+
+      .header {
+        margin-bottom: 40px;
+      }
+
+      h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+        letter-spacing: -0.025em;
+      }
+
+      .date {
+        color: var(--text-secondary);
+        font-size: 1rem;
+      }
+
+      .description {
+        color: var(--text-secondary);
+        font-size: 1.125rem;
+        line-height: 1.6;
+        margin: 24px 0;
+      }
+
+      .photo-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 24px;
+      }
+
+      .photo-item {
+        position: relative;
+      }
+
+      .photo-item img {
+        width: 100%;
+        height: auto;
+        border-radius: 12px;
+        cursor: zoom-in;
+      }
+
+      .caption {
+        margin-top: 8px;
+        color: var(--text-secondary);
+        font-size: 0.875rem;
+      }
+
+      .back-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--text-secondary);
+        text-decoration: none;
+        font-size: 0.875rem;
+        margin-bottom: 24px;
+      }
+
+      .back-button:hover {
+        color: var(--text-primary);
+      }
+
+      .content {
+        margin-top: 40px;
+        color: var(--text-secondary);
+        line-height: 1.6;
+      }
+
+      .content h2 {
+        color: var(--text-primary);
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin: 24px 0 16px;
+      }
+
+      .content ul {
+        list-style-type: none;
+        margin: 16px 0;
+      }
+
+      .content li {
+        margin-bottom: 8px;
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          padding: 24px 16px;
+        }
+
+        h1 {
+          font-size: 2rem;
+        }
+
+        .photo-grid {
+          grid-template-columns: 1fr;
+          gap: 16px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <a href="/photos" class="back-button">
+        <i data-feather="arrow-left"></i>
+        Back to Photos
+      </a>
+      
+      <div class="header">
+        <h1>{entry.data.title}</h1>
+        <div class="date">
+          {new Date(entry.data.date).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          })}
+        </div>
+        <p class="description">{entry.data.description}</p>
+      </div>
+
+      <div class="photo-grid">
+        {entry.data.images.map((image) => (
+          <div class="photo-item">
+            <img src={image.url} alt={image.caption || entry.data.title} />
+            {image.caption && <p class="caption">{image.caption}</p>}
+          </div>
+        ))}
+      </div>
+
+      <div class="content">
+        <Content />
+      </div>
+    </div>
+
+    <script>
+      // Initialize Feather icons
+      document.addEventListener('DOMContentLoaded', () => {
+        // @ts-ignore
+        feather?.replace();
+      });
+    </script>
+  </body>
+</html>

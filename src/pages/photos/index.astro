@@ -1,0 +1,154 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import Navbar from '../../components/Navbar.astro';
+
+// Get all photo collections
+const photoCollections = await getCollection('photos');
+
+// Sort collections by date (newest first)
+const sortedCollections = photoCollections.sort((a, b) => 
+  new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+);
+---
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Photos | Amogh Jambekar</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+      :root {
+        --text-primary: #111827;
+        --text-secondary: #4B5563;
+        --bg-primary: #FFFFFF;
+        --bg-secondary: #F3F4F6;
+        --border-color: #E5E7EB;
+      }
+
+      html.dark {
+        --text-primary: #F9FAFB;
+        --text-secondary: #D1D5DB;
+        --bg-primary: #111827;
+        --bg-secondary: #1F2937;
+        --border-color: #374151;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      }
+
+      body {
+        background-color: var(--bg-primary);
+        color: var(--text-primary);
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 20px;
+      }
+
+      h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 2rem;
+        letter-spacing: -0.025em;
+      }
+
+      .photo-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 24px;
+        padding: 20px 0;
+      }
+
+      .photo-item {
+        position: relative;
+        aspect-ratio: 3/2;
+        overflow: hidden;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+      }
+
+      .photo-item:hover {
+        transform: scale(1.02);
+      }
+
+      .photo-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .photo-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 20px;
+        background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+        color: white;
+      }
+
+      .photo-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+
+      .photo-date {
+        font-size: 0.875rem;
+        opacity: 0.8;
+      }
+
+      @media (max-width: 768px) {
+        .photo-grid {
+          grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+          gap: 16px;
+        }
+
+        h1 {
+          font-size: 2rem;
+        }
+      }
+    </style>
+    <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Photos</h1>
+      <div class="photo-grid">
+        {sortedCollections.map((collection) => (
+          <a href={`/photos/${collection.slug}`} class="photo-item">
+            <img src={collection.data.coverImage} alt={collection.data.title} />
+            <div class="photo-overlay">
+              <div class="photo-title">{collection.data.title}</div>
+              <div class="photo-date">
+                {new Date(collection.data.date).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'long'
+                })}
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+    <Navbar />
+    
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        // @ts-ignore
+        feather.replace();
+      });
+    </script>
+  </body>
+</html>
