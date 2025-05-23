@@ -12,6 +12,16 @@ import Navbar from '../components/Navbar.astro';
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/feather-icons"></script>
     <style>
+      :root {
+        --text-primary: #111827;
+        --text-secondary: #4B5563;
+        --text-tertiary: #6B7280;
+        --bg-primary: #FFFFFF;
+        --bg-secondary: #F3F4F6;
+        --border-color: #E5E7EB;
+        --link-color: #2563EB;
+      }
+
       * {
         margin: 0;
         padding: 0;
@@ -22,242 +32,353 @@ import Navbar from '../components/Navbar.astro';
       html {
         height: 100%;
         scroll-behavior: smooth;
+        background-color: var(--bg-primary);
       }
       
       body {
         width: 100%;
         max-width: 100%;
         margin: 0;
-        padding: 3.5rem 1.5rem 5rem;
+        padding: 0;
         min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: flex-start;
+        color: var(--text-primary);
       }
 
       .container {
         width: 100%;
-        max-width: 36rem;
-        margin-top: 7rem;
-        text-align: left;
+        max-width: 640px;
+        margin: 0 auto;
+        padding: 120px 24px 120px;
       }
       
       h1 {
-        font-size: 3.5rem;
+        font-size: 48px;
         font-weight: 700;
-        margin-bottom: 0.5rem;
-        color: #2d2d2d;
-        text-align: left;
+        letter-spacing: -0.025em;
+        line-height: 1.1;
+        margin-bottom: 12px;
       }
       
       h2 {
-        font-size: 1.25rem;
+        font-size: 24px;
         font-weight: 600;
-        margin: 1.5rem 0 1rem;
-        color: #2d2d2d;
-        text-align: left;
+        margin: 32px 0 16px;
+        letter-spacing: -0.025em;
       }
       
       h3 {
-        font-size: 1rem;
-        font-weight: 500;
-        color: #2d2d2d;
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--text-primary);
         display: inline;
       }
       
       p {
-        color: #8c8c8c;
-        line-height: 1.6;
-        margin-bottom: 1rem;
-        font-size: 0.95rem;
+        color: var(--text-secondary);
+        line-height: 1.75;
+        font-size: 16px;
+        margin-bottom: 24px;
       }
       
       .subtitle {
-        font-size: 1rem;
-        color: #737373;
-        margin-bottom: 1.5rem;
+        font-size: 20px;
+        color: var(--text-secondary);
+        margin-bottom: 12px;
         font-weight: 500;
       }
       
       .intro {
-        font-size: 0.9rem;
-        margin-bottom: 2rem;
-        color: #8c8c8c;
-        line-height: 1.7;
+        color: var(--text-secondary);
+        line-height: 1.75;
+        margin-bottom: 48px;
+        font-size: 14px;
       }
-      
+
       .section {
-        margin-bottom: 2rem;
-        width: 100%;
-        text-align: left;
+        margin-bottom: 32px;
       }
       
       .item {
-        margin-bottom: 1rem;
-        border: 1px solid #f0f0f0;
+        margin-bottom: 12px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        padding: 12px 16px;
         border-radius: 8px;
-        overflow: hidden;
-        width: 100%;
+        position: relative;
+      }
+      
+      .item:hover {
+        background: var(--bg-secondary);
+      }
+
+      .item:hover .arrow-icon {
+        opacity: 1;
+        transform: translateX(0);
+      }
+      
+      .arrow-icon {
+        position: absolute;
+        right: 16px;
+        top: 50%;
+        transform: translateY(-50%) translateX(-10px);
+        opacity: 0;
+        transition: all 0.2s ease;
+        color: var(--text-tertiary);
       }
       
       .item-header {
-        padding: 0.875rem;
-        background: #fff;
-        cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: space-between;
         width: 100%;
       }
       
-      .item-header:hover {
-        background: #f9f9f9;
-      }
-      
       .meta-container {
         display: flex;
-        align-items: baseline;
-        gap: 0.5rem;
-        justify-content: flex-start;
-        flex: 1;
+        align-items: center;
+        gap: 12px;
+      }
+      
+      .company-icon {
+        width: 20px;
+        height: 20px;
+        background: var(--bg-secondary);
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 12px;
       }
       
       .meta {
-        color: #6b7280;
-        font-size: 0.95rem;
+        color: var(--text-tertiary);
+        font-size: 14px;
       }
       
       .date {
-        color: #6b7280;
+        color: var(--text-tertiary);
+        font-size: 14px;
         margin-left: auto;
-        font-size: 0.95rem;
-      }
-      
-      .arrow {
-        transition: transform 0.2s ease;
-        margin-left: 1rem;
+        margin-right: 32px;
       }
       
       .item-content {
-        padding: 0 1rem;
+        padding: 0;
         max-height: 0;
         overflow: hidden;
         transition: all 0.3s ease-out;
-        background: #f9f9f9;
-        width: 100%;
-        text-align: left;
+        opacity: 0;
       }
       
       .item-content.active {
-        padding: 1rem;
+        padding: 12px 0 0;
         max-height: 500px;
+        opacity: 1;
+      }
+
+      .item-content p {
+        margin-bottom: 8px;
+        font-size: 14px;
+      }
+
+      .item-content ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        color: var(--text-secondary);
+        font-size: 14px;
+      }
+
+      .item-content li {
+        margin-bottom: 4px;
       }
       
+      .project-item {
+        margin-bottom: 16px;
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        overflow: hidden;
+      }
+      
+      .project-item .item-header {
+        padding: 16px;
+        background: var(--bg-primary);
+        cursor: pointer;
+      }
+      
+      .project-item:hover {
+        border-color: var(--text-tertiary);
+      }
+
+      .project-item .item-content {
+        padding: 0 16px;
+        max-height: 0;
+        overflow: hidden;
+        transition: all 0.3s ease-out;
+        background: var(--bg-secondary);
+      }
+      
+      .project-item .item-content.active {
+        padding: 16px;
+        max-height: 500px;
+      }
+
       .tags {
         display: flex;
-        gap: 0.5rem;
+        gap: 8px;
         flex-wrap: wrap;
-        margin-top: 0.75rem;
-        justify-content: flex-end;
+        margin-top: 16px;
       }
       
       .tag {
-        background: #f5f5f5;
-        color: #6b7280;
-        padding: 0.25rem 0.75rem;
+        background: var(--bg-primary);
+        color: var(--text-tertiary);
+        padding: 4px 12px;
         border-radius: 9999px;
-        font-size: 0.875rem;
+        font-size: 14px;
+        border: 1px solid var(--border-color);
       }
       
       .footer {
-        margin-top: 3rem;
-        padding-top: 2rem;
-        border-top: 1px solid #eaeaea;
-        width: 100%;
-        text-align: left;
+        margin-top: 64px;
+        color: var(--text-secondary);
+        font-size: 14px;
       }
       
       .nav {
         position: fixed;
-        bottom: 1rem;
+        bottom: 24px;
         left: 50%;
         transform: translateX(-50%);
-        background: rgba(255, 255, 255, 0.9);
-        backdrop-filter: blur(10px);
-        padding: 0.75rem 1.5rem;
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(12px);
+        padding: 12px 20px;
         border-radius: 9999px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         display: flex;
-        gap: 2rem;
+        align-items: center;
+        gap: 20px;
         z-index: 1000;
+        border: 1px solid var(--border-color);
+      }
+
+      .nav-divider {
+        width: 1px;
+        height: 20px;
+        background: var(--border-color);
       }
       
       .nav a {
-        color: #4a4a4a;
+        color: var(--text-primary);
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: color 0.2s ease;
+        transition: all 0.2s ease;
+        padding: 8px;
+        border-radius: 8px;
       }
       
       .nav a:hover {
-        color: #0066cc;
+        transform: scale(1.15);
+      }
+
+      .nav a:hover ~ a {
+        transform: translateX(4px);
+      }
+      
+      .theme-toggle {
+        padding: 8px;
+        border-radius: 8px;
+        color: var(--text-primary);
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .theme-toggle:hover {
+        color: var(--text-primary);
+        transform: scale(1.15);
       }
       
       a {
-        color: #0066cc;
+        color: var(--link-color);
         text-decoration: none;
       }
       
       a:hover {
         text-decoration: underline;
       }
+
+      @media (max-width: 768px) {
+        .container {
+          padding: 80px 20px 120px;
+        }
+        
+        h1 {
+          font-size: 36px;
+        }
+        
+        .subtitle {
+          font-size: 18px;
+        }
+
+        .nav {
+          padding: 10px 16px;
+          gap: 16px;
+        }
+      }
     </style>
   </head>
   <body>
     <div class="container">
       <h1>Amogh Jambekar</h1>
-      <p class="subtitle">Computer Engineering @ Northeastern University</p>
+      <p class="subtitle">Building & shipping everyday</p>
       
       <p class="intro">
-        I'm an incoming first-year Computer Engineering student at Northeastern University and a current Senior at Bridgewater-Raritan High School. I've previously worked at X where I did Y. I also recently created X, Y and Z. I also research under X in Y.  I aspire to become X using Y to do Z.
-<br><br>Outside of this, I love to run 🏃‍♂️ work out 🏋️‍♂️, play tennis/pickleball 🎾, basketball 🏀, and cricket 🏏. I’m also a big NYT Games fan. I’m a fan of the Knicks,  Mumbai Indians, and the Indian Cricket Team especially when they beat your favorite team. Love to capture cool photos 📸, listen to my very unique music taste🎵, travel ✈️, and document my life in my blog 📝.Reach out on any of my socials!
+        I'm an incoming first-year Computer Engineering student at Northeastern University and a current Senior at Bridgewater-Raritan High School. I've previously worked at X where I did Y. I also recently created X, Y and Z. I also research under X in Y. I aspire to become X using Y to do Z.
+        <br><br>
+        Outside of coding, I love to run 🏃‍♂️, work out 🏋️‍♂️, play tennis/pickleball 🎾, basketball 🏀, and cricket 🏏. I'm also a big NYT Games fan. I'm a fan of the Knicks, Mumbai Indians, and the Indian Cricket Team. Love to capture cool photos 📸, listen to my unique music taste 🎵, travel ✈️, and document my life in my blog 📝.
       </p>
       
       <div class="section">
         <h2>Experience</h2>
-        <div class="item">
-          <div class="item-header" onclick="toggleContent(this)">
+        <div class="item" onclick="toggleContent(this)">
+          <div class="item-header">
             <div class="meta-container">
+              <div class="company-icon">C</div>
               <h3>Company Name</h3>
               <span class="meta">•</span>
-              <span class="meta">Position</span>
-              <span class="date">Date Range</span>
+              <span class="meta">Software Engineering Intern</span>
+              <span class="date">Summer 2024</span>
             </div>
-            <i data-feather="chevron-down" class="arrow"></i>
+            <i data-feather="chevron-right" class="arrow-icon"></i>
           </div>
           <div class="item-content">
             <p>Description of your role and achievements.</p>
+            <ul>
+              <li>• Achievement 1</li>
+              <li>• Achievement 2</li>
+              <li>• Achievement 3</li>
+            </ul>
           </div>
         </div>
       </div>
       
       <div class="section">
         <h2>Projects</h2>
-        <div class="item">
+        <div class="project-item">
           <div class="item-header" onclick="toggleContent(this)">
             <div class="meta-container">
               <h3>Project Name</h3>
-              <span class="date">Date</span>
+              <span class="date">April 2024</span>
             </div>
-            <i data-feather="chevron-down" class="arrow"></i>
           </div>
           <div class="item-content">
             <p>Project description and your role in it.</p>
             <div class="tags">
-              <span class="tag">Technology 1</span>
-              <span class="tag">Technology 2</span>
+              <span class="tag">React</span>
+              <span class="tag">TypeScript</span>
+              <span class="tag">Next.js</span>
+              <span class="tag">TailwindCSS</span>
             </div>
           </div>
         </div>
@@ -265,50 +386,91 @@ import Navbar from '../components/Navbar.astro';
       
       <div class="section">
         <h2>Education</h2>
-        <div class="item">
-          <div class="item-header" onclick="toggleContent(this)">
+        <div class="item" onclick="toggleContent(this)">
+          <div class="item-header">
             <div class="meta-container">
-              <h3>University Name</h3>
-              <span class="date">Year Range</span>
+              <div class="company-icon">N</div>
+              <h3>Northeastern University</h3>
+              <span class="date">2024 - 2028</span>
             </div>
-            <i data-feather="chevron-down" class="arrow"></i>
+            <i data-feather="chevron-right" class="arrow-icon"></i>
           </div>
           <div class="item-content">
-            <p>Degree Type</p>
+            <p>Bachelor's Degree of Computer Engineering (BS)</p>
+            <ul>
+              <li>• GPA: X.XX/4.00</li>
+              <li>• Relevant Coursework: Course 1, Course 2, Course 3</li>
+              <li>• Clubs & Activities: Club 1, Club 2, Club 3</li>
+            </ul>
           </div>
         </div>
-      </div>
-      
-      <div class="footer">
-        <p>Reach out to me at <a href="mailto:your.email@example.com">your.email@example.com</a></p>
+        <div class="item" onclick="toggleContent(this)">
+          <div class="item-header">
+            <div class="meta-container">
+              <div class="company-icon">B</div>
+              <h3>Bridgewater-Raritan High School</h3>
+              <span class="date">2020 - 2024</span>
+            </div>
+            <i data-feather="chevron-right" class="arrow-icon"></i>
+          </div>
+          <div class="item-content">
+            <p>High School Diploma</p>
+            <ul>
+              <li>• GPA: X.XX/4.00</li>
+              <li>• Relevant Coursework: AP Computer Science, AP Calculus BC, etc.</li>
+              <li>• Clubs & Activities: Robotics Team, Math Team, etc.</li>
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
 
     <nav class="nav">
-      <a href="https://linkedin.com/in/yourusername" target="_blank" rel="noopener noreferrer">
-        <i data-feather="linkedin"></i>
+      <a href="#" title="Home">
+        <i data-feather="home"></i>
       </a>
-      <a href="https://twitter.com/yourusername" target="_blank" rel="noopener noreferrer">
-        <i data-feather="twitter"></i>
-      </a>
-      <a href="https://github.com/yourusername" target="_blank" rel="noopener noreferrer">
+      <div class="nav-divider"></div>
+      <a href="https://github.com/yourusername" target="_blank" rel="noopener noreferrer" title="GitHub">
         <i data-feather="github"></i>
       </a>
+      <a href="https://linkedin.com/in/yourusername" target="_blank" rel="noopener noreferrer" title="LinkedIn">
+        <i data-feather="linkedin"></i>
+      </a>
+      <a href="/blog" title="Blog">
+        <i data-feather="edit-3"></i>
+      </a>
+      <a href="/photos" title="Photos">
+        <i data-feather="camera"></i>
+      </a>
+      <a href="/resume.pdf" target="_blank" title="Resume">
+        <i data-feather="file-text"></i>
+      </a>
+      <div class="nav-divider"></div>
+      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+        <i data-feather="moon"></i>
+      </button>
     </nav>
 
     <script>
-      declare const feather: any;
-      
+      declare const feather: {
+        replace: () => void;
+      };
+
       // Initialize Feather Icons
       feather.replace();
 
       // Toggle content visibility
-      function toggleContent(header: HTMLElement) {
-        const content = header.nextElementSibling as HTMLElement;
-        const arrow = header.querySelector('.arrow') as HTMLElement;
-        
+      function toggleContent(element: HTMLElement) {
+        const content = element.querySelector('.item-content') as HTMLElement;
         content.classList.toggle('active');
-        arrow.style.transform = content.classList.contains('active') ? 'rotate(180deg)' : 'rotate(0)';
+      }
+
+      // Toggle theme
+      function toggleTheme() {
+        const themeToggle = document.querySelector('.theme-toggle i') as HTMLElement;
+        const isDark = document.documentElement.classList.toggle('dark');
+        themeToggle.setAttribute('data-feather', isDark ? 'sun' : 'moon');
+        feather.replace();
       }
     </script>
   </body>
