@@ -1,21 +1,8 @@
 ---
-import { getCollection, type CollectionEntry } from 'astro:content';
 import Navbar from '../../components/Navbar.astro';
 
-interface BlogPost {
-  draft?: boolean;
-  title: string;
-  date: Date;
-  tags?: string[];
-  excerpt: string;
-}
-
-// Get all blog posts sorted by date
-const posts = await getCollection('blog', ({ data }) => {
-  return import.meta.env.DEV || !data.draft;
-}).then(posts => posts.sort((a, b) => 
-  new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
-));
+// Temporary static data until content is set up
+const posts = [];
 ---
 
 <html lang="en">
@@ -152,37 +139,27 @@ const posts = await getCollection('blog', ({ data }) => {
     <div class="container">
       <h1>Blog</h1>
       <div class="post-list">
-        {posts.map((post) => (
+        {/* Temporarily commented out until content is ready */}
+        {/*posts.map((post) => (
           <a href={`/blog/${post.slug}`} class="post-item">
             <h2 class="post-title">{post.data.title}</h2>
             <p class="post-excerpt">{post.data.excerpt}</p>
             <div class="post-meta">
               <span class="post-date">
                 <i data-feather="calendar"></i>
-                {new Date(post.data.date).toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric'
-                })}
+                {new Date(post.data.date).toLocaleDateString('en-US')}
               </span>
-              {post.data.tags && post.data.tags.length > 0 && (
-                <div class="post-tags">
-                  {post.data.tags.map((tag) => (
-                    <span class="tag">{tag}</span>
-                  ))}
-                </div>
-              )}
             </div>
           </a>
-        ))}
+        ))*/}
+        <p>Blog posts coming soon...</p>
       </div>
     </div>
     <Navbar />
-
     <script>
       document.addEventListener('DOMContentLoaded', () => {
         // @ts-ignore
-        feather.replace();
+        feather?.replace();
       });
     </script>
   </body>

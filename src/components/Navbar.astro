@@ -28,8 +28,8 @@ const navItems = [
     <i data-feather="file-text" stroke-width="2.5"></i>
   </a>
   <div class="nav-divider"></div>
-  <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
-    <i data-feather="moon" stroke-width="2.5"></i>
+  <button class="theme-toggle" id="theme-toggle" title="Toggle theme">
+    <i data-feather="moon" id="theme-icon" stroke-width="2.5"></i>
   </button>
 </nav>
 
@@ -82,8 +82,8 @@ const navItems = [
     align-items: center;
     justify-content: center;
     transition: all 0.2s ease;
-    padding: 6px;
-    border-radius: 6px;
+    padding: 8px;
+    border-radius: 8px;
   }
 
   html.dark .nav a[href="#"] {
@@ -150,10 +150,10 @@ const navItems = [
   }
 
   .nav a svg {
-    width: 18px;
-    height: 18px;
+    width: 22px;
+    height: 22px;
     stroke: currentColor;
-    stroke-width: 2.25;
+    stroke-width: 2;
   }
   
   .nav a:hover {
@@ -168,8 +168,8 @@ const navItems = [
     color: var(--text-primary);
     background: none;
     border: none;
-    padding: 6px;
-    border-radius: 6px;
+    padding: 8px;
+    border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s ease;
     display: flex;
@@ -178,10 +178,10 @@ const navItems = [
   }
 
   .theme-toggle svg {
-    width: 18px;
-    height: 18px;
+    width: 22px;
+    height: 22px;
     stroke: currentColor;
-    stroke-width: 2.25;
+    stroke-width: 2;
   }
 
   .theme-toggle:hover {
@@ -190,14 +190,14 @@ const navItems = [
 
   @media (max-width: 768px) {
     .nav {
-      padding: 6px 12px;
-      gap: 8px;
+      padding: 8px 16px;
+      gap: 10px;
     }
 
     .nav a svg,
     .theme-toggle svg {
-      width: 16px;
-      height: 16px;
+      width: 20px;
+      height: 20px;
     }
 
     .nav-divider {
@@ -206,44 +206,52 @@ const navItems = [
   }
 </style>
 
-<script is:inline>
-  // Check for saved theme preference immediately
-  const savedTheme = localStorage.getItem('theme') || 'light';
-  document.documentElement.classList.toggle('dark', savedTheme === 'dark');
-
-  // Handle smooth scrolling for home button when on homepage
-  document.addEventListener('DOMContentLoaded', () => {
-    const homeLink = document.querySelector('[data-home-link]');
-    if (homeLink && window.location.pathname === '/') {
-      homeLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        window.scrollTo({
-          top: 0,
-          behavior: 'smooth'
-        });
-      });
-    }
-
-    // Update theme toggle icon based on current theme
-    const isDark = document.documentElement.classList.contains('dark');
-    const themeToggle = document.querySelector('.theme-toggle i');
-    if (themeToggle) {
-      themeToggle.setAttribute('data-feather', isDark ? 'sun' : 'moon');
-      feather.replace();
-    }
-  });
-
-  // Define toggleTheme globally
-  function toggleTheme() {
+<script>
+  // Theme toggle functionality
+  const initTheme = () => {
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeIcon = document.getElementById('theme-icon');
     const html = document.documentElement;
-    const isDark = html.classList.toggle('dark');
-    const themeToggle = document.querySelector('.theme-toggle i');
-    
-    // Save theme preference
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
-    
-    // Update icon
-    themeToggle.setAttribute('data-feather', isDark ? 'sun' : 'moon');
-    feather.replace();
-  }
+
+    // Get theme from localStorage or system preference
+    const getTheme = () => {
+      const savedTheme = typeof localStorage !== 'undefined' ? localStorage.getItem('theme') : null;
+      if (savedTheme === 'dark' || savedTheme === 'light') {
+        return savedTheme;
+      }
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    };
+
+    // Set theme and update icon
+    const setTheme = (theme: string) => {
+      html.classList.remove('light', 'dark');
+      html.classList.add(theme);
+      localStorage.setItem('theme', theme);
+      
+      if (themeIcon) {
+        themeIcon.setAttribute('data-feather', theme === 'dark' ? 'sun' : 'moon');
+        // @ts-ignore
+        feather?.replace();
+      }
+    };
+
+    // Initialize theme
+    setTheme(getTheme());
+
+    // Toggle theme on button click
+    themeToggle?.addEventListener('click', () => {
+      const isDark = html.classList.contains('dark');
+      setTheme(isDark ? 'light' : 'dark');
+    });
+
+    // Listen for system theme changes
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+      if (!localStorage.getItem('theme')) {
+        setTheme(e.matches ? 'dark' : 'light');
+      }
+    });
+  };
+
+  // Initialize theme on page load and after view transitions
+  document.addEventListener('astro:page-load', initTheme);
 </script>

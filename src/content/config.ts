@@ -1,31 +1,19 @@
 import { defineCollection, z } from 'astro:content';
 
-const blog = defineCollection({
-  type: 'content',
-  schema: z.object({
-    title: z.string(),
-    date: z.date(),
-    tags: z.array(z.string()).optional(),
-    excerpt: z.string(),
-    draft: z.boolean().optional().default(false)
-  })
-});
-
 const photos = defineCollection({
   type: 'content',
   schema: z.object({
     title: z.string(),
-    date: z.date(),
-    coverImage: z.string(),
+    date: z.coerce.date(), // This will convert string dates to Date objects
     description: z.string(),
+    coverImage: z.string(),
     images: z.array(z.object({
       url: z.string(),
-      caption: z.string()
+      caption: z.string().optional()
     }))
   })
 });
 
 export const collections = {
-  blog,
   photos
 };

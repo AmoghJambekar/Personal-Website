@@ -1,0 +1,103 @@
+---
+import { ViewTransitions } from 'astro:transitions';
+import Navbar from '../components/Navbar.astro';
+
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script is:inline src="https://unpkg.com/feather-icons"></script>
+    <ViewTransitions transition:animate="slide" />
+    <style is:global>
+      :root {
+        --text-primary: #111827;
+        --text-secondary: #4B5563;
+        --text-tertiary: #6B7280;
+        --bg-primary: #FFFFFF;
+        --bg-secondary: #F3F4F6;
+        --border-color: #E5E7EB;
+        --link-color: #2563EB;
+        --nav-bg: rgba(255, 255, 255, 0.8);
+      }
+
+      html.dark {
+        --text-primary: #F9FAFB;
+        --text-secondary: #D1D5DB;
+        --text-tertiary: #9CA3AF;
+        --bg-primary: #111827;
+        --bg-secondary: #1F2937;
+        --border-color: #374151;
+        --link-color: #60A5FA;
+        --nav-bg: rgba(17, 24, 39, 0.8);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      }
+
+      html {
+        height: 100%;
+        scroll-behavior: smooth;
+      }
+
+      body {
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        background-color: var(--bg-primary);
+        color: var(--text-primary);
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+
+      /* Smooth page transitions */
+      ::view-transition-old(root),
+      ::view-transition-new(root) {
+        animation-duration: 0.2s;
+        animation-timing-function: ease-in-out;
+      }
+
+      /* Prevent flash during theme transitions */
+      html.dark::view-transition-old(root) {
+        z-index: 1;
+      }
+      html.dark::view-transition-new(root) {
+        z-index: 999;
+      }
+
+      html:not(.dark)::view-transition-old(root) {
+        z-index: 999;
+      }
+      html:not(.dark)::view-transition-new(root) {
+        z-index: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <Navbar />
+    <slot />
+    <script is:inline>
+      // Initialize Feather Icons
+      document.addEventListener('astro:page-load', () => {
+        // @ts-ignore
+        feather?.replace();
+      });
+    </script>
+  </body>
+</html> 

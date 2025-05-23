@@ -1,14 +1,9 @@
 ---
-import { getCollection, type CollectionEntry } from 'astro:content';
 import Navbar from '../../components/Navbar.astro';
 
 // Get all photo collections
-const photoCollections = await getCollection('photos');
-
-// Sort collections by date (newest first)
-const sortedCollections = photoCollections.sort((a, b) => 
-  new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
-);
+// const photoCollections = await getCollection('photos');
+const photoCollections = [] // Temporary empty array until content is set up
 ---
 
 <html lang="en">
@@ -120,35 +115,24 @@ const sortedCollections = photoCollections.sort((a, b) =>
         }
       }
     </style>
-    <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
   </head>
   <body>
     <div class="container">
       <h1>Photos</h1>
       <div class="photo-grid">
-        {sortedCollections.map((collection) => (
+        {/* Temporarily commented out until content is ready */}
+        {/*photoCollections.map((collection) => (
           <a href={`/photos/${collection.slug}`} class="photo-item">
             <img src={collection.data.coverImage} alt={collection.data.title} />
             <div class="photo-overlay">
               <div class="photo-title">{collection.data.title}</div>
-              <div class="photo-date">
-                {new Date(collection.data.date).toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'long'
-                })}
-              </div>
+              <div class="photo-date">{collection.data.date}</div>
             </div>
           </a>
-        ))}
+        ))*/}
+        <p>Photo collections coming soon...</p>
       </div>
     </div>
     <Navbar />
-    
-    <script>
-      document.addEventListener('DOMContentLoaded', () => {
-        // @ts-ignore
-        feather.replace();
-      });
-    </script>
   </body>
 </html>

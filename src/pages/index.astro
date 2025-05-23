@@ -1,622 +1,612 @@
 ---
+import Layout from '../layouts/Layout.astro';
 import Navbar from '../components/Navbar.astro';
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Amogh Jambekar</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
-    <style>
-      :root {
-        --text-primary: #111827;
-        --text-secondary: #4B5563;
-        --text-tertiary: #6B7280;
-        --bg-primary: #FFFFFF;
-        --bg-secondary: #F3F4F6;
-        --border-color: #E5E7EB;
-        --link-color: #2563EB;
-        --nav-bg: rgba(255, 255, 255, 0.8);
-      }
-
-      html.dark {
-        --text-primary: #F9FAFB;
-        --text-secondary: #D1D5DB;
-        --text-tertiary: #9CA3AF;
-        --bg-primary: #111827;
-        --bg-secondary: #1F2937;
-        --border-color: #374151;
-        --link-color: #60A5FA;
-        --nav-bg: rgba(17, 24, 39, 0.8);
-      }
-
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-      }
-      
-      html {
-        height: 100%;
-        scroll-behavior: smooth;
-      }
-      
-      body {
-        width: 100%;
-        max-width: 100%;
-        margin: 0;
-        padding: 0;
-        min-height: 100vh;
-        background-color: var(--bg-primary);
-        color: var(--text-primary);
-        transition: background-color 0.3s ease, color 0.3s ease;
-      }
-
-      .container {
-        width: 100%;
-        max-width: 640px;
-        margin: 0 auto;
-        padding: 120px 24px 120px;
-      }
-      
-      h1 {
-        font-size: 48px;
-        font-weight: 700;
-        letter-spacing: -0.025em;
-        line-height: 1.1;
-        margin-bottom: 4px;
-      }
-      
-      h2 {
-        font-size: 24px;
-        font-weight: 600;
-        margin: 32px 0 8px;
-        letter-spacing: -0.025em;
-        padding-left: 0;
-      }
-      
-      h3 {
-        font-size: 16px;
-        font-weight: 600;
-        color: var(--text-primary);
-        display: inline;
-      }
-      
-      p {
-        color: var(--text-secondary);
-        line-height: 1.75;
-        font-size: 16px;
-        margin-bottom: 24px;
-      }
-      
-      .subtitle {
-        font-size: 20px;
-        color: var(--text-secondary);
-        margin-bottom: 32px;
-        font-weight: 500;
-      }
-      
-      .intro {
-        color: var(--text-secondary);
-        line-height: 1.75;
-        margin-bottom: 48px;
-        font-size: 14px;
-      }
-
-      .section {
-        margin-bottom: 32px;
-      }
-      
-      .item {
-        margin-bottom: 12px;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        padding: 12px 0 12px 0;
-        border-radius: 8px;
-        position: relative;
-      }
-      
-      .item:hover {
-        background: var(--bg-secondary);
-      }
-
-      .item:hover .arrow-icon {
-        color: var(--text-primary);
-      }
-      
-      .arrow-icon {
-        position: absolute;
-        right: 16px;
-        top: 16px;
-        transform: rotate(0deg);
-        opacity: 1;
-        transition: all 0.3s ease;
-        color: var(--text-tertiary);
-        display: flex;
-        align-items: center;
-        height: 20px;
-        pointer-events: none;
-      }
-      
-      .item.active .arrow-icon {
-        transform: rotate(90deg);
-      }
-      
-      .item-header {
-        display: flex;
-        align-items: flex-start;
-        justify-content: space-between;
-        width: 100%;
-        gap: 16px;
-        padding-right: 32px;
-      }
-      
-      .meta-container {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-        flex: 1;
-      }
-      
-      .title-row {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-      }
-      
-      .company-logo {
-        width: 24px;
-        height: 24px;
-        border-radius: 4px;
-        overflow: hidden;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: var(--bg-secondary);
-      }
-      
-      .company-logo img {
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-        padding: 2px;
-      }
-      
-      .role {
-        color: var(--text-tertiary);
-        font-size: 14px;
-      }
-      
-      .date {
-        color: var(--text-tertiary);
-        font-size: 14px;
-        white-space: nowrap;
-        margin-top: 6px;
-        margin-right: 8px;
-      }
-      
-      .item-content {
-        padding: 0;
-        max-height: 0;
-        overflow: hidden;
-        transition: all 0.3s ease-out;
-        opacity: 0;
-      }
-      
-      .item-content.active {
-        padding: 12px 0 0;
-        max-height: 500px;
-        opacity: 1;
-      }
-
-      .item-content p {
-        margin-bottom: 8px;
-        font-size: 14px;
-      }
-
-      .item-content ul {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-        color: var(--text-secondary);
-        font-size: 14px;
-      }
-
-      .item-content li {
-        margin-bottom: 4px;
-      }
-      
-      .project-item {
-        margin-bottom: 16px;
-        border: 1px solid var(--border-color);
-        border-radius: 12px;
-        overflow: hidden;
-      }
-      
-      .project-item .item-header {
-        padding: 16px;
-        background: var(--bg-primary);
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-      }
-      
-      .project-item .date {
-        margin-top: 0;
-        display: flex;
-        align-items: center;
-      }
-      
-      .project-item:hover {
-        border-color: var(--text-tertiary);
-      }
-
-      .project-item .item-content {
-        padding: 0 16px;
-        max-height: 0;
-        overflow: hidden;
-        transition: all 0.3s ease-out;
-        background: var(--bg-secondary);
-      }
-      
-      .project-item .item-content.active {
-        padding: 16px;
-        max-height: 500px;
-      }
-
-      .tags {
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-        margin-top: 16px;
-      }
-      
-      .tag {
-        background: var(--bg-primary);
-        color: var(--text-tertiary);
-        padding: 4px 12px;
-        border-radius: 9999px;
-        font-size: 14px;
-        border: 1px solid var(--border-color);
-      }
-      
-      .footer {
-        margin-top: 64px;
-        color: var(--text-secondary);
-        font-size: 14px;
-      }
-      
-      .nav {
-        position: fixed;
-        bottom: 24px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: var(--nav-bg);
-        backdrop-filter: blur(12px);
-        padding: 8px 16px;
-        border-radius: 9999px;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        z-index: 1000;
-        border: 1px solid var(--border-color);
-        transition: background-color 0.3s ease, border-color 0.3s ease;
-      }
-
-      .nav-divider {
-        width: 1px;
-        height: 16px;
-        background: var(--border-color);
-        transition: background-color 0.3s ease;
-      }
-      
-      .nav a {
-        color: var(--text-primary);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.2s ease;
-        padding: 6px;
-        border-radius: 6px;
-      }
-
-      html.dark .nav a[href="#"] {
-        color: #FFA500;
-        text-shadow: 0 0 10px rgba(255, 165, 0, 0.7);
-      }
-
-      html.dark .nav a[href="#"] svg {
-        filter: drop-shadow(0 0 4px rgba(255, 165, 0, 0.7));
-      }
-
-      html.dark .nav a[href*="github"] {
-        color: #FFD700;
-        text-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
-      }
-
-      html.dark .nav a[href*="github"] svg {
-        filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.7));
-      }
-
-      html.dark .nav a[href*="linkedin"] {
-        color: #0077B5;
-        text-shadow: 0 0 10px rgba(0, 119, 181, 0.7);
-      }
-
-      html.dark .nav a[href*="linkedin"] svg {
-        filter: drop-shadow(0 0 4px rgba(0, 119, 181, 0.7));
-      }
-
-      html.dark .nav a[href="/blog"] {
-        color: #FF0000;
-        text-shadow: 0 0 10px rgba(255, 0, 0, 0.7);
-      }
-
-      html.dark .nav a[href="/blog"] svg {
-        filter: drop-shadow(0 0 4px rgba(255, 0, 0, 0.7));
-      }
-
-      html.dark .nav a[href="/photos"] {
-        color: #00FF00;
-        text-shadow: 0 0 10px rgba(0, 255, 0, 0.7);
-      }
-
-      html.dark .nav a[href="/photos"] svg {
-        filter: drop-shadow(0 0 4px rgba(0, 255, 0, 0.7));
-      }
-
-      html.dark .nav a[href*="resume"] {
-        color: #9333EA;
-        text-shadow: 0 0 10px rgba(147, 51, 234, 0.7);
-      }
-
-      html.dark .nav a[href*="resume"] svg {
-        filter: drop-shadow(0 0 4px rgba(147, 51, 234, 0.7));
-      }
-
-      html.dark .theme-toggle {
-        color: #FFFFFF;
-        text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
-      }
-
-      html.dark .theme-toggle svg {
-        filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.7));
-      }
-
-      .nav a svg {
-        width: 18px;
-        height: 18px;
-        stroke: currentColor;
-        stroke-width: 2.25;
-      }
-      
-      .nav a:hover {
-        transform: scale(1.15);
-      }
-
-      .nav a:hover ~ a {
-        transform: translateX(6px);
-      }
-      
-      .theme-toggle {
-        color: var(--text-primary);
-        background: none;
-        border: none;
-        padding: 6px;
-        border-radius: 6px;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .theme-toggle svg {
-        width: 18px;
-        height: 18px;
-        stroke: currentColor;
-        stroke-width: 2.25;
-      }
-
-      .theme-toggle:hover {
-        transform: scale(1.15);
-      }
-      
-      a {
-        color: var(--link-color);
-        text-decoration: none;
-      }
-      
-      a:hover {
-        text-decoration: underline;
-      }
-
-      .intro a {
-        color: var(--text-primary);
-        font-weight: bold;
-        text-decoration: underline;
-      }
-
-      .intro a:hover {
-        text-decoration: underline;
-      }
-
-      @media (max-width: 768px) {
-        .container {
-          padding: 80px 20px 120px;
-        }
-        
-        h1 {
-          font-size: 36px;
-        }
-        
-        .subtitle {
-          font-size: 18px;
-        }
-
-        .nav {
-          padding: 6px 12px;
-          gap: 8px;
-        }
-
-        .nav a svg,
-        .theme-toggle svg {
-          width: 16px;
-          height: 16px;
-        }
-
-        .nav-divider {
-          height: 14px;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <h1>Amogh Jambekar</h1>
-      <p class="subtitle">Trust the process.</p>
-      
-      <p class="intro">
-        I'm an incoming Computer Engineering student at Northeastern University and a senior at Bridgewater-Raritan High School. I've previously worked at [Company X], where I [brief impactful contribution]. I also recently created [Project X], [Project Y], and [Project Z], and currently research [Topic Y] under [Professor X].
-        <br><br>
-        Outside of tech, I love <a href="https://strava.app.link/qCsjlvhPyTb" target="_blank" rel="noopener noreferrer">running</a>, working out, and playing basketball, tennis, cricket and pickleball. I'm a fan of the Knicks, Mumbai Indians, and the Indian Cricket Team. I also love capturing moments with my camera, <a href="https://obscurifymusic.com/profile?id=di82yeudoy32fxdlble93z00e&code=6b8a4a1d0a735a23" target="_blank" rel="noopener noreferrer">exploring music</a>, and documenting life on my <a href="/blog">blog</a>.
-      </p>
-      
-      <div class="section">
-        <h2>Experience</h2>
-        <div class="item">
-          <div class="item-header">
-            <div class="meta-container">
-              <div class="title-row">
-                <div class="company-logo">
-                  <img src="/logos/holonym_logo.png" alt="Company Name Logo" />
-                </div>
-                <h3>Holonym</h3>
+<Layout title="Amogh Jambekar">
+  <div class="container">
+    <h1>Amogh Jambekar</h1>
+    <p class="subtitle">Trust the process.</p>
+    
+    <p class="intro">
+      I'm an incoming Computer Engineering student at Northeastern University and a senior at Bridgewater-Raritan High School. I've previously worked at [Company X], where I [brief impactful contribution]. I also recently created [Project X], [Project Y], and [Project Z], and currently research [Topic Y] under [Professor X].
+      <br><br>
+      Outside of tech, I love <a href="https://strava.app.link/qCsjlvhPyTb" target="_blank" rel="noopener noreferrer">running</a>, working out, and playing basketball, tennis, cricket and pickleball. I'm a fan of the Knicks, Mumbai Indians, and the Indian Cricket Team. I also love capturing moments with my camera, <a href="https://obscurifymusic.com/profile?id=di82yeudoy32fxdlble93z00e&code=6b8a4a1d0a735a23" target="_blank" rel="noopener noreferrer">exploring music</a>, and documenting life on my <a href="/blog">blog</a>.
+    </p>
+    
+    <div class="section">
+      <h2>Experience</h2>
+      <div class="item">
+        <div class="item-header">
+          <div class="meta-container">
+            <div class="title-row">
+              <div class="company-logo">
+                <img src="/logos/holonym_logo.png" alt="Company Name Logo" />
               </div>
-              <div class="role">Mobile App Development Intern</div>
+              <h3>Holonym</h3>
             </div>
-            <span class="date">Summer 2024</span>
+            <div class="role">Mobile App Development Intern</div>
           </div>
-          <i data-feather="chevron-right" class="arrow-icon" stroke-width="2.5"></i>
-          <div class="item-content">
-            <ul>
-              <li>• COMING SOON</li>
-              <li>• COMING SOON</li>
-              <li>• COMING SOON</li>
-            </ul>
-          </div>
+          <span class="date">Summer 2024</span>
+        </div>
+        <i data-feather="chevron-right" class="arrow-icon" stroke-width="2.5"></i>
+        <div class="item-content">
+          <ul>
+            <li>• COMING SOON</li>
+            <li>• COMING SOON</li>
+            <li>• COMING SOON</li>
+          </ul>
         </div>
       </div>
-      
-      <div class="section">
-        <h2>Projects</h2>
-        <div class="project-item">
-          <div class="item-header">
-            <div class="meta-container">
-              <div class="title-row">
-                <div class="company-logo">
-                  <img src="/logos/quicklogo.png" alt="Project Logo" />
-                </div>
-                <h3>Quick</h3>
+    </div>
+    
+    <div class="section">
+      <h2>Projects</h2>
+      <div class="project-item">
+        <div class="item-header">
+          <div class="meta-container">
+            <div class="title-row">
+              <div class="company-logo">
+                <img src="/logos/quicklogo.png" alt="Project Logo" />
               </div>
-            </div>
-            <span class="date">April 2025</span>
-          </div>
-          <div class="item-content">
-            <p>Lightweight and efficient post-it note app with editable timer that floats on top. To be published to App Store.
-              (<a href="https://github.com/AmoghJambekar/Quick" target="_blank" rel="noopener noreferrer">GitHub</a>)
-            </p>
-            <div class="tags">
-              <span class="tag">Swift</span>
+              <h3>Quick</h3>
             </div>
           </div>
+          <span class="date">April 2025</span>
         </div>
-      </div>
-      
-      <div class="section">
-        <h2>Education</h2>
-        <div class="item">
-          <div class="item-header">
-            <div class="meta-container">
-              <div class="title-row">
-                <div class="company-logo">
-                  <img src="/logos/northeasternYellow.png" alt="Northeastern University Logo" />
-                </div>
-                <h3>Northeastern University</h3>
-              </div>
-              <div class="role">Computer Engineering</div>
-            </div>
-            <span class="date">2025 - 2029</span>
-          </div>
-          <i data-feather="chevron-right" class="arrow-icon"></i>
-          <div class="item-content">
-            <ul>
-              <li>• Incoming Fall 2025 (First Semester Abroad @ Univ. College Dublin)</li>
-            </ul>
-          </div>
-        </div>
-        <div class="item">
-          <div class="item-header">
-            <div class="meta-container">
-              <div class="title-row">
-                <div class="company-logo">
-                  <img src="/logos/brhs.png" alt="BRHS Logo" />
-                </div>
-                <h3>Bridgewater-Raritan High School</h3>
-              </div>
-              <div class="role">High School Diploma</div>
-            </div>
-            <span class="date">2021 - 2025</span>
-          </div>
-          <i data-feather="chevron-right" class="arrow-icon"></i>
-          <div class="item-content">
-            <ul>
-              <li>• GPA: 4.35/4.00</li>
-              <li>• Relevant Coursework: AP Computer Science A, AP CSP, AP Statistics, AP Physics 1, AP Physics C</li>
-              <li>• Clubs & Activities: Quantum Computing Club (President and Founder), FRC Team 303 (Outreach Captain), BREngineering (President), Cricket Team (Captain and Founder), BRHS Hacks (Committee Lead)  </li>
-            </ul>
+        <div class="item-content">
+          <p>Lightweight and efficient post-it note app with editable timer that floats on top. To be published to App Store.
+            (<a href="https://github.com/AmoghJambekar/Quick" target="_blank" rel="noopener noreferrer">GitHub</a>)
+          </p>
+          <div class="tags">
+            <span class="tag">Swift</span>
           </div>
         </div>
       </div>
     </div>
+    
+    <div class="section">
+      <h2>Education</h2>
+      <div class="item">
+        <div class="item-header">
+          <div class="meta-container">
+            <div class="title-row">
+              <div class="company-logo">
+                <img src="/logos/northeasternYellow.png" alt="Northeastern University Logo" />
+              </div>
+              <h3>Northeastern University</h3>
+            </div>
+            <div class="role">Computer Engineering</div>
+          </div>
+          <span class="date">2025 - 2029</span>
+        </div>
+        <i data-feather="chevron-right" class="arrow-icon"></i>
+        <div class="item-content">
+          <ul>
+            <li>• Incoming Fall 2025 (First Semester Abroad @ Univ. College Dublin)</li>
+          </ul>
+        </div>
+      </div>
+      <div class="item">
+        <div class="item-header">
+          <div class="meta-container">
+            <div class="title-row">
+              <div class="company-logo">
+                <img src="/logos/brhs.png" alt="BRHS Logo" />
+              </div>
+              <h3>Bridgewater-Raritan High School</h3>
+            </div>
+            <div class="role">High School Diploma</div>
+          </div>
+          <span class="date">2021 - 2025</span>
+        </div>
+        <i data-feather="chevron-right" class="arrow-icon"></i>
+        <div class="item-content">
+          <ul>
+            <li>• GPA: 4.35/4.00</li>
+            <li>• Relevant Coursework: AP Computer Science A, AP CSP, AP Statistics, AP Physics 1, AP Physics C</li>
+            <li>• Clubs & Activities: Quantum Computing Club (President and Founder), FRC Team 303 (Outreach Captain), BREngineering (President), Cricket Team (Captain and Founder), BRHS Hacks (Committee Lead)  </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
 
-    <Navbar />
+<style>
+  :root {
+    --text-primary: #111827;
+    --text-secondary: #4B5563;
+    --text-tertiary: #6B7280;
+    --bg-primary: #FFFFFF;
+    --bg-secondary: #F3F4F6;
+    --border-color: #E5E7EB;
+    --link-color: #2563EB;
+    --nav-bg: rgba(255, 255, 255, 0.8);
+  }
 
-    <script>
-      declare const feather: {
-        replace: () => void;
-      };
+  html.dark {
+    --text-primary: #F9FAFB;
+    --text-secondary: #D1D5DB;
+    --text-tertiary: #9CA3AF;
+    --bg-primary: #111827;
+    --bg-secondary: #1F2937;
+    --border-color: #374151;
+    --link-color: #60A5FA;
+    --nav-bg: rgba(17, 24, 39, 0.8);
+  }
 
-      // Initialize Feather Icons and handle expandable sections
-      document.addEventListener('DOMContentLoaded', () => {
-        feather.replace();
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  }
+  
+  html {
+    height: 100%;
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
 
-        // Add click handlers to all expandable items
-        document.querySelectorAll('.item, .project-item').forEach(item => {
-          item.addEventListener('click', (event: Event) => {
-            const e = event.target as HTMLElement;
-            // Don't toggle if clicking a link
-            if (e && e.closest('a')) return;
-            
-            const content = item.querySelector('.item-content');
-            const arrow = item.querySelector('.arrow-icon') as HTMLElement;
-            
-            if (content) {
-              content.classList.toggle('active');
-              item.classList.toggle('active');
-              if (arrow) {
-                arrow.style.transform = content.classList.contains('active') ? 'rotate(90deg)' : 'rotate(0deg)';
-              }
-            }
-          });
-        });
+  .container {
+    width: 100%;
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 140px 24px;
+  }
+  
+  h1 {
+    font-size: 48px;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+    margin: 0;
+  }
+  
+  h2 {
+    font-size: 24px;
+    font-weight: 600;
+    margin: 32px 0 8px;
+    letter-spacing: -0.025em;
+    padding-left: 0;
+  }
+  
+  h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+    display: inline;
+  }
+  
+  p {
+    color: var(--text-secondary);
+    line-height: 1.75;
+    font-size: 16px;
+    margin-bottom: 24px;
+  }
+  
+  .subtitle {
+    font-size: 20px;
+    color: var(--text-secondary);
+    margin-top: 4px;
+    margin-bottom: 32px;
+    font-weight: 500;
+  }
+  
+  .intro {
+    color: var(--text-secondary);
+    line-height: 1.75;
+    margin-bottom: 48px;
+    font-size: 14px;
+  }
+
+  .section {
+    margin-bottom: 32px;
+  }
+  
+  .item {
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 12px 0 12px 0;
+    border-radius: 8px;
+    position: relative;
+  }
+  
+  .item:hover {
+    background: var(--bg-secondary);
+  }
+
+  .item:hover .arrow-icon {
+    color: var(--text-primary);
+  }
+  
+  .arrow-icon {
+    position: absolute;
+    right: 16px;
+    top: 16px;
+    transform: rotate(0deg);
+    opacity: 1;
+    transition: all 0.3s ease;
+    color: var(--text-tertiary);
+    display: flex;
+    align-items: center;
+    height: 20px;
+    pointer-events: none;
+  }
+  
+  .item.active .arrow-icon {
+    transform: rotate(90deg);
+  }
+  
+  .item-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    width: 100%;
+    gap: 16px;
+    padding-right: 32px;
+  }
+  
+  .meta-container {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+  }
+  
+  .title-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .company-logo {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-secondary);
+  }
+  
+  .company-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 2px;
+  }
+  
+  .role {
+    color: var(--text-tertiary);
+    font-size: 14px;
+  }
+  
+  .date {
+    color: var(--text-tertiary);
+    font-size: 14px;
+    white-space: nowrap;
+    margin-top: 6px;
+    margin-right: 8px;
+  }
+  
+  .item-content {
+    padding: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: all 0.3s ease-out;
+    opacity: 0;
+  }
+  
+  .item-content.active {
+    padding: 12px 0 0;
+    max-height: 500px;
+    opacity: 1;
+  }
+
+  .item-content p {
+    margin-bottom: 8px;
+    font-size: 14px;
+  }
+
+  .item-content ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    color: var(--text-secondary);
+    font-size: 14px;
+  }
+
+  .item-content li {
+    margin-bottom: 4px;
+  }
+  
+  .project-item {
+    margin-bottom: 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  
+  .project-item .item-header {
+    padding: 16px;
+    background: var(--bg-primary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .project-item .date {
+    margin-top: 0;
+    display: flex;
+    align-items: center;
+  }
+  
+  .project-item:hover {
+    border-color: var(--text-tertiary);
+  }
+
+  .project-item .item-content {
+    padding: 0 16px;
+    max-height: 0;
+    overflow: hidden;
+    transition: all 0.3s ease-out;
+    background: var(--bg-secondary);
+  }
+  
+  .project-item .item-content.active {
+    padding: 16px;
+    max-height: 500px;
+  }
+
+  .tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+  }
+  
+  .tag {
+    background: var(--bg-primary);
+    color: var(--text-tertiary);
+    padding: 4px 12px;
+    border-radius: 9999px;
+    font-size: 14px;
+    border: 1px solid var(--border-color);
+  }
+  
+  .footer {
+    margin-top: 64px;
+    color: var(--text-secondary);
+    font-size: 14px;
+  }
+  
+  .nav {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--nav-bg);
+    backdrop-filter: blur(12px);
+    padding: 8px 16px;
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 1000;
+    border: 1px solid var(--border-color);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+  }
+
+  .nav-divider {
+    width: 1px;
+    height: 16px;
+    background: var(--border-color);
+    transition: background-color 0.3s ease;
+  }
+  
+  .nav a {
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    padding: 6px;
+    border-radius: 6px;
+  }
+
+  html.dark .nav a[href="#"] {
+    color: #FFA500;
+    text-shadow: 0 0 10px rgba(255, 165, 0, 0.7);
+  }
+
+  html.dark .nav a[href="#"] svg {
+    filter: drop-shadow(0 0 4px rgba(255, 165, 0, 0.7));
+  }
+
+  html.dark .nav a[href*="github"] {
+    color: #FFD700;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
+  }
+
+  html.dark .nav a[href*="github"] svg {
+    filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.7));
+  }
+
+  html.dark .nav a[href*="linkedin"] {
+    color: #0077B5;
+    text-shadow: 0 0 10px rgba(0, 119, 181, 0.7);
+  }
+
+  html.dark .nav a[href*="linkedin"] svg {
+    filter: drop-shadow(0 0 4px rgba(0, 119, 181, 0.7));
+  }
+
+  html.dark .nav a[href="/blog"] {
+    color: #FF0000;
+    text-shadow: 0 0 10px rgba(255, 0, 0, 0.7);
+  }
+
+  html.dark .nav a[href="/blog"] svg {
+    filter: drop-shadow(0 0 4px rgba(255, 0, 0, 0.7));
+  }
+
+  html.dark .nav a[href="/photos"] {
+    color: #00FF00;
+    text-shadow: 0 0 10px rgba(0, 255, 0, 0.7);
+  }
+
+  html.dark .nav a[href="/photos"] svg {
+    filter: drop-shadow(0 0 4px rgba(0, 255, 0, 0.7));
+  }
+
+  html.dark .nav a[href*="resume"] {
+    color: #9333EA;
+    text-shadow: 0 0 10px rgba(147, 51, 234, 0.7);
+  }
+
+  html.dark .nav a[href*="resume"] svg {
+    filter: drop-shadow(0 0 4px rgba(147, 51, 234, 0.7));
+  }
+
+  html.dark .theme-toggle {
+    color: #FFFFFF;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+  }
+
+  html.dark .theme-toggle svg {
+    filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.7));
+  }
+
+  .nav a svg {
+    width: 18px;
+    height: 18px;
+    stroke: currentColor;
+    stroke-width: 2.25;
+  }
+  
+  .nav a:hover {
+    transform: scale(1.15);
+  }
+
+  .nav a:hover ~ a {
+    transform: translateX(6px);
+  }
+  
+  .theme-toggle {
+    color: var(--text-primary);
+    background: none;
+    border: none;
+    padding: 6px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .theme-toggle svg {
+    width: 18px;
+    height: 18px;
+    stroke: currentColor;
+    stroke-width: 2.25;
+  }
+
+  .theme-toggle:hover {
+    transform: scale(1.15);
+  }
+  
+  a {
+    color: var(--link-color);
+    text-decoration: none;
+  }
+  
+  a:hover {
+    text-decoration: underline;
+  }
+
+  .intro a {
+    color: var(--text-primary);
+    font-weight: bold;
+    text-decoration: underline;
+  }
+
+  .intro a:hover {
+    text-decoration: underline;
+  }
+
+  @media (max-width: 768px) {
+    .container {
+      padding: 80px 20px 120px;
+    }
+    
+    h1 {
+      font-size: 36px;
+    }
+    
+    .subtitle {
+      font-size: 18px;
+    }
+
+    .nav {
+      padding: 6px 12px;
+      gap: 8px;
+    }
+
+    .nav a svg,
+    .theme-toggle svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .nav-divider {
+      height: 14px;
+    }
+  }
+</style>
+
+<script>
+  const initDropdowns = () => {
+    // Initialize Feather Icons
+    // @ts-ignore
+    feather?.replace();
+
+    // Add click handlers to all expandable items
+    document.querySelectorAll('.item, .project-item').forEach(item => {
+      item.addEventListener('click', (event: Event) => {
+        const e = event.target as HTMLElement;
+        // Don't toggle if clicking a link
+        if (e && e.closest('a')) return;
+        
+        const content = item.querySelector('.item-content');
+        const arrow = item.querySelector('.arrow-icon') as HTMLElement;
+        
+        if (content) {
+          content.classList.toggle('active');
+          item.classList.toggle('active');
+          if (arrow) {
+            arrow.style.transform = content.classList.contains('active') ? 'rotate(90deg)' : 'rotate(0deg)';
+          }
+        }
       });
-    </script>
-  </body>
-</html>
+    });
+  };
+
+  // Initialize on page load and after view transitions
+  document.addEventListener('astro:page-load', initDropdowns);
+</script>

@@ -1,20 +1,18 @@
 ---
 title: "Grand Canyon 2024"
-date: 2024-03-15
-coverImage: "/photos/grand-canyon/cover.jpg"
-description: "Capturing the majestic beauty of the Grand Canyon during spring break."
+date: "2024-03-21"
+description: "Photos from my trip to the Grand Canyon"
+coverImage: "/photos/grand-canyon-2024/cover.jpg"
 images:
-  - url: "/photos/grand-canyon/1.jpg"
-    caption: "Sunrise at Mather Point"
-  - url: "/photos/grand-canyon/2.jpg"
-    caption: "The Colorado River winding through the canyon"
-  - url: "/photos/grand-canyon/3.jpg"
-    caption: "Desert flora against the canyon backdrop"
-  - url: "/photos/grand-canyon/4.jpg"
-    caption: "Sunset colors painting the canyon walls"
+  - url: "/photos/grand-canyon-2024/image1.jpg"
+    caption: "Sunrise at the South Rim"
+    alt: "Beautiful sunrise view of the Grand Canyon from the South Rim"
+  - url: "/photos/grand-canyon-2024/image2.jpg"
+    caption: "Desert View Watchtower"
+    alt: "Historic Desert View Watchtower against the canyon backdrop"
 ---
 
-The Grand Canyon never ceases to amaze with its sheer scale and ever-changing colors throughout the day. These photos were taken during my spring break trip in March 2024, capturing both sunrise and sunset moments at various viewpoints along the South Rim.
+A collection of photos from my spring trip to the Grand Canyon.
 
 Equipment used:
 - Sony A7IV
