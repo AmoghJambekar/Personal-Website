@@ -174,12 +174,17 @@ import Navbar from '../components/Navbar.astro';
         height: 24px;
         border-radius: 4px;
         overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--bg-secondary);
       }
       
       .company-logo img {
         width: 100%;
         height: 100%;
-        object-fit: cover;
+        object-fit: contain;
+        padding: 2px;
       }
       
       .role {
@@ -234,9 +239,18 @@ import Navbar from '../components/Navbar.astro';
       }
       
       .project-item .item-header {
-        padding: 16px 24px 16px 0;
+        padding: 16px;
         background: var(--bg-primary);
         cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      
+      .project-item .date {
+        margin-top: 0;
+        display: flex;
+        align-items: center;
       }
       
       .project-item:hover {
@@ -423,6 +437,16 @@ import Navbar from '../components/Navbar.astro';
         text-decoration: underline;
       }
 
+      .intro a {
+        color: var(--text-primary);
+        font-weight: bold;
+        text-decoration: underline;
+      }
+
+      .intro a:hover {
+        text-decoration: underline;
+      }
+
       @media (max-width: 768px) {
         .container {
           padding: 80px 20px 120px;
@@ -456,12 +480,12 @@ import Navbar from '../components/Navbar.astro';
   <body>
     <div class="container">
       <h1>Amogh Jambekar</h1>
-      <p class="subtitle">Building & shipping everyday</p>
+      <p class="subtitle">Trust the process.</p>
       
       <p class="intro">
-        I'm an incoming first-year Computer Engineering student at Northeastern University and a current Senior at Bridgewater-Raritan High School. I've previously worked at X where I did Y. I also recently created X, Y and Z. I also research under X in Y. I aspire to become X using Y to do Z.
+        I'm an incoming Computer Engineering student at Northeastern University and a senior at Bridgewater-Raritan High School. I've previously worked at [Company X], where I [brief impactful contribution]. I also recently created [Project X], [Project Y], and [Project Z], and currently research [Topic Y] under [Professor X].
         <br><br>
-        Outside of coding, I love to run 🏃‍♂️, work out 🏋️‍♂️, play tennis/pickleball 🎾, basketball 🏀, and cricket 🏏. I'm also a big NYT Games fan. I'm a fan of the Knicks, Mumbai Indians, and the Indian Cricket Team. Love to capture cool photos 📸, listen to my unique music taste 🎵, travel ✈️, and document my life in my blog 📝.
+        Outside of tech, I love <a href="https://strava.app.link/qCsjlvhPyTb" target="_blank" rel="noopener noreferrer">running</a>, working out, and playing basketball, tennis, cricket and pickleball. I'm a fan of the Knicks, Mumbai Indians, and the Indian Cricket Team. I also love capturing moments with my camera, <a href="https://obscurifymusic.com/profile?id=di82yeudoy32fxdlble93z00e&code=6b8a4a1d0a735a23" target="_blank" rel="noopener noreferrer">exploring music</a>, and documenting life on my blog.
       </p>
       
       <div class="section">
@@ -473,19 +497,18 @@ import Navbar from '../components/Navbar.astro';
                 <div class="company-logo">
                   <img src="/logos/holonym_logo.png" alt="Company Name Logo" />
                 </div>
-                <h3>Company Name</h3>
+                <h3>Holonym</h3>
               </div>
-              <div class="role">Software Engineering Intern</div>
+              <div class="role">Mobile App Development Intern</div>
             </div>
             <span class="date">Summer 2024</span>
           </div>
           <i data-feather="chevron-right" class="arrow-icon" stroke-width="2.5"></i>
           <div class="item-content">
-            <p>Description of your role and achievements.</p>
             <ul>
-              <li>• Achievement 1</li>
-              <li>• Achievement 2</li>
-              <li>• Achievement 3</li>
+              <li>• COMING SOON</li>
+              <li>• COMING SOON</li>
+              <li>• COMING SOON</li>
             </ul>
           </div>
         </div>
@@ -498,20 +521,19 @@ import Navbar from '../components/Navbar.astro';
             <div class="meta-container">
               <div class="title-row">
                 <div class="company-logo">
-                  <img src="/logos/project-name.png" alt="Project Logo" />
+                  <img src="/logos/quicklogo.png" alt="Project Logo" />
                 </div>
-                <h3>Project Name</h3>
+                <h3>Quick</h3>
               </div>
             </div>
-            <span class="date">April 2024</span>
+            <span class="date">April 2025</span>
           </div>
           <div class="item-content">
-            <p>Project description and your role in it.</p>
+            <p>Lightweight and efficient post-it note app with editable timer that floats on top. To be published to App Store.
+              (<a href="https://github.com/AmoghJambekar/Quick" target="_blank" rel="noopener noreferrer">GitHub</a>)
+            </p>
             <div class="tags">
-              <span class="tag">React</span>
-              <span class="tag">TypeScript</span>
-              <span class="tag">Next.js</span>
-              <span class="tag">TailwindCSS</span>
+              <span class="tag">Swift</span>
             </div>
           </div>
         </div>
@@ -530,15 +552,13 @@ import Navbar from '../components/Navbar.astro';
               </div>
               <div class="role">Computer Engineering</div>
             </div>
-            <span class="date">2024 - 2028</span>
+            <span class="date">2025 - 2029</span>
           </div>
           <i data-feather="chevron-right" class="arrow-icon"></i>
           <div class="item-content">
-            <p>Bachelor's Degree of Computer Engineering (BS)</p>
             <ul>
-              <li>• GPA: X.XX/4.00</li>
-              <li>• Relevant Coursework: Course 1, Course 2, Course 3</li>
-              <li>• Clubs & Activities: Club 1, Club 2, Club 3</li>
+              <li>• Incoming Fall 2025 (First Semester Abroad @ Univ. College Dublin)</li>
+
             </ul>
           </div>
         </div>
@@ -553,15 +573,14 @@ import Navbar from '../components/Navbar.astro';
               </div>
               <div class="role">High School Diploma</div>
             </div>
-            <span class="date">2020 - 2024</span>
+            <span class="date">2021 - 2025</span>
           </div>
           <i data-feather="chevron-right" class="arrow-icon"></i>
           <div class="item-content">
-            <p>High School Diploma</p>
             <ul>
-              <li>• GPA: X.XX/4.00</li>
-              <li>• Relevant Coursework: AP Computer Science, AP Calculus BC, etc.</li>
-              <li>• Clubs & Activities: Robotics Team, Math Team, etc.</li>
+              <li>• GPA: 4.35/4.00</li>
+              <li>• Relevant Coursework: AP Computer Science A, AP CSP, AP Statistics, AP Physics 1, AP Physics C</li>
+              <li>• Clubs & Activities: Quantum Computing Club (President and Founder), FRC Team 303 (Outreach Captain), BREngineering (President), Cricket Team (Captain and Founder), BRHS Hacks (Committee Lead)  </li>
             </ul>
           </div>
         </div>
