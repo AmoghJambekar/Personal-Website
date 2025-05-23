@@ -139,6 +139,7 @@ import Navbar from '../components/Navbar.astro';
         display: flex;
         align-items: center;
         height: 20px;
+        pointer-events: none;
       }
       
       .item.active .arrow-icon {
@@ -151,6 +152,7 @@ import Navbar from '../components/Navbar.astro';
         justify-content: space-between;
         width: 100%;
         gap: 16px;
+        padding-right: 32px;
       }
       
       .meta-container {
@@ -188,6 +190,8 @@ import Navbar from '../components/Navbar.astro';
         color: var(--text-tertiary);
         font-size: 14px;
         white-space: nowrap;
+        margin-top: 6px;
+        margin-right: 12px;
       }
       
       .item-content {
