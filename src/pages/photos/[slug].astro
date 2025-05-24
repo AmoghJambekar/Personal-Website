@@ -77,14 +77,13 @@ console.log('Album data:', {
           
           return (
             <figure 
-              class={`photo-item${isProtected ? ' protected' : ''}`}
+              class="photo-item"
               data-image={imgSrc}
               data-protection={protection}
-              style={isProtected ? "display: none;" : ""}
             >
               <img
                 src={imgSrc}
-                alt={album.data.title}
+                alt={typeof image === 'string' ? album.data.title : (image.alt || album.data.title)}
                 loading="eager"
                 onload="this.parentElement.classList.add('loaded')"
               />
@@ -131,7 +130,7 @@ console.log('Album data:', {
         padding: 0 15%;
         display: grid;
         grid-template-columns: repeat(4, 1fr);
-        gap: 0;
+        gap: 8px;
         margin: 0;
         width: 100%;
         opacity: 0;
@@ -149,6 +148,7 @@ console.log('Album data:', {
         justify-content: center;
         padding: 4rem 0;
         color: var(--text-secondary);
+        transition: opacity 0.3s ease;
       }
 
       .loading-spinner {
@@ -169,6 +169,7 @@ console.log('Album data:', {
 
       .loading-state.hidden {
         display: none;
+        opacity: 0;
       }
 
       figure {
@@ -353,10 +354,50 @@ console.log('Album data:', {
         stroke-width: 2px;
       }
 
-      .photo-item.hidden {
-        display: none !important;
-        visibility: hidden;
+      .photo-item {
+        position: relative;
+        aspect-ratio: 1;
+        overflow: hidden;
         opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.5s ease, transform 0.5s ease;
+        cursor: pointer;
+      }
+
+      .photo-item.loaded {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .photo-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        transition: transform 0.3s ease;
+      }
+
+      .photo-item:hover img {
+        transform: scale(1.05);
+      }
+
+      .protected-indicator {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-width: 0 25px 25px 0;
+        border-color: transparent #ffd700 transparent transparent;
+        z-index: 2;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .photo-item[data-protection]:not([data-protection="public"]) .protected-indicator {
+        opacity: 1;
       }
 
       .no-access-message {
@@ -388,140 +429,142 @@ console.log('Album data:', {
         color: var(--text-primary);
         font-weight: 500;
       }
-
-      .photo-item.protected .protected-indicator {
-        position: absolute;
-        top: 0;
-        right: 0;
-        width: 0;
-        height: 0;
-        border-style: solid;
-        border-width: 0 40px 40px 0;
-        border-color: transparent #ffd700 transparent transparent;
-        z-index: 2;
-      }
-
-      .photo-item {
-        position: relative;
-        aspect-ratio: 1;
-        overflow: hidden;
-      }
-
-      .photo-item img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: transform 0.3s ease;
-      }
-
-      .photo-item:hover img {
-        transform: scale(1.05);
-      }
     </style>
 
 <script>
   let activeCoupons = new Set();
 
+  // Initialize the page
+  function initializePage() {
+    console.log('Initializing page...');
+    
+    // Hide loading state immediately
+    const loadingState = document.querySelector('.loading-state');
+    if (loadingState) {
+      loadingState.classList.add('hidden');
+    }
+
+    // Show photo grid
+    const photoGrid = document.querySelector('.photo-grid') as HTMLElement;
+    if (photoGrid) {
+      photoGrid.style.opacity = '1';
+      photoGrid.classList.add('loaded');
+    }
+
+    // Load saved coupons and update access
+    loadCoupons();
+
+    // Set up storage event listener for coupon changes
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'photoCoupons') {
+        console.log('Storage changed:', e.newValue);
+        loadCoupons();
+      }
+    });
+  }
+
   // Load coupons from localStorage
   function loadCoupons() {
     const savedCoupons = localStorage.getItem('photoCoupons');
+    console.log('Loading coupons from storage:', savedCoupons);
+    
     if (savedCoupons) {
       try {
         const parsed = JSON.parse(savedCoupons);
-        if (Array.isArray(parsed) && parsed.every(item => typeof item === 'string')) {
+        console.log('Parsed coupons:', parsed);
+        
+        if (Array.isArray(parsed)) {
           activeCoupons = new Set(parsed);
-          updatePhotoAccess();
+          console.log('Active coupons:', Array.from(activeCoupons));
         }
       } catch (e) {
         console.error('Failed to parse saved coupons:', e);
+        activeCoupons = new Set();
       }
+    } else {
+      console.log('No saved coupons found');
+      activeCoupons = new Set();
     }
-    updatePhotoAccess(); // Always call updatePhotoAccess to show public photos
+
+    updatePhotoAccess();
   }
 
+  // Update photo visibility based on access
   function updatePhotoAccess() {
-    const photos = document.querySelectorAll('.photo-item') as NodeListOf<HTMLElement>;
-    let hasProtectedPhotos = false;
+    console.log('Updating photo access...');
+    const photos = document.querySelectorAll('.photo-item');
     let protectedCount = 0;
     let publicCount = 0;
-    
-    photos.forEach(photo => {
-      const protection = photo.dataset.protection;
-      
-      // If it's a public photo or has no protection data, show it
-      if (!protection || protection === 'public') {
-        photo.style.display = 'block';
-        publicCount++;
-        return;
-      }
+    let accessibleCount = 0;
 
-      // Handle protected photos
-      hasProtectedPhotos = true;
-      protectedCount++;
-      const hasAccess = activeCoupons.has(protection);
-      if (hasAccess) {
-        photo.style.display = 'block';
+    photos.forEach((photo, index) => {
+      if (!photo) return;
+      
+      const element = photo as HTMLElement;
+      const protection = element.dataset.protection || 'public';
+      console.log(`Photo ${index}:`, { protection, activeCoupons: Array.from(activeCoupons) });
+      
+      // Default to showing the photo
+      element.style.display = 'block';
+      element.classList.add('loaded');
+
+      if (protection === 'public') {
+        publicCount++;
+        accessibleCount++;
+        console.log(`Photo ${index} is public, showing`);
       } else {
-        photo.style.display = 'none';
+        protectedCount++;
+        const hasAccess = activeCoupons.has(protection);
+        console.log(`Photo ${index} is protected:`, { protection, hasAccess });
+        
+        if (hasAccess) {
+          accessibleCount++;
+          console.log(`Photo ${index} has access, showing`);
+        } else {
+          element.style.display = 'none';
+          console.log(`Photo ${index} no access, hiding`);
+        }
       }
     });
 
-    // Log album stats
+    // Update no access message
+    const noAccessMessage = document.getElementById('noAccessMessage');
+    if (noAccessMessage) {
+      noAccessMessage.style.display = protectedCount > accessibleCount ? 'flex' : 'none';
+    }
+
+    // Log final stats
     console.log('Album stats:', {
       totalPhotos: photos.length,
       publicPhotos: publicCount,
       protectedPhotos: protectedCount,
+      accessiblePhotos: accessibleCount,
       activeCoupons: Array.from(activeCoupons)
     });
-
-    // Update grid visibility
-    const photoGrid = document.querySelector('.photo-grid') as HTMLElement;
-    if (photoGrid) {
-      photoGrid.classList.add('loaded');
-    }
   }
 
+  // Setup image viewer
   function setupImageViewer() {
     const viewer = document.getElementById('fullSizeViewer') as HTMLDivElement;
     const fullSizeImage = document.getElementById('fullSizeImage') as HTMLImageElement;
-    const closeButton = viewer?.querySelector('.close-button') as HTMLButtonElement;
-    const photos = document.querySelectorAll('.photo-item') as NodeListOf<HTMLElement>;
-    const photoGrid = document.querySelector('.photo-grid') as HTMLElement;
-    const loadingState = document.querySelector('.loading-state') as HTMLElement;
-    let loadedImages = 0;
-    const totalImages = photos.length;
-
-    // Track image loading
-    function handleImageLoad() {
-      loadedImages++;
-      if (loadedImages === totalImages) {
-        loadingState.classList.add('hidden');
-        photoGrid.classList.add('loaded');
-      }
+    
+    if (!viewer || !fullSizeImage) {
+      console.error('Viewer elements not found');
+      return;
     }
-
-    // Add load event listeners to all images
-    photos.forEach(photo => {
-      const img = photo.querySelector('img');
-      if (img) {
-        if (img.complete) {
-          handleImageLoad();
-        } else {
-          img.addEventListener('load', handleImageLoad);
-        }
-        img.addEventListener('error', handleImageLoad);
-      }
-    });
+    
+    const closeButton = viewer.querySelector('.close-button');
+    let currentViewer = viewer;
 
     // Handle photo clicks
-    photos.forEach(photo => {
+    document.querySelectorAll('.photo-item').forEach((photo, index) => {
       photo.addEventListener('click', () => {
-        if (photo.classList.contains('hidden')) return;
-        
-        const imgSrc = photo.getAttribute('data-image');
-        if (imgSrc && viewer && fullSizeImage) {
+        console.log(`Photo ${index} clicked`);
+        const imgSrc = (photo as HTMLElement).dataset.image;
+        if (imgSrc) {
+          console.log('Opening image:', imgSrc);
           fullSizeImage.src = imgSrc;
-          viewer.classList.add('active');
+          currentViewer.classList.add('active');
           document.body.style.overflow = 'hidden';
         }
       });
@@ -540,28 +583,29 @@ console.log('Album data:', {
     });
 
     // Handle click outside image
-    viewer?.addEventListener('click', (e) => {
-      if (e.target === viewer) {
+    currentViewer.addEventListener('click', (e) => {
+      if (e.target === currentViewer) {
         closeViewer();
       }
     });
 
     function closeViewer() {
-      viewer?.classList.remove('active');
+      currentViewer.classList.remove('active');
       document.body.style.overflow = '';
     }
   }
 
   // Initialize on page load
   document.addEventListener('astro:page-load', () => {
-    loadCoupons();
+    console.log('Page loaded, initializing...');
+    initializePage();
     setupImageViewer();
   });
 
-  // Listen for coupon changes
-  window.addEventListener('storage', (e) => {
-    if (e.key === 'photoCoupons') {
-      loadCoupons();
-    }
-  });
+  // Initialize immediately if document is already loaded
+  if (document.readyState === 'complete') {
+    console.log('Document already loaded, initializing...');
+    initializePage();
+    setupImageViewer();
+  }
 </script>

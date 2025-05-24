@@ -46,6 +46,7 @@ albumsWithStats.sort((a, b) => {
           id="couponInput" 
           placeholder="Enter access code"
           aria-label="Enter access code"
+          autocomplete="off"
         />
         <button id="applyCoupon" aria-label="Apply access code">
           <i data-feather="arrow-right"></i>
@@ -60,11 +61,6 @@ albumsWithStats.sort((a, b) => {
         <a href={`/photos/${album.slug}`} class="album-card">
           <div class="album-image">
             <img src={album.data.coverImage} alt={album.data.title} />
-            {stats.protectedPhotos > 0 && (
-              <div class="protection-badge">
-                {stats.protectedPhotos} protected
-              </div>
-            )}
           </div>
           <div class="album-info">
             <h2>{album.data.title}</h2>
@@ -345,14 +341,19 @@ albumsWithStats.sort((a, b) => {
     const input = document.getElementById('couponInput') as HTMLInputElement;
     const applyButton = document.getElementById('applyCoupon');
 
-    applyButton?.addEventListener('click', () => {
-      if (input?.value) {
+    if (!input || !applyButton) {
+      console.error('Coupon input elements not found');
+      return;
+    }
+
+    applyButton.addEventListener('click', () => {
+      if (input.value) {
         addCoupon(input.value.trim());
         input.value = '';
       }
     });
 
-    input?.addEventListener('keypress', (e) => {
+    input.addEventListener('keypress', (e) => {
       if (e.key === 'Enter' && input.value) {
         addCoupon(input.value.trim());
         input.value = '';
@@ -369,17 +370,35 @@ albumsWithStats.sort((a, b) => {
   }
 
   function addCoupon(code: string) {
+    console.log('Adding coupon:', code);
     if (!activeCoupons.has(code)) {
       activeCoupons.add(code);
-      localStorage.setItem('photoCoupons', JSON.stringify([...activeCoupons]));
+      const couponsArray = Array.from(activeCoupons);
+      console.log('Saving coupons:', couponsArray);
+      localStorage.setItem('photoCoupons', JSON.stringify(couponsArray));
       renderActiveCoupons();
+
+      // Dispatch storage event for other tabs
+      window.dispatchEvent(new StorageEvent('storage', {
+        key: 'photoCoupons',
+        newValue: JSON.stringify(couponsArray)
+      }));
     }
   }
 
   function removeCoupon(code: string) {
+    console.log('Removing coupon:', code);
     activeCoupons.delete(code);
-    localStorage.setItem('photoCoupons', JSON.stringify([...activeCoupons]));
+    const couponsArray = Array.from(activeCoupons);
+    console.log('Saving coupons:', couponsArray);
+    localStorage.setItem('photoCoupons', JSON.stringify(couponsArray));
     renderActiveCoupons();
+
+    // Dispatch storage event for other tabs
+    window.dispatchEvent(new StorageEvent('storage', {
+      key: 'photoCoupons',
+      newValue: JSON.stringify(couponsArray)
+    }));
   }
 
   function renderActiveCoupons() {
@@ -390,38 +409,43 @@ albumsWithStats.sort((a, b) => {
     activeCoupons.forEach((code: string) => {
       const tag = document.createElement('div');
       tag.className = 'coupon-tag';
+      
+      const codeSpan = document.createElement('span');
+      codeSpan.textContent = code;
+      
       const closeButton = document.createElement('button');
       closeButton.onclick = () => removeCoupon(code);
       closeButton.setAttribute('aria-label', 'Remove coupon');
       closeButton.textContent = '×';
       
-      const codeSpan = document.createElement('span');
-      codeSpan.textContent = code;
       tag.appendChild(codeSpan);
       tag.appendChild(closeButton);
       container.appendChild(tag);
     });
   }
 
-  // Make removeCoupon available globally
-  (window as any).removeCoupon = removeCoupon;
-
   // Initialize Feather icons and load coupons
   document.addEventListener('astro:page-load', () => {
     // @ts-ignore
     feather?.replace();
+    
+    // Load saved coupons
     const savedCoupons = localStorage.getItem('photoCoupons');
+    console.log('Loading saved coupons:', savedCoupons);
+    
     if (savedCoupons) {
       try {
         const parsed = JSON.parse(savedCoupons);
         if (Array.isArray(parsed) && parsed.every(item => typeof item === 'string')) {
           activeCoupons = new Set(parsed);
+          console.log('Active coupons:', Array.from(activeCoupons));
           renderActiveCoupons();
         }
       } catch (e) {
         console.error('Failed to parse saved coupons:', e);
       }
     }
+    
     setupCouponHandlers();
   });
 </script>

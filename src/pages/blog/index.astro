@@ -138,7 +138,7 @@ const sortedPosts = [...posts].sort((a, b) =>
 
 <script>
   // Filter and sort functionality
-  document.addEventListener('DOMContentLoaded', () => {
+  const initializeFilters = () => {
     const tagSelect = document.querySelector('#tag-select') as HTMLSelectElement;
     const sortSelect = document.querySelector('#sort-select') as HTMLSelectElement;
     const postList = document.querySelector('.post-list');
@@ -149,31 +149,46 @@ const sortedPosts = [...posts].sort((a, b) =>
     }
 
     const posts = Array.from(postList.children);
+    const originalPosts = posts.map(post => post.cloneNode(true));
 
     const updatePosts = () => {
       const selectedTag = tagSelect.value;
       const sortOrder = sortSelect.value;
 
-      const filteredPosts = posts.filter(post => {
-        if (!selectedTag) return true;
-        const tags = Array.from(post.querySelectorAll('.tag')).map(tag => tag.textContent?.toLowerCase() || '');
-        return tags.includes(selectedTag.toLowerCase());
-      });
+      // Start with a fresh copy of the original posts
+      let filteredPosts = originalPosts
+        .map(post => post.cloneNode(true))
+        .filter(post => {
+          if (!selectedTag) return true;
+          const tags = Array.from((post as Element).querySelectorAll('.tag'))
+            .map(tag => tag.textContent?.trim().toLowerCase() || '');
+          return tags.includes(selectedTag.toLowerCase());
+        });
 
-      const sortedPosts = filteredPosts.sort((a, b) => {
-        const dateA = new Date(a.querySelector('time')?.getAttribute('datetime') || '');
-        const dateB = new Date(b.querySelector('time')?.getAttribute('datetime') || '');
-        return sortOrder === 'newest' ? dateB.getTime() - dateA.getTime() : dateA.getTime() - dateB.getTime();
+      // Sort posts
+      filteredPosts.sort((a, b) => {
+        const dateA = new Date((a as Element).querySelector('time')?.getAttribute('datetime') || '');
+        const dateB = new Date((b as Element).querySelector('time')?.getAttribute('datetime') || '');
+        return sortOrder === 'newest' 
+          ? dateB.getTime() - dateA.getTime() 
+          : dateA.getTime() - dateB.getTime();
       });
 
       // Clear and repopulate the post list
-      while (postList.firstChild) {
-        postList.removeChild(postList.firstChild);
-      }
-      sortedPosts.forEach(post => postList.appendChild(post.cloneNode(true)));
+      postList.innerHTML = '';
+      filteredPosts.forEach(post => postList.appendChild(post));
     };
 
+    // Add event listeners
     tagSelect.addEventListener('change', updatePosts);
     sortSelect.addEventListener('change', updatePosts);
-  });
+  };
+
+  // Initialize on page load
+  document.addEventListener('astro:page-load', initializeFilters);
+  
+  // Also initialize if the document is already loaded
+  if (document.readyState === 'complete') {
+    initializeFilters();
+  }
 </script>

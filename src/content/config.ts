@@ -24,7 +24,8 @@ const photos = defineCollection({
         z.object({
           url: z.string(),
           caption: z.string().optional(),
-          alt: z.string().optional()
+          alt: z.string().optional(),
+          protection: z.enum(['public', 'party-pics']).default('public')
         })
       ])
     )
