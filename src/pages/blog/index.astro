@@ -139,9 +139,15 @@ const sortedPosts = [...posts].sort((a, b) =>
 <script>
   // Filter and sort functionality
   document.addEventListener('DOMContentLoaded', () => {
-    const tagSelect = document.getElementById('tag-select') as HTMLSelectElement;
-    const sortSelect = document.getElementById('sort-select') as HTMLSelectElement;
-    const postList = document.querySelector('.post-list') as HTMLElement;
+    const tagSelect = document.querySelector('#tag-select') as HTMLSelectElement;
+    const sortSelect = document.querySelector('#sort-select') as HTMLSelectElement;
+    const postList = document.querySelector('.post-list');
+
+    if (!tagSelect || !sortSelect || !postList) {
+      console.error('Required elements not found');
+      return;
+    }
+
     const posts = Array.from(postList.children);
 
     const updatePosts = () => {
@@ -150,18 +156,21 @@ const sortedPosts = [...posts].sort((a, b) =>
 
       const filteredPosts = posts.filter(post => {
         if (!selectedTag) return true;
-        const tags = Array.from(post.querySelectorAll('.tag')).map(tag => tag.textContent?.toLowerCase());
+        const tags = Array.from(post.querySelectorAll('.tag')).map(tag => tag.textContent?.toLowerCase() || '');
         return tags.includes(selectedTag.toLowerCase());
       });
 
       const sortedPosts = filteredPosts.sort((a, b) => {
-        const dateA = new Date(a.querySelector('time')?.dateTime || '');
-        const dateB = new Date(b.querySelector('time')?.dateTime || '');
+        const dateA = new Date(a.querySelector('time')?.getAttribute('datetime') || '');
+        const dateB = new Date(b.querySelector('time')?.getAttribute('datetime') || '');
         return sortOrder === 'newest' ? dateB.getTime() - dateA.getTime() : dateA.getTime() - dateB.getTime();
       });
 
-      postList.innerHTML = '';
-      sortedPosts.forEach(post => postList.appendChild(post));
+      // Clear and repopulate the post list
+      while (postList.firstChild) {
+        postList.removeChild(postList.firstChild);
+      }
+      sortedPosts.forEach(post => postList.appendChild(post.cloneNode(true)));
     };
 
     tagSelect.addEventListener('change', updatePosts);
