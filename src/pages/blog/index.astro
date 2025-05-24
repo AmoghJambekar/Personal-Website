@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
+import BlogPostCard from '../../components/BlogPostCard.astro';
 
 // Get all blog posts
 const posts = await getCollection('blog');
@@ -39,49 +40,36 @@ const sortedPosts = [...posts].sort((a, b) =>
 
     <div class="post-list">
       {sortedPosts.map(post => (
-        <a href={`/blog/${post.slug}`} class="post-item">
-          <article>
-            <h3 class="post-title">{post.data.title}</h3>
-            <p class="post-excerpt">{post.data.description}</p>
-            <div class="post-meta">
-              <time datetime={post.data.date.toISOString()} class="post-date">
-                {new Date(post.data.date).toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric'
-                })}
-              </time>
-              <div class="post-tags">
-                {post.data.tags.map(tag => (
-                  <span class="tag" data-tag={tag.toLowerCase()}>{tag}</span>
-                ))}
-              </div>
-            </div>
-          </article>
-        </a>
+        <BlogPostCard
+          title={post.data.title}
+          date={post.data.date}
+          excerpt={post.data.description}
+          tags={post.data.tags}
+          url={`/blog/${post.slug}`}
+        />
       ))}
     </div>
   </div>
 </Layout>
 
-    <style>
+<style>
   .container {
     max-width: 800px;
     margin: 0 auto;
     padding: 120px 20px 40px 20px;
-      }
+  }
 
   .header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 2rem;
-      }
+  }
 
-      h1 {
-        font-size: 2.5rem;
-        font-weight: 700;
-        letter-spacing: -0.025em;
+  h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: -0.025em;
     margin: 0;
   }
 
@@ -114,105 +102,16 @@ const sortedPosts = [...posts].sort((a, b) =>
   .filter-select:focus {
     outline: none;
     border-color: var(--text-primary);
-      }
-
-      .post-list {
-        display: flex;
-        flex-direction: column;
-        gap: 32px;
-      }
-
-      .post-item {
-        display: block;
-        padding: 24px;
-        border-radius: 12px;
-        background: var(--bg-secondary);
-        text-decoration: none;
-    transition: all 0.2s ease;
-    border: 1px solid var(--border-color);
-      }
-
-      .post-item:hover {
-        transform: translateY(-2px);
-    border-color: var(--text-tertiary);
-      }
-
-      .post-title {
-        font-size: 1.5rem;
-        font-weight: 600;
-        color: var(--text-primary);
-        margin-bottom: 8px;
-      }
-
-      .post-excerpt {
-        color: var(--text-secondary);
-        font-size: 1rem;
-        line-height: 1.6;
-        margin-bottom: 16px;
-      }
-
-      .post-meta {
-        display: flex;
-        align-items: center;
-        gap: 16px;
-        color: var(--text-secondary);
-        font-size: 0.875rem;
-      }
-
-      .post-date {
-    display: inline-flex;
-        align-items: center;
-    gap: 6px;
-    color: var(--text-tertiary);
-    font-size: 14px;
-    padding: 6px 12px;
-    background: var(--bg-primary);
-    border-radius: 16px;
-    border: 1px solid var(--border-color);
-      }
-
-      .post-tags {
-        display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-      }
-
-      .tag {
-    padding: 4px 12px;
-    border-radius: 16px;
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--bg-primary);
-    background-color: #6B7280; /* Default gray color for unspecified tags */
   }
 
-  /* Specific tag colors */
-  .tag:is([data-tag="personal"]) { background-color: #FF7A00; } /* More vibrant orange */
-  .tag:is([data-tag="documentation"]) { background-color: #3B82F6; } /* Blue */
-  .tag:is([data-tag="lessons"]) { background-color: #8B5CF6; } /* Purple */
-  .tag:is([data-tag="tech"]) { background-color: #10B981; } /* Green */
-  .tag:is([data-tag="guides"]) { background-color: #EAB308; } /* Yellow */
-  .tag:is([data-tag="updates"]) { background-color: #EC4899; } /* Pink */
-  .tag:is([data-tag="daily"]) { background-color: #06B6D4; } /* Aqua */
-  .tag:is([data-tag="thoughts"]) { background-color: #9D4EDD; } /* Orchid */
+  .post-list {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
 
-  /* Dark mode colors */
-  html.dark .tag { 
-    background-color: rgba(107, 114, 128, 0.2); 
-    color: #9CA3AF; 
-  } /* Default gray in dark mode */
-  
-  html.dark .tag:is([data-tag="personal"]) { background-color: rgba(255, 122, 0, 0.2); color: #FF9E3D; }
-  html.dark .tag:is([data-tag="documentation"]) { background-color: rgba(59, 130, 246, 0.2); color: #93C5FD; }
-  html.dark .tag:is([data-tag="lessons"]) { background-color: rgba(139, 92, 246, 0.2); color: #C4B5FD; }
-  html.dark .tag:is([data-tag="tech"]) { background-color: rgba(16, 185, 129, 0.2); color: #6EE7B7; }
-  html.dark .tag:is([data-tag="guides"]) { background-color: rgba(234, 179, 8, 0.2); color: #FDE047; }
-  html.dark .tag:is([data-tag="updates"]) { background-color: rgba(236, 72, 153, 0.2); color: #F9A8D4; }
-  html.dark .tag:is([data-tag="daily"]) { background-color: rgba(6, 182, 212, 0.2); color: #67E8F9; }
-  html.dark .tag:is([data-tag="thoughts"]) { background-color: rgba(157, 78, 221, 0.2); color: #D8B4FE; }
-
-      @media (max-width: 768px) {
-        .container {
+  @media (max-width: 768px) {
+    .container {
       padding: 100px 16px 24px 16px;
     }
 
@@ -220,11 +119,11 @@ const sortedPosts = [...posts].sort((a, b) =>
       flex-direction: column;
       align-items: flex-start;
       gap: 1rem;
-        }
+    }
 
-        h1 {
-          font-size: 2rem;
-        }
+    h1 {
+      font-size: 2rem;
+    }
 
     .filters {
       width: 100%;
@@ -234,56 +133,38 @@ const sortedPosts = [...posts].sort((a, b) =>
       flex: 1;
       min-width: 120px;
     }
+  }
+</style>
 
-        .post-item {
-          padding: 20px;
-        }
-
-        .post-title {
-          font-size: 1.25rem;
-        }
-      }
-    </style>
-
-    <script>
+<script>
   // Filter and sort functionality
-      document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('DOMContentLoaded', () => {
+    const tagSelect = document.getElementById('tag-select') as HTMLSelectElement;
+    const sortSelect = document.getElementById('sort-select') as HTMLSelectElement;
     const postList = document.querySelector('.post-list') as HTMLElement;
-    const tagSelect = document.querySelector('#tag-select') as HTMLSelectElement;
-    const sortSelect = document.querySelector('#sort-select') as HTMLSelectElement;
+    const posts = Array.from(postList.children);
 
-    if (!postList || !tagSelect || !sortSelect) return;
-
-    // Tag filter functionality
-    tagSelect.addEventListener('change', () => {
+    const updatePosts = () => {
       const selectedTag = tagSelect.value;
-      const posts = document.querySelectorAll('.post-item');
-      
-      posts.forEach(post => {
-        const postTags = Array.from(post.querySelectorAll('.tag')).map(t => t.textContent);
-        const postElement = post as HTMLElement;
-        if (!selectedTag || postTags.includes(selectedTag)) {
-          postElement.style.display = '';
-        } else {
-          postElement.style.display = 'none';
-        }
-      });
-    });
-
-    // Sort functionality
-    sortSelect.addEventListener('change', () => {
-      const posts = Array.from(document.querySelectorAll('.post-item'));
       const sortOrder = sortSelect.value;
 
-      posts.sort((a, b) => {
-        const dateA = new Date(a.querySelector('time')?.dateTime || '');
-        const dateB = new Date(b.querySelector('time')?.dateTime || '');
-        return sortOrder === 'newest' 
-          ? dateB.getTime() - dateA.getTime()
-          : dateA.getTime() - dateB.getTime();
+      const filteredPosts = posts.filter(post => {
+        if (!selectedTag) return true;
+        const tags = Array.from(post.querySelectorAll('.tag')).map(tag => tag.textContent?.toLowerCase());
+        return tags.includes(selectedTag.toLowerCase());
       });
 
-      posts.forEach(post => postList.appendChild(post));
-    });
+      const sortedPosts = filteredPosts.sort((a, b) => {
+        const dateA = new Date(a.querySelector('time')?.dateTime || '');
+        const dateB = new Date(b.querySelector('time')?.dateTime || '');
+        return sortOrder === 'newest' ? dateB.getTime() - dateA.getTime() : dateA.getTime() - dateB.getTime();
       });
-    </script>
+
+      postList.innerHTML = '';
+      sortedPosts.forEach(post => postList.appendChild(post));
+    };
+
+    tagSelect.addEventListener('change', updatePosts);
+    sortSelect.addEventListener('change', updatePosts);
+  });
+</script>
