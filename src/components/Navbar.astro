@@ -29,7 +29,8 @@ const navItems = [
   </a>
   <div class="nav-divider"></div>
   <button class="theme-toggle" id="theme-toggle" title="Toggle theme">
-    <i data-feather="moon" id="theme-icon" stroke-width="2.5"></i>
+    <i data-feather="sun" id="theme-icon-sun" class="theme-icon" stroke-width="2.5"></i>
+    <i data-feather="moon" id="theme-icon-moon" class="theme-icon" stroke-width="2.5"></i>
   </button>
 </nav>
 
@@ -59,11 +60,11 @@ const navItems = [
     transform: translateX(-50%);
     background: var(--nav-bg);
     backdrop-filter: blur(12px);
-    padding: 8px 16px;
+    padding: 8px 20px;
     border-radius: 9999px;
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 16px;
     z-index: 1000;
     border: 1px solid var(--border-color);
     transition: background-color 0.3s ease, border-color 0.3s ease;
@@ -82,7 +83,7 @@ const navItems = [
     align-items: center;
     justify-content: center;
     transition: all 0.2s ease;
-    padding: 8px;
+    padding: 8px 10px;
     border-radius: 8px;
   }
 
@@ -190,8 +191,12 @@ const navItems = [
 
   @media (max-width: 768px) {
     .nav {
-      padding: 8px 16px;
-      gap: 10px;
+      padding: 8px 18px;
+      gap: 12px;
+    }
+
+    .nav a {
+      padding: 8px;
     }
 
     .nav a svg,
@@ -204,13 +209,26 @@ const navItems = [
       height: 14px;
     }
   }
+
+  .theme-icon {
+    position: absolute;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  html:not(.dark) #theme-icon-moon {
+    opacity: 1;
+  }
+
+  html.dark #theme-icon-sun {
+    opacity: 1;
+  }
 </style>
 
 <script>
   // Theme toggle functionality
   const initTheme = () => {
     const themeToggle = document.getElementById('theme-toggle');
-    const themeIcon = document.getElementById('theme-icon');
     const html = document.documentElement;
 
     // Get theme from localStorage or system preference
@@ -222,17 +240,11 @@ const navItems = [
       return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     };
 
-    // Set theme and update icon
+    // Set theme
     const setTheme = (theme: string) => {
       html.classList.remove('light', 'dark');
       html.classList.add(theme);
       localStorage.setItem('theme', theme);
-      
-      if (themeIcon) {
-        themeIcon.setAttribute('data-feather', theme === 'dark' ? 'sun' : 'moon');
-        // @ts-ignore
-        feather?.replace();
-      }
     };
 
     // Initialize theme
