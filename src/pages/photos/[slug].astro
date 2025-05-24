@@ -519,6 +519,7 @@ console.log('Album data:', {
         
         if (hasAccess) {
           accessibleCount++;
+          element.style.display = 'block';
           console.log(`Photo ${index} has access, showing`);
         } else {
           element.style.display = 'none';
