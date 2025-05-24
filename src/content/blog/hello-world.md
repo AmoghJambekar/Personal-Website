@@ -2,7 +2,7 @@
 title: "Test Post"
 date: "2025-05-21"
 description: "Welcome to my blog! This is a sample post to test the layout."
-tags: ["welcome", "test", "personal"]
+tags: []
 ---
 Welcome to my blog! This is a sample post to test the layout and functionality.
 
