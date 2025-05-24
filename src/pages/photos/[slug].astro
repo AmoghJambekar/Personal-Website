@@ -2,6 +2,13 @@
 import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 
+interface ImageData {
+  url: string;
+  caption?: string;
+  alt?: string;
+  protection?: string;
+}
+
 export async function getStaticPaths() {
   const albums = await getCollection('photos');
   return albums.map(album => ({
@@ -12,43 +19,94 @@ export async function getStaticPaths() {
 
 const { album } = Astro.props;
 const { Content } = await album.render();
+
+// Sort images to put protected ones first when unlocked
+const sortedImages = (album.data.images as (string | ImageData)[]).sort((a, b) => {
+  const protectionA = typeof a === 'string' ? 'public' : (a.protection || 'protected');
+  const protectionB = typeof b === 'string' ? 'public' : (b.protection || 'protected');
+  
+  // Protected images first
+  if (protectionA !== 'public' && protectionB === 'public') return -1;
+  if (protectionA === 'public' && protectionB !== 'public') return 1;
+  return 0;
+});
+
+// Debug log
+console.log('Album data:', {
+  title: album.data.title,
+  imageCount: album.data.images.length,
+  images: album.data.images
+});
 ---
 
 <Layout title={`${album.data.title} | Photos | Amogh Jambekar`}>
     <main>
-      <!-- Back Button -->
-      <a href="/photos" class="back-button">
-        <i data-feather="arrow-left"></i>
-        Back to Albums
-      </a>
+      <div class="content-wrapper">
+        <!-- Back Button -->
+        <a href="/photos" class="back-button">
+          <i data-feather="arrow-left"></i>
+          Back to Albums
+        </a>
 
-      <!-- Album Header -->
-      <header>
-        <h1>{album.data.title}</h1>
-        <time>
-          {new Date(album.data.date).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-          })}
-        </time>
-        <p>{album.data.description}</p>
-      </header>
+        <!-- Album Header -->
+        <header>
+          <h1>{album.data.title}</h1>
+          <time>
+            {new Date(album.data.date).toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            })}
+          </time>
+          <p>{album.data.description}</p>
+        </header>
+      </div>
+
+      <!-- Loading State -->
+      <div class="loading-state">
+        <div class="loading-spinner"></div>
+        <p>Loading photos...</p>
+      </div>
 
       <!-- Photo Grid -->
       <div class="photo-grid">
-        {album.data.images.map(image => (
-          <figure>
-            <img
-              src={image.url}
-              alt={image.caption || album.data.title}
-              loading="lazy"
-            />
-            {image.caption && (
-              <figcaption>{image.caption}</figcaption>
-            )}
-          </figure>
-        ))}
+        {sortedImages.map((image, index) => {
+          const imgSrc = typeof image === 'string' ? image : image.url;
+          const protection = typeof image === 'string' ? 'public' : (image.protection || 'protected');
+          const isProtected = protection !== 'public';
+          
+          return (
+            <figure 
+              class={`photo-item${isProtected ? ' protected' : ''}`}
+              data-image={imgSrc}
+              data-protection={protection}
+              style={isProtected ? "display: none;" : ""}
+            >
+              <img
+                src={imgSrc}
+                alt={album.data.title}
+                loading="eager"
+                onload="this.parentElement.classList.add('loaded')"
+              />
+              {isProtected && <div class="protected-indicator"></div>}
+            </figure>
+          );
+        })}
+      </div>
+
+      <!-- No Access Message -->
+      <div id="noAccessMessage" class="no-access-message">
+        <i data-feather="lock"></i>
+        <p>Some photos in this album require an access code.</p>
+        <p>Enter your access code in the navigation bar to view them.</p>
+      </div>
+
+      <!-- Full Size Image Viewer -->
+      <div id="fullSizeViewer" class="full-size-viewer">
+        <button class="close-button" aria-label="Close">
+          <i data-feather="x"></i>
+        </button>
+        <img id="fullSizeImage" src="" alt="" />
       </div>
 
       <!-- Additional Content -->
@@ -60,9 +118,86 @@ const { Content } = await album.render();
 
     <style>
       main {
-    max-width: 1400px;
+        max-width: 1600px;
         margin: 0 auto;
-    padding: 2rem 1rem;
+        padding: 120px 0 40px 0;
+      }
+
+      .content-wrapper {
+        padding: 0 15%;
+      }
+
+      .photo-grid {
+        padding: 0 15%;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0;
+        margin: 0;
+        width: 100%;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+      }
+
+      .photo-grid.loaded {
+        opacity: 1;
+      }
+
+      .loading-state {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 4rem 0;
+        color: var(--text-secondary);
+      }
+
+      .loading-spinner {
+        width: 40px;
+        height: 40px;
+        border: 3px solid var(--text-secondary);
+        border-top-color: transparent;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 1rem;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .loading-state.hidden {
+        display: none;
+      }
+
+      figure {
+        margin: 0;
+        padding: 0;
+        position: relative;
+        aspect-ratio: 1;
+        overflow: hidden;
+        cursor: pointer;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.5s ease, transform 0.5s ease;
+      }
+
+      figure.loaded {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        transition: transform 0.3s ease;
+      }
+
+      figure:hover img {
+        transform: scale(1.03);
       }
 
       .back-button {
@@ -71,9 +206,9 @@ const { Content } = await album.render();
         color: var(--text-secondary);
         margin-bottom: 2rem;
         text-decoration: none;
-    font-size: 0.9rem;
-    font-weight: 500;
-    transition: color 0.2s ease;
+        font-size: 0.9rem;
+        font-weight: 500;
+        transition: color 0.2s ease;
       }
 
       .back-button:hover {
@@ -82,115 +217,351 @@ const { Content } = await album.render();
 
       .back-button i {
         margin-right: 0.5rem;
-    stroke-width: 2px;
+        stroke-width: 2px;
       }
 
       header {
-    margin-bottom: 2rem;
-    max-width: 800px;
+        margin-bottom: 2rem;
+        max-width: 800px;
       }
 
       h1 {
         font-size: 2.5rem;
         font-weight: 700;
-    margin-bottom: 0.5rem;
+        margin-bottom: 0.5rem;
         color: var(--text-primary);
-    letter-spacing: -0.025em;
-    line-height: 1.2;
+        letter-spacing: -0.025em;
+        line-height: 1.2;
       }
 
       time {
         display: block;
         color: var(--text-secondary);
-    margin-bottom: 0.75rem;
-    font-size: 0.875rem;
-    font-weight: 400;
-  }
-
-  header p {
-    font-size: 0.875rem;
-    line-height: 1.5;
-    color: var(--text-secondary);
-    font-weight: 400;
-      }
-
-      .photo-grid {
-    display: flex;
-    flex-wrap: wrap;
-    margin: 0;
-    padding: 0;
-    width: 100%;
-      }
-
-      figure {
-    margin: 0;
-    padding: 0;
-    flex: 0 0 50%;
-        position: relative;
-    aspect-ratio: 3/2;
-    overflow: hidden;
-      }
-
-      img {
-        width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-        transition: transform 0.3s ease;
-      }
-
-      figure:hover img {
-    transform: scale(1.03);
-      }
-
-      figcaption {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 1rem;
-    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-    color: white;
+        margin-bottom: 0.75rem;
         font-size: 0.875rem;
-    font-weight: 400;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-
-  figure:hover figcaption {
-    opacity: 1;
+        font-weight: 400;
       }
 
-      .content {
-        margin-top: 3rem;
+      header p {
+        font-size: 0.875rem;
+        line-height: 1.5;
         color: var(--text-secondary);
-    font-size: 0.875rem;
-    line-height: 1.5;
-    max-width: 800px;
+        font-weight: 400;
+      }
+
+      /* Full Size Image Viewer */
+      .full-size-viewer {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.9);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .full-size-viewer.active {
+        display: flex;
+        opacity: 1;
+      }
+
+      .full-size-viewer img {
+        max-width: 90%;
+        max-height: 90vh;
+        object-fit: contain;
+      }
+
+      .close-button {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: none;
+        border: none;
+        color: white;
+        cursor: pointer;
+        padding: 8px;
+        z-index: 1001;
+      }
+
+      .close-button i {
+        width: 24px;
+        height: 24px;
+        stroke-width: 2px;
+      }
+
+      @media (max-width: 1400px) {
+        .photo-grid {
+          grid-template-columns: repeat(3, 1fr);
+          padding: 0 10%;
+        }
+        .content-wrapper {
+          padding: 0 10%;
+        }
       }
 
       @media (max-width: 768px) {
+        .photo-grid {
+          grid-template-columns: repeat(2, 1fr);
+          padding: 0 5%;
+        }
+        .content-wrapper {
+          padding: 0 5%;
+        }
         h1 {
           font-size: 2rem;
         }
+        main {
+          padding: 100px 0 24px 0;
+        }
+      }
 
-    figure {
-      flex: 0 0 100%;
-    }
+      .lock-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
 
-    main {
-      padding: 1rem;
-    }
+      figure[data-locked="true"] {
+        cursor: not-allowed;
+      }
+
+      figure[data-locked="true"]:hover .lock-overlay {
+        opacity: 1;
+      }
+
+      figure[data-locked="true"] img {
+        filter: blur(10px);
+      }
+
+      .lock-overlay i {
+        width: 24px;
+        height: 24px;
+        stroke-width: 2px;
+      }
+
+      .photo-item.hidden {
+        display: none !important;
+        visibility: hidden;
+        opacity: 0;
+      }
+
+      .no-access-message {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 4rem 2rem;
+        text-align: center;
+        color: var(--text-secondary);
+        background: var(--bg-secondary);
+        border-radius: 12px;
+        margin: 2rem 15%;
+      }
+
+      .no-access-message i {
+        width: 32px;
+        height: 32px;
+        stroke-width: 2px;
+        margin-bottom: 1rem;
+      }
+
+      .no-access-message p {
+        margin: 0.25rem 0;
+        font-size: 0.9rem;
+      }
+
+      .no-access-message p:first-of-type {
+        color: var(--text-primary);
+        font-weight: 500;
+      }
+
+      .photo-item.protected .protected-indicator {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-width: 0 40px 40px 0;
+        border-color: transparent #ffd700 transparent transparent;
+        z-index: 2;
+      }
+
+      .photo-item {
+        position: relative;
+        aspect-ratio: 1;
+        overflow: hidden;
+      }
+
+      .photo-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+      }
+
+      .photo-item:hover img {
+        transform: scale(1.05);
       }
     </style>
 
 <script>
-  declare const feather: {
-    replace: () => void;
-  };
+  let activeCoupons = new Set();
 
-  // Initialize Feather icons
-      document.addEventListener('DOMContentLoaded', () => {
-        feather.replace();
+  // Load coupons from localStorage
+  function loadCoupons() {
+    const savedCoupons = localStorage.getItem('photoCoupons');
+    if (savedCoupons) {
+      try {
+        const parsed = JSON.parse(savedCoupons);
+        if (Array.isArray(parsed) && parsed.every(item => typeof item === 'string')) {
+          activeCoupons = new Set(parsed);
+          updatePhotoAccess();
+        }
+      } catch (e) {
+        console.error('Failed to parse saved coupons:', e);
+      }
+    }
+    updatePhotoAccess(); // Always call updatePhotoAccess to show public photos
+  }
+
+  function updatePhotoAccess() {
+    const photos = document.querySelectorAll('.photo-item') as NodeListOf<HTMLElement>;
+    let hasProtectedPhotos = false;
+    let protectedCount = 0;
+    let publicCount = 0;
+    
+    photos.forEach(photo => {
+      const protection = photo.dataset.protection;
+      
+      // If it's a public photo or has no protection data, show it
+      if (!protection || protection === 'public') {
+        photo.style.display = 'block';
+        publicCount++;
+        return;
+      }
+
+      // Handle protected photos
+      hasProtectedPhotos = true;
+      protectedCount++;
+      const hasAccess = activeCoupons.has(protection);
+      if (hasAccess) {
+        photo.style.display = 'block';
+      } else {
+        photo.style.display = 'none';
+      }
+    });
+
+    // Log album stats
+    console.log('Album stats:', {
+      totalPhotos: photos.length,
+      publicPhotos: publicCount,
+      protectedPhotos: protectedCount,
+      activeCoupons: Array.from(activeCoupons)
+    });
+
+    // Update grid visibility
+    const photoGrid = document.querySelector('.photo-grid') as HTMLElement;
+    if (photoGrid) {
+      photoGrid.classList.add('loaded');
+    }
+  }
+
+  function setupImageViewer() {
+    const viewer = document.getElementById('fullSizeViewer') as HTMLDivElement;
+    const fullSizeImage = document.getElementById('fullSizeImage') as HTMLImageElement;
+    const closeButton = viewer?.querySelector('.close-button') as HTMLButtonElement;
+    const photos = document.querySelectorAll('.photo-item') as NodeListOf<HTMLElement>;
+    const photoGrid = document.querySelector('.photo-grid') as HTMLElement;
+    const loadingState = document.querySelector('.loading-state') as HTMLElement;
+    let loadedImages = 0;
+    const totalImages = photos.length;
+
+    // Track image loading
+    function handleImageLoad() {
+      loadedImages++;
+      if (loadedImages === totalImages) {
+        loadingState.classList.add('hidden');
+        photoGrid.classList.add('loaded');
+      }
+    }
+
+    // Add load event listeners to all images
+    photos.forEach(photo => {
+      const img = photo.querySelector('img');
+      if (img) {
+        if (img.complete) {
+          handleImageLoad();
+        } else {
+          img.addEventListener('load', handleImageLoad);
+        }
+        img.addEventListener('error', handleImageLoad);
+      }
+    });
+
+    // Handle photo clicks
+    photos.forEach(photo => {
+      photo.addEventListener('click', () => {
+        if (photo.classList.contains('hidden')) return;
+        
+        const imgSrc = photo.getAttribute('data-image');
+        if (imgSrc && viewer && fullSizeImage) {
+          fullSizeImage.src = imgSrc;
+          viewer.classList.add('active');
+          document.body.style.overflow = 'hidden';
+        }
+      });
+    });
+
+    // Handle close button click
+    closeButton?.addEventListener('click', () => {
+      closeViewer();
+    });
+
+    // Handle ESC key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeViewer();
+      }
+    });
+
+    // Handle click outside image
+    viewer?.addEventListener('click', (e) => {
+      if (e.target === viewer) {
+        closeViewer();
+      }
+    });
+
+    function closeViewer() {
+      viewer?.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+  }
+
+  // Initialize on page load
+  document.addEventListener('astro:page-load', () => {
+    loadCoupons();
+    setupImageViewer();
   });
-    </script>
+
+  // Listen for coupon changes
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'photoCoupons') {
+      loadCoupons();
+    }
+  });
+</script>

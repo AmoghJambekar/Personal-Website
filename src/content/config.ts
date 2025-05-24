@@ -18,11 +18,16 @@ const photos = defineCollection({
     date: z.coerce.date(), // This will convert string dates to Date objects
     description: z.string(),
     coverImage: z.string(),
-    images: z.array(z.object({
-      url: z.string(),
-      caption: z.string().optional(),
-      alt: z.string().optional()
-    }))
+    images: z.array(
+      z.union([
+        z.string(),
+        z.object({
+          url: z.string(),
+          caption: z.string().optional(),
+          alt: z.string().optional()
+        })
+      ])
+    )
   })
 });
 

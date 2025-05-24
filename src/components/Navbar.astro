@@ -229,3 +229,11 @@ const navItems = [
     }
   }
 </style>
+
+<script>
+  // Initialize Feather icons
+  document.addEventListener('astro:page-load', () => {
+    // @ts-ignore
+    feather?.replace();
+  });
+</script>
