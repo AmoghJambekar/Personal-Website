@@ -15,93 +15,93 @@ const { Content } = await album.render();
 ---
 
 <Layout title={`${album.data.title} | Photos | Amogh Jambekar`}>
-  <main>
-    <!-- Back Button -->
-    <a href="/photos" class="back-button">
-      <i data-feather="arrow-left"></i>
-      Back to Albums
-    </a>
+    <main>
+      <!-- Back Button -->
+      <a href="/photos" class="back-button">
+        <i data-feather="arrow-left"></i>
+        Back to Albums
+      </a>
 
-    <!-- Album Header -->
-    <header>
-      <h1>{album.data.title}</h1>
-      <time>
-        {new Date(album.data.date).toLocaleDateString('en-US', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric'
-        })}
-      </time>
-      <p>{album.data.description}</p>
-    </header>
+      <!-- Album Header -->
+      <header>
+        <h1>{album.data.title}</h1>
+        <time>
+          {new Date(album.data.date).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          })}
+        </time>
+        <p>{album.data.description}</p>
+      </header>
 
-    <!-- Photo Grid -->
-    <div class="photo-grid">
-      {album.data.images.map(image => (
-        <figure>
-          <img
-            src={image.url}
-            alt={image.caption || album.data.title}
-            loading="lazy"
-          />
-          {image.caption && (
-            <figcaption>{image.caption}</figcaption>
-          )}
-        </figure>
-      ))}
-    </div>
+      <!-- Photo Grid -->
+      <div class="photo-grid">
+        {album.data.images.map(image => (
+          <figure>
+            <img
+              src={image.url}
+              alt={image.caption || album.data.title}
+              loading="lazy"
+            />
+            {image.caption && (
+              <figcaption>{image.caption}</figcaption>
+            )}
+          </figure>
+        ))}
+      </div>
 
-    <!-- Additional Content -->
-    <div class="content">
-      <Content />
-    </div>
-  </main>
+      <!-- Additional Content -->
+      <div class="content">
+        <Content />
+      </div>
+    </main>
 </Layout>
 
-<style>
-  main {
+    <style>
+      main {
     max-width: 1400px;
-    margin: 0 auto;
+        margin: 0 auto;
     padding: 2rem 1rem;
-  }
+      }
 
-  .back-button {
-    display: inline-flex;
-    align-items: center;
-    color: var(--text-secondary);
-    margin-bottom: 2rem;
-    text-decoration: none;
+      .back-button {
+        display: inline-flex;
+        align-items: center;
+        color: var(--text-secondary);
+        margin-bottom: 2rem;
+        text-decoration: none;
     font-size: 0.9rem;
     font-weight: 500;
     transition: color 0.2s ease;
-  }
+      }
 
-  .back-button:hover {
-    color: var(--text-primary);
-  }
+      .back-button:hover {
+        color: var(--text-primary);
+      }
 
-  .back-button i {
-    margin-right: 0.5rem;
+      .back-button i {
+        margin-right: 0.5rem;
     stroke-width: 2px;
-  }
+      }
 
-  header {
+      header {
     margin-bottom: 2rem;
     max-width: 800px;
-  }
+      }
 
-  h1 {
-    font-size: 2.5rem;
-    font-weight: 700;
+      h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
     margin-bottom: 0.5rem;
-    color: var(--text-primary);
+        color: var(--text-primary);
     letter-spacing: -0.025em;
     line-height: 1.2;
-  }
+      }
 
-  time {
-    display: block;
-    color: var(--text-secondary);
+      time {
+        display: block;
+        color: var(--text-secondary);
     margin-bottom: 0.75rem;
     font-size: 0.875rem;
     font-weight: 400;
@@ -112,38 +112,38 @@ const { Content } = await album.render();
     line-height: 1.5;
     color: var(--text-secondary);
     font-weight: 400;
-  }
+      }
 
-  .photo-grid {
+      .photo-grid {
     display: flex;
     flex-wrap: wrap;
     margin: 0;
     padding: 0;
     width: 100%;
-  }
+      }
 
-  figure {
+      figure {
     margin: 0;
     padding: 0;
     flex: 0 0 50%;
-    position: relative;
+        position: relative;
     aspect-ratio: 3/2;
     overflow: hidden;
-  }
+      }
 
-  img {
-    width: 100%;
+      img {
+        width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
-    transition: transform 0.3s ease;
-  }
+        transition: transform 0.3s ease;
+      }
 
-  figure:hover img {
+      figure:hover img {
     transform: scale(1.03);
-  }
+      }
 
-  figcaption {
+      figcaption {
     position: absolute;
     bottom: 0;
     left: 0;
@@ -151,7 +151,7 @@ const { Content } = await album.render();
     padding: 1rem;
     background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
     color: white;
-    font-size: 0.875rem;
+        font-size: 0.875rem;
     font-weight: 400;
     opacity: 0;
     transition: opacity 0.3s ease;
@@ -159,20 +159,20 @@ const { Content } = await album.render();
 
   figure:hover figcaption {
     opacity: 1;
-  }
+      }
 
-  .content {
-    margin-top: 3rem;
-    color: var(--text-secondary);
+      .content {
+        margin-top: 3rem;
+        color: var(--text-secondary);
     font-size: 0.875rem;
     line-height: 1.5;
     max-width: 800px;
-  }
+      }
 
-  @media (max-width: 768px) {
-    h1 {
-      font-size: 2rem;
-    }
+      @media (max-width: 768px) {
+        h1 {
+          font-size: 2rem;
+        }
 
     figure {
       flex: 0 0 100%;
@@ -181,8 +181,8 @@ const { Content } = await album.render();
     main {
       padding: 1rem;
     }
-  }
-</style>
+      }
+    </style>
 
 <script>
   declare const feather: {
@@ -190,7 +190,7 @@ const { Content } = await album.render();
   };
 
   // Initialize Feather icons
-  document.addEventListener('DOMContentLoaded', () => {
-    feather.replace();
+      document.addEventListener('DOMContentLoaded', () => {
+        feather.replace();
   });
-</script>
+    </script>

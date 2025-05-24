@@ -1,10 +1,9 @@
 ---
-title: "Hello World"
-date: "2024-03-21"
+title: "Test Post"
+date: "2025-05-21"
 description: "Welcome to my blog! This is a sample post to test the layout."
-tags: ["welcome", "test"]
+tags: ["welcome", "test", "personal"]
 ---
-
 Welcome to my blog! This is a sample post to test the layout and functionality.
 
 ## What's Next?

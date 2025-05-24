@@ -11,7 +11,7 @@ import Navbar from '../components/Navbar.astro';
     <p class="intro">
       I'm an incoming Computer Engineering student at Northeastern University and a senior at Bridgewater-Raritan High School. I've previously worked at [Company X], where I [brief impactful contribution]. I also recently created [Project X], [Project Y], and [Project Z], and currently research [Topic Y] under [Professor X].
       <br><br>
-      Outside of tech, I love <a href="https://strava.app.link/qCsjlvhPyTb" target="_blank" rel="noopener noreferrer">running</a>, working out, and playing basketball, tennis, cricket and pickleball. I'm a fan of the Knicks, Mumbai Indians, and the Indian Cricket Team. I also love capturing moments with my camera, <a href="https://obscurifymusic.com/profile?id=di82yeudoy32fxdlble93z00e&code=6b8a4a1d0a735a23" target="_blank" rel="noopener noreferrer">exploring music</a>, and documenting life on my <a href="/blog">blog</a>.
+      Outside of tech, I love <a href="https://strava.app.link/qCsjlvhPyTb" target="_blank" rel="noopener noreferrer">running</a>, working out, and playing basketball, tennis, cricket and pickleball as well as watching a bunch of different sports. I also love <a href="/photos">taking cool photos</a>, <a href="https://obscurifymusic.com/profile?id=di82yeudoy32fxdlble93z00e&code=6b8a4a1d0a735a23" target="_blank" rel="noopener noreferrer">exploring music</a>, and documenting life on my <a href="/blog">blog</a>.
     </p>
     
     <div class="section">
@@ -110,6 +110,9 @@ import Navbar from '../components/Navbar.astro';
         </div>
       </div>
     </div>
+    <div class="contact-section">
+      <p class="contact-text">reach out to me at <a href="mailto:amoghjambekar45@gmail.com" class="contact-email">amoghjambekar45@gmail.com</a></p>
+    </div>
   </div>
 </Layout>
 
@@ -120,6 +123,7 @@ import Navbar from '../components/Navbar.astro';
     --text-tertiary: #6B7280;
     --bg-primary: #FFFFFF;
     --bg-secondary: #F3F4F6;
+    --bg-secondary-hover: #E5E7EB;
     --border-color: #E5E7EB;
     --link-color: #2563EB;
     --nav-bg: rgba(255, 255, 255, 0.8);
@@ -131,6 +135,7 @@ import Navbar from '../components/Navbar.astro';
     --text-tertiary: #9CA3AF;
     --bg-primary: #111827;
     --bg-secondary: #1F2937;
+    --bg-secondary-hover: #374151;
     --border-color: #374151;
     --link-color: #60A5FA;
     --nav-bg: rgba(17, 24, 39, 0.8);
@@ -225,7 +230,11 @@ import Navbar from '../components/Navbar.astro';
   }
   
   .item:hover {
-    background: var(--bg-secondary);
+    background: var(--bg-secondary-hover);
+  }
+
+  html.dark .item:hover {
+    background: var(--bg-secondary-hover);
   }
 
   .item:hover .arrow-icon {
@@ -577,6 +586,28 @@ import Navbar from '../components/Navbar.astro';
     .nav-divider {
       height: 14px;
     }
+  }
+
+  .contact-section {
+    text-align: center;
+    margin-top: 32px;
+  }
+
+  .contact-text {
+    font-size: 16px;
+    color: var(--text-tertiary);
+    margin: 0;
+  }
+
+  .contact-email {
+    color: var(--text-tertiary);
+    font-weight: 600;
+    text-decoration: underline;
+    transition: color 0.2s ease;
+  }
+
+  .contact-email:hover {
+    color: var(--text-secondary);
   }
 </style>
 

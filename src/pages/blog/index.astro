@@ -64,24 +64,24 @@ const sortedPosts = [...posts].sort((a, b) =>
   </div>
 </Layout>
 
-<style>
+    <style>
   .container {
     max-width: 800px;
     margin: 0 auto;
     padding: 120px 20px 40px 20px;
-  }
+      }
 
   .header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 2rem;
-  }
+      }
 
-  h1 {
-    font-size: 2.5rem;
-    font-weight: 700;
-    letter-spacing: -0.025em;
+      h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        letter-spacing: -0.025em;
     margin: 0;
   }
 
@@ -114,54 +114,54 @@ const sortedPosts = [...posts].sort((a, b) =>
   .filter-select:focus {
     outline: none;
     border-color: var(--text-primary);
-  }
+      }
 
-  .post-list {
-    display: flex;
-    flex-direction: column;
-    gap: 32px;
-  }
+      .post-list {
+        display: flex;
+        flex-direction: column;
+        gap: 32px;
+      }
 
-  .post-item {
-    display: block;
-    padding: 24px;
-    border-radius: 12px;
-    background: var(--bg-secondary);
-    text-decoration: none;
+      .post-item {
+        display: block;
+        padding: 24px;
+        border-radius: 12px;
+        background: var(--bg-secondary);
+        text-decoration: none;
     transition: all 0.2s ease;
     border: 1px solid var(--border-color);
-  }
+      }
 
-  .post-item:hover {
-    transform: translateY(-2px);
+      .post-item:hover {
+        transform: translateY(-2px);
     border-color: var(--text-tertiary);
-  }
+      }
 
-  .post-title {
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: var(--text-primary);
-    margin-bottom: 8px;
-  }
+      .post-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 8px;
+      }
 
-  .post-excerpt {
-    color: var(--text-secondary);
-    font-size: 1rem;
-    line-height: 1.6;
-    margin-bottom: 16px;
-  }
+      .post-excerpt {
+        color: var(--text-secondary);
+        font-size: 1rem;
+        line-height: 1.6;
+        margin-bottom: 16px;
+      }
 
-  .post-meta {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    color: var(--text-secondary);
-    font-size: 0.875rem;
-  }
+      .post-meta {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        color: var(--text-secondary);
+        font-size: 0.875rem;
+      }
 
-  .post-date {
+      .post-date {
     display: inline-flex;
-    align-items: center;
+        align-items: center;
     gap: 6px;
     color: var(--text-tertiary);
     font-size: 14px;
@@ -169,15 +169,15 @@ const sortedPosts = [...posts].sort((a, b) =>
     background: var(--bg-primary);
     border-radius: 16px;
     border: 1px solid var(--border-color);
-  }
+      }
 
-  .post-tags {
-    display: flex;
+      .post-tags {
+        display: flex;
     flex-wrap: wrap;
     gap: 6px;
-  }
+      }
 
-  .tag {
+      .tag {
     padding: 4px 12px;
     border-radius: 16px;
     font-size: 12px;
@@ -211,8 +211,8 @@ const sortedPosts = [...posts].sort((a, b) =>
   html.dark .tag:is([data-tag="daily"]) { background-color: rgba(6, 182, 212, 0.2); color: #67E8F9; }
   html.dark .tag:is([data-tag="thoughts"]) { background-color: rgba(157, 78, 221, 0.2); color: #D8B4FE; }
 
-  @media (max-width: 768px) {
-    .container {
+      @media (max-width: 768px) {
+        .container {
       padding: 100px 16px 24px 16px;
     }
 
@@ -220,11 +220,11 @@ const sortedPosts = [...posts].sort((a, b) =>
       flex-direction: column;
       align-items: flex-start;
       gap: 1rem;
-    }
+        }
 
-    h1 {
-      font-size: 2rem;
-    }
+        h1 {
+          font-size: 2rem;
+        }
 
     .filters {
       width: 100%;
@@ -235,19 +235,19 @@ const sortedPosts = [...posts].sort((a, b) =>
       min-width: 120px;
     }
 
-    .post-item {
-      padding: 20px;
-    }
+        .post-item {
+          padding: 20px;
+        }
 
-    .post-title {
-      font-size: 1.25rem;
-    }
-  }
-</style>
+        .post-title {
+          font-size: 1.25rem;
+        }
+      }
+    </style>
 
-<script>
+    <script>
   // Filter and sort functionality
-  document.addEventListener('DOMContentLoaded', () => {
+      document.addEventListener('DOMContentLoaded', () => {
     const postList = document.querySelector('.post-list') as HTMLElement;
     const tagSelect = document.querySelector('#tag-select') as HTMLSelectElement;
     const sortSelect = document.querySelector('#sort-select') as HTMLSelectElement;
@@ -285,5 +285,5 @@ const sortedPosts = [...posts].sort((a, b) =>
 
       posts.forEach(post => postList.appendChild(post));
     });
-  });
-</script>
+      });
+    </script>

@@ -4,13 +4,21 @@ import Navbar from '../../components/Navbar.astro';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog');
-  return posts.map(post => ({
+  const sortedPosts = [...posts].sort((a, b) => 
+    new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+  );
+  
+  return sortedPosts.map((post, index) => ({
     params: { slug: post.slug },
-    props: { post },
+    props: { 
+      post,
+      prevPost: index > 0 ? sortedPosts[index - 1] : null,
+      nextPost: index < sortedPosts.length - 1 ? sortedPosts[index + 1] : null
+    },
   }));
 }
 
-const { post } = Astro.props;
+const { post, prevPost, nextPost } = Astro.props;
 const { Content } = await post.render();
 ---
 
@@ -70,26 +78,20 @@ const { Content } = await post.render();
         width: 100%;
         max-width: 800px;
         margin: 0 auto;
-        padding: 120px 24px;
+        padding: 130px 24px 80px;
       }
 
-      .back-link {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        color: var(--text-tertiary);
-        text-decoration: none;
-        font-size: 14px;
-        margin-bottom: 48px;
-        padding: 8px 16px;
-        background: var(--bg-secondary);
-        border-radius: 20px;
-        transition: all 0.2s ease;
+      .blog-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 10px;
       }
 
-      .back-link:hover {
-        color: var(--text-primary);
-        transform: translateX(-4px);
+      .title-section {
+        flex: 1;
+        margin-right: 24px;
+        padding-top: 4px;
       }
 
       h1 {
@@ -97,38 +99,41 @@ const { Content } = await post.render();
         font-weight: 700;
         letter-spacing: -0.025em;
         line-height: 1.1;
-        margin-bottom: 24px;
+        margin: 0;
         color: var(--text-primary);
       }
 
       .meta {
         display: flex;
-        align-items: center;
-        gap: 16px;
-        margin-bottom: 48px;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 8px;
+        padding-top: 0;
       }
 
       .post-date {
         display: inline-flex;
         align-items: center;
-        gap: 6px;
+        gap: 4px;
         color: var(--text-tertiary);
-        font-size: 14px;
-        padding: 6px 12px;
+        font-size: 12px;
+        padding: 4px 10px;
         background: var(--bg-secondary);
-        border-radius: 16px;
+        border-radius: 14px;
+        white-space: nowrap;
       }
 
       .tags {
         display: flex;
         flex-wrap: wrap;
-        gap: 6px;
+        gap: 4px;
+        justify-content: flex-end;
       }
 
       .tag {
-        padding: 4px 12px;
-        border-radius: 16px;
-        font-size: 12px;
+        padding: 3px 10px;
+        border-radius: 14px;
+        font-size: 11px;
         font-weight: 500;
         color: var(--bg-primary);
       }
@@ -227,27 +232,111 @@ const { Content } = await post.render();
       .content blockquote p:last-child {
         margin-bottom: 0;
       }
+
+      .post-navigation {
+        display: flex;
+        justify-content: space-between;
+        gap: 24px;
+        margin-top: 64px;
+        padding-top: 32px;
+        border-top: 1px solid var(--border-color);
+      }
+
+      .nav-link {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-decoration: none;
+        color: var(--text-tertiary);
+        padding: 12px;
+        border-radius: 12px;
+        background: var(--bg-secondary);
+        transition: all 0.2s ease;
+        flex: 1;
+      }
+
+      .nav-link.prev {
+        padding-right: 16px;
+      }
+
+      .nav-link.next {
+        padding-left: 16px;
+        text-align: right;
+        justify-content: flex-end;
+      }
+
+      .nav-link:hover {
+        color: var(--text-primary);
+        background: var(--bg-secondary-hover);
+        transform: translateY(-2px);
+      }
+
+      .nav-text {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .nav-text .label {
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .nav-text .title {
+        font-size: 14px;
+        font-weight: 500;
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          padding: 65px 20px 60px;
+        }
+        
+        .blog-header {
+          flex-direction: column;
+          gap: 12px;
+        }
+
+        .meta {
+          align-items: flex-start;
+          padding-top: 0;
+        }
+
+        .tags {
+          justify-content: flex-start;
+        }
+
+        .title-section {
+          margin-right: 0;
+          padding-top: 0;
+        }
+
+        .post-navigation {
+          flex-direction: column;
+        }
+
+        .nav-link.next {
+          text-align: left;
+          justify-content: flex-start;
+        }
+      }
     </style>
   </head>
   <body>
+    <Navbar />
     <div class="container">
-      <a href="/blog" class="back-link">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="m15 18-6-6 6-6"/>
-        </svg>
-        Back to Blog
+      <a href="/blog" class="back-link" aria-label="Back to blog">
+        <i data-feather="book-open"></i>
       </a>
-
-      <article>
-        <h1>{post.data.title}</h1>
+      
+      <div class="blog-header">
+        <div class="title-section">
+          <h1>{post.data.title}</h1>
+        </div>
         <div class="meta">
-          <time datetime={post.data.date} class="post-date">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/>
-              <line x1="16" x2="16" y1="2" y2="6"/>
-              <line x1="8" x2="8" y1="2" y2="6"/>
-              <line x1="3" x2="21" y1="10" y2="10"/>
-            </svg>
+          <time datetime={post.data.date.toISOString()} class="post-date">
+            <i data-feather="calendar"></i>
             {new Date(post.data.date).toLocaleDateString('en-US', {
               year: 'numeric',
               month: 'long',
@@ -260,13 +349,40 @@ const { Content } = await post.render();
             ))}
           </div>
         </div>
+      </div>
 
-        <div class="content">
-          <Content />
-        </div>
-      </article>
+      <div class="content">
+        <Content />
+      </div>
+
+      <div class="post-navigation">
+        {prevPost && (
+          <a href={`/blog/${prevPost.slug}`} class="nav-link prev">
+            <i data-feather="arrow-left"></i>
+            <span class="nav-text">
+              <span class="label">Previous</span>
+              <span class="title">{prevPost.data.title}</span>
+            </span>
+          </a>
+        )}
+        {nextPost && (
+          <a href={`/blog/${nextPost.slug}`} class="nav-link next">
+            <span class="nav-text">
+              <span class="label">Next</span>
+              <span class="title">{nextPost.data.title}</span>
+            </span>
+            <i data-feather="arrow-right"></i>
+          </a>
+        )}
+      </div>
     </div>
-    <Navbar />
-    <script src="/scripts/theme.js" is:inline></script>
+
+    <script>
+      // Initialize Feather Icons
+      document.addEventListener('DOMContentLoaded', () => {
+        // @ts-ignore
+        feather?.replace();
+      });
+    </script>
   </body>
 </html>
