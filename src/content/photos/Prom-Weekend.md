@@ -1,7 +1,7 @@
 ---
 title: "Prom Weekend"
 date: "2024-05-18"
-description: "Photos from Prom Weekend - Some photos require special access codes"
+description: "Prom weekend on the digital 🎉"
 coverImage: "/photos/Prom-Weekend/32558.JPG"
 images:
   - url: "/photos/Prom-Weekend/32558.JPG"
