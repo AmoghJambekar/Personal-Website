@@ -2,14 +2,13 @@
 title: "Prom Weekend"
 date: "2025-05-17"
 description: "Photos from Prom Weekend"
-coverImage: "/photos/prom-weekend/cover.jpg"
+coverImage: "/photos/Prom-Weekend/32558.JPG"
 images:
-  - url: "/photos/sample-album/image1.jpg"
-    caption: "Sample Image 1"
+  - url: "/photos/Prom-Weekend/32558.JPG"
+    caption: ""
     alt: "Sample image description"
-  - url: "/photos/sample-album/image2.jpg"
+  - url: "pages/photos/sample-album/image2.jpg"
     caption: "Sample Image 2"
     alt: "Another sample image description"
 ---
 
-This is a sample photo album to test the layout and functionality. 

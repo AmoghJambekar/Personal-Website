@@ -1,17 +1,7 @@
 ---
-import Navbar from '../../components/Navbar.astro';
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
 
-// Temporary static data
-const album = {
-  data: {
-    title: "Coming Soon",
-    date: new Date(),
-    description: "Photo album feature coming soon",
-    images: []
-  }
-};
-
-/* Comment out until content is ready
 export async function getStaticPaths() {
   const albums = await getCollection('photos');
   return albums.map(album => ({
@@ -19,195 +9,188 @@ export async function getStaticPaths() {
     props: { album },
   }));
 }
-*/
 
-// const { Content } = await album.render();
+const { album } = Astro.props;
+const { Content } = await album.render();
 ---
 
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content={album.data.description} />
-    <title>{album.data.title} | Photos | Amogh Jambekar</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
-  </head>
-  <body>
-    <Navbar />
-    
-    <main>
-      <!-- Back Button -->
-      <a href="/photos" class="back-button">
-        <i data-feather="arrow-left"></i>
-        Back to Albums
-      </a>
+<Layout title={`${album.data.title} | Photos | Amogh Jambekar`}>
+  <main>
+    <!-- Back Button -->
+    <a href="/photos" class="back-button">
+      <i data-feather="arrow-left"></i>
+      Back to Albums
+    </a>
 
-      <!-- Album Header -->
-      <header>
-        <h1>{album.data.title}</h1>
-        <time>
-          {new Date(album.data.date).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-          })}
-        </time>
-        <p>{album.data.description}</p>
-      </header>
+    <!-- Album Header -->
+    <header>
+      <h1>{album.data.title}</h1>
+      <time>
+        {new Date(album.data.date).toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        })}
+      </time>
+      <p>{album.data.description}</p>
+    </header>
 
-      <!-- Photo Grid -->
-      <div class="photo-grid">
-        {album.data.images.map(image => (
-          <figure>
-            <img
-              src={image.url}
-              alt={image.caption || album.data.title}
-              loading="lazy"
-            />
-            {image.caption && (
-              <figcaption>{image.caption}</figcaption>
-            )}
-          </figure>
-        ))}
-      </div>
+    <!-- Photo Grid -->
+    <div class="photo-grid">
+      {album.data.images.map(image => (
+        <figure>
+          <img
+            src={image.url}
+            alt={image.caption || album.data.title}
+            loading="lazy"
+          />
+          {image.caption && (
+            <figcaption>{image.caption}</figcaption>
+          )}
+        </figure>
+      ))}
+    </div>
 
-      <!-- Additional Content -->
-      <div class="content">
-        <Content />
-      </div>
-    </main>
+    <!-- Additional Content -->
+    <div class="content">
+      <Content />
+    </div>
+  </main>
+</Layout>
 
-    <style>
-      /* Replace Tailwind classes with proper CSS */
-      main {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 3rem 1rem;
-      }
+<style>
+  main {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+  }
 
-      .back-button {
-        display: inline-flex;
-        align-items: center;
-        color: var(--text-secondary);
-        margin-bottom: 2rem;
-        text-decoration: none;
-      }
+  .back-button {
+    display: inline-flex;
+    align-items: center;
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: color 0.2s ease;
+  }
 
-      .back-button:hover {
-        color: var(--text-primary);
-      }
+  .back-button:hover {
+    color: var(--text-primary);
+  }
 
-      .back-button i {
-        margin-right: 0.5rem;
-      }
+  .back-button i {
+    margin-right: 0.5rem;
+    stroke-width: 2px;
+  }
 
-      header {
-        margin-bottom: 3rem;
-      }
+  header {
+    margin-bottom: 2rem;
+    max-width: 800px;
+  }
 
-      h1 {
-        font-size: 2.5rem;
-        font-weight: 700;
-        margin-bottom: 1rem;
-        color: var(--text-primary);
-      }
+  h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+    letter-spacing: -0.025em;
+    line-height: 1.2;
+  }
 
-      time {
-        display: block;
-        color: var(--text-secondary);
-        margin-bottom: 1rem;
-      }
+  time {
+    display: block;
+    color: var(--text-secondary);
+    margin-bottom: 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 400;
+  }
 
-      .photo-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 2rem;
-        margin: 2rem 0;
-      }
+  header p {
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--text-secondary);
+    font-weight: 400;
+  }
 
-      figure {
-        position: relative;
-      }
+  .photo-grid {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+  }
 
-      img {
-        width: 100%;
-        height: auto;
-        border-radius: 0.5rem;
-        transition: transform 0.3s ease;
-      }
+  figure {
+    margin: 0;
+    padding: 0;
+    flex: 0 0 50%;
+    position: relative;
+    aspect-ratio: 3/2;
+    overflow: hidden;
+  }
 
-      figure:hover img {
-        transform: scale(1.02);
-      }
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease;
+  }
 
-      figcaption {
-        margin-top: 0.5rem;
-        font-size: 0.875rem;
-        color: var(--text-secondary);
-      }
+  figure:hover img {
+    transform: scale(1.03);
+  }
 
-      .content {
-        margin-top: 3rem;
-        color: var(--text-secondary);
-      }
+  figcaption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1rem;
+    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+    color: white;
+    font-size: 0.875rem;
+    font-weight: 400;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
 
-      @media (max-width: 768px) {
-        .photo-grid {
-          grid-template-columns: 1fr;
-          gap: 1rem;
-        }
+  figure:hover figcaption {
+    opacity: 1;
+  }
 
-        h1 {
-          font-size: 2rem;
-        }
-      }
-    </style>
+  .content {
+    margin-top: 3rem;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    line-height: 1.5;
+    max-width: 800px;
+  }
 
-    <script is:inline>
-      // Check for saved theme preference immediately
-      const savedTheme = localStorage.getItem('theme') || 'light';
-      document.documentElement.classList.toggle('dark', savedTheme === 'dark');
+  @media (max-width: 768px) {
+    h1 {
+      font-size: 2rem;
+    }
 
-      // Initialize Feather icons and handle theme
-      document.addEventListener('DOMContentLoaded', () => {
-        const isDark = document.documentElement.classList.contains('dark');
-        const themeToggle = document.querySelector('.theme-toggle i');
-        if (themeToggle) {
-          themeToggle.setAttribute('data-feather', isDark ? 'sun' : 'moon');
-        }
-        feather.replace();
+    figure {
+      flex: 0 0 100%;
+    }
 
-        // Image lazy loading
-        const images = document.querySelectorAll('img[loading="lazy"]');
-        if ('loading' in HTMLImageElement.prototype) {
-          images.forEach(img => {
-            img.loading = 'lazy';
-          });
-        } else {
-          // Fallback for browsers that don't support lazy loading
-          const script = document.createElement('script');
-          script.src = 'https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.3.2/lazysizes.min.js';
-          document.body.appendChild(script);
-        }
-      });
+    main {
+      padding: 1rem;
+    }
+  }
+</style>
 
-      // Define toggleTheme globally
-      function toggleTheme() {
-        const html = document.documentElement;
-        const isDark = html.classList.toggle('dark');
-        const themeToggle = document.querySelector('.theme-toggle i');
-        
-        localStorage.setItem('theme', isDark ? 'dark' : 'light');
-        
-        if (themeToggle) {
-          themeToggle.setAttribute('data-feather', isDark ? 'sun' : 'moon');
-          feather.replace();
-        }
-      }
-    </script>
-  </body>
-</html>
+<script>
+  declare const feather: {
+    replace: () => void;
+  };
+
+  // Initialize Feather icons
+  document.addEventListener('DOMContentLoaded', () => {
+    feather.replace();
+  });
+</script>

@@ -1,166 +1,289 @@
 ---
-import Navbar from '../../components/Navbar.astro';
+import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
 
-// Temporary static data until content is set up
-const posts = [];
+// Get all blog posts
+const posts = await getCollection('blog');
+
+// Get unique tags
+const allTags = [...new Set(posts.flatMap(post => post.data.tags))];
+
+// Sort posts by date
+const sortedPosts = [...posts].sort((a, b) => 
+  new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+);
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Blog | Amogh Jambekar</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-      :root {
-        --text-primary: #111827;
-        --text-secondary: #4B5563;
-        --bg-primary: #FFFFFF;
-        --bg-secondary: #F3F4F6;
-        --border-color: #E5E7EB;
-      }
-
-      html.dark {
-        --text-primary: #F9FAFB;
-        --text-secondary: #D1D5DB;
-        --bg-primary: #111827;
-        --bg-secondary: #1F2937;
-        --border-color: #374151;
-      }
-
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-      }
-
-      body {
-        background-color: var(--bg-primary);
-        color: var(--text-primary);
-        transition: background-color 0.3s ease, color 0.3s ease;
-      }
-
-      .container {
-        max-width: 720px;
-        margin: 0 auto;
-        padding: 40px 20px;
-      }
-
-      h1 {
-        font-size: 2.5rem;
-        font-weight: 700;
-        margin-bottom: 2rem;
-        letter-spacing: -0.025em;
-      }
-
-      .post-list {
-        display: flex;
-        flex-direction: column;
-        gap: 32px;
-      }
-
-      .post-item {
-        display: block;
-        padding: 24px;
-        border-radius: 12px;
-        background: var(--bg-secondary);
-        text-decoration: none;
-        transition: transform 0.2s ease;
-      }
-
-      .post-item:hover {
-        transform: translateY(-2px);
-      }
-
-      .post-title {
-        font-size: 1.5rem;
-        font-weight: 600;
-        color: var(--text-primary);
-        margin-bottom: 8px;
-      }
-
-      .post-excerpt {
-        color: var(--text-secondary);
-        font-size: 1rem;
-        line-height: 1.6;
-        margin-bottom: 16px;
-      }
-
-      .post-meta {
-        display: flex;
-        align-items: center;
-        gap: 16px;
-        color: var(--text-secondary);
-        font-size: 0.875rem;
-      }
-
-      .post-date {
-        display: flex;
-        align-items: center;
-        gap: 4px;
-      }
-
-      .post-tags {
-        display: flex;
-        gap: 8px;
-      }
-
-      .tag {
-        padding: 2px 8px;
-        border-radius: 9999px;
-        background: var(--bg-primary);
-        font-size: 0.75rem;
-      }
-
-      @media (max-width: 768px) {
-        .container {
-          padding: 24px 16px;
-        }
-
-        h1 {
-          font-size: 2rem;
-        }
-
-        .post-item {
-          padding: 20px;
-        }
-
-        .post-title {
-          font-size: 1.25rem;
-        }
-      }
-    </style>
-    <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
-  </head>
-  <body>
-    <div class="container">
+<Layout title="Blog | Amogh Jambekar">
+  <div class="container">
+    <div class="header">
       <h1>Blog</h1>
-      <div class="post-list">
-        {/* Temporarily commented out until content is ready */}
-        {/*posts.map((post) => (
-          <a href={`/blog/${post.slug}`} class="post-item">
-            <h2 class="post-title">{post.data.title}</h2>
-            <p class="post-excerpt">{post.data.excerpt}</p>
-            <div class="post-meta">
-              <span class="post-date">
-                <i data-feather="calendar"></i>
-                {new Date(post.data.date).toLocaleDateString('en-US')}
-              </span>
-            </div>
-          </a>
-        ))*/}
-        <p>Blog posts coming soon...</p>
+      <div class="filters">
+        <div class="filter-section">
+          <select id="tag-select" class="filter-select">
+            <option value="">All Tags</option>
+            {allTags.map(tag => (
+              <option value={tag}>{tag}</option>
+            ))}
+          </select>
+        </div>
+        <div class="filter-section">
+          <select id="sort-select" class="filter-select">
+            <option value="newest">Newest First</option>
+            <option value="oldest">Oldest First</option>
+          </select>
+        </div>
       </div>
     </div>
-    <Navbar />
-    <script>
-      document.addEventListener('DOMContentLoaded', () => {
-        // @ts-ignore
-        feather?.replace();
+
+    <div class="post-list">
+      {sortedPosts.map(post => (
+        <a href={`/blog/${post.slug}`} class="post-item">
+          <article>
+            <h3 class="post-title">{post.data.title}</h3>
+            <p class="post-excerpt">{post.data.description}</p>
+            <div class="post-meta">
+              <time datetime={post.data.date.toISOString()} class="post-date">
+                {new Date(post.data.date).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                })}
+              </time>
+              <div class="post-tags">
+                {post.data.tags.map(tag => (
+                  <span class="tag" data-tag={tag.toLowerCase()}>{tag}</span>
+                ))}
+              </div>
+            </div>
+          </article>
+        </a>
+      ))}
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 120px 20px 40px 20px;
+  }
+
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+  }
+
+  h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    margin: 0;
+  }
+
+  .filters {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .filter-select {
+    padding: 0.5rem 2.5rem 0.5rem 1rem;
+    border-radius: 8px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.7rem center;
+    background-size: 1em;
+  }
+
+  .filter-select:hover {
+    border-color: var(--text-tertiary);
+  }
+
+  .filter-select:focus {
+    outline: none;
+    border-color: var(--text-primary);
+  }
+
+  .post-list {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  .post-item {
+    display: block;
+    padding: 24px;
+    border-radius: 12px;
+    background: var(--bg-secondary);
+    text-decoration: none;
+    transition: all 0.2s ease;
+    border: 1px solid var(--border-color);
+  }
+
+  .post-item:hover {
+    transform: translateY(-2px);
+    border-color: var(--text-tertiary);
+  }
+
+  .post-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+  }
+
+  .post-excerpt {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+
+  .post-meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+  }
+
+  .post-date {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-tertiary);
+    font-size: 14px;
+    padding: 6px 12px;
+    background: var(--bg-primary);
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+  }
+
+  .post-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .tag {
+    padding: 4px 12px;
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--bg-primary);
+    background-color: #6B7280; /* Default gray color for unspecified tags */
+  }
+
+  /* Specific tag colors */
+  .tag:is([data-tag="personal"]) { background-color: #FF7A00; } /* More vibrant orange */
+  .tag:is([data-tag="documentation"]) { background-color: #3B82F6; } /* Blue */
+  .tag:is([data-tag="lessons"]) { background-color: #8B5CF6; } /* Purple */
+  .tag:is([data-tag="tech"]) { background-color: #10B981; } /* Green */
+  .tag:is([data-tag="guides"]) { background-color: #EAB308; } /* Yellow */
+  .tag:is([data-tag="updates"]) { background-color: #EC4899; } /* Pink */
+  .tag:is([data-tag="daily"]) { background-color: #06B6D4; } /* Aqua */
+  .tag:is([data-tag="thoughts"]) { background-color: #9D4EDD; } /* Orchid */
+
+  /* Dark mode colors */
+  html.dark .tag { 
+    background-color: rgba(107, 114, 128, 0.2); 
+    color: #9CA3AF; 
+  } /* Default gray in dark mode */
+  
+  html.dark .tag:is([data-tag="personal"]) { background-color: rgba(255, 122, 0, 0.2); color: #FF9E3D; }
+  html.dark .tag:is([data-tag="documentation"]) { background-color: rgba(59, 130, 246, 0.2); color: #93C5FD; }
+  html.dark .tag:is([data-tag="lessons"]) { background-color: rgba(139, 92, 246, 0.2); color: #C4B5FD; }
+  html.dark .tag:is([data-tag="tech"]) { background-color: rgba(16, 185, 129, 0.2); color: #6EE7B7; }
+  html.dark .tag:is([data-tag="guides"]) { background-color: rgba(234, 179, 8, 0.2); color: #FDE047; }
+  html.dark .tag:is([data-tag="updates"]) { background-color: rgba(236, 72, 153, 0.2); color: #F9A8D4; }
+  html.dark .tag:is([data-tag="daily"]) { background-color: rgba(6, 182, 212, 0.2); color: #67E8F9; }
+  html.dark .tag:is([data-tag="thoughts"]) { background-color: rgba(157, 78, 221, 0.2); color: #D8B4FE; }
+
+  @media (max-width: 768px) {
+    .container {
+      padding: 100px 16px 24px 16px;
+    }
+
+    .header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    h1 {
+      font-size: 2rem;
+    }
+
+    .filters {
+      width: 100%;
+    }
+
+    .filter-select {
+      flex: 1;
+      min-width: 120px;
+    }
+
+    .post-item {
+      padding: 20px;
+    }
+
+    .post-title {
+      font-size: 1.25rem;
+    }
+  }
+</style>
+
+<script>
+  // Filter and sort functionality
+  document.addEventListener('DOMContentLoaded', () => {
+    const postList = document.querySelector('.post-list') as HTMLElement;
+    const tagSelect = document.querySelector('#tag-select') as HTMLSelectElement;
+    const sortSelect = document.querySelector('#sort-select') as HTMLSelectElement;
+
+    if (!postList || !tagSelect || !sortSelect) return;
+
+    // Tag filter functionality
+    tagSelect.addEventListener('change', () => {
+      const selectedTag = tagSelect.value;
+      const posts = document.querySelectorAll('.post-item');
+      
+      posts.forEach(post => {
+        const postTags = Array.from(post.querySelectorAll('.tag')).map(t => t.textContent);
+        const postElement = post as HTMLElement;
+        if (!selectedTag || postTags.includes(selectedTag)) {
+          postElement.style.display = '';
+        } else {
+          postElement.style.display = 'none';
+        }
       });
-    </script>
-  </body>
-</html>
+    });
+
+    // Sort functionality
+    sortSelect.addEventListener('change', () => {
+      const posts = Array.from(document.querySelectorAll('.post-item'));
+      const sortOrder = sortSelect.value;
+
+      posts.sort((a, b) => {
+        const dateA = new Date(a.querySelector('time')?.dateTime || '');
+        const dateB = new Date(b.querySelector('time')?.dateTime || '');
+        return sortOrder === 'newest' 
+          ? dateB.getTime() - dateA.getTime()
+          : dateA.getTime() - dateB.getTime();
+      });
+
+      posts.forEach(post => postList.appendChild(post));
+    });
+  });
+</script>
