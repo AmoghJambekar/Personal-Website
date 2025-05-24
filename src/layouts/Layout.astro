@@ -20,7 +20,7 @@ const { title } = Astro.props;
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script is:inline src="https://unpkg.com/feather-icons"></script>
-    <ViewTransitions transition:animate="slide" />
+    <ViewTransitions />
     <style is:global>
       :root {
         --text-primary: #111827;
@@ -29,7 +29,7 @@ const { title } = Astro.props;
         --bg-primary: #FFFFFF;
         --bg-secondary: #F3F4F6;
         --border-color: #E5E7EB;
-        --link-color: #2563EB;
+        --link-color: #000000;
         --nav-bg: rgba(255, 255, 255, 0.8);
       }
 
@@ -40,7 +40,7 @@ const { title } = Astro.props;
         --bg-primary: #111827;
         --bg-secondary: #1F2937;
         --border-color: #374151;
-        --link-color: #60A5FA;
+        --link-color: #FFFFFF;
         --nav-bg: rgba(17, 24, 39, 0.8);
       }
 
@@ -67,38 +67,52 @@ const { title } = Astro.props;
         transition: background-color 0.3s ease, color 0.3s ease;
       }
 
+      a {
+        color: var(--link-color);
+        font-weight: bold;
+        text-decoration: underline;
+      }
+
       /* Smooth page transitions */
       ::view-transition-old(root),
       ::view-transition-new(root) {
         animation-duration: 0.2s;
-        animation-timing-function: ease-in-out;
-      }
-
-      /* Prevent flash during theme transitions */
-      html.dark::view-transition-old(root) {
-        z-index: 1;
-      }
-      html.dark::view-transition-new(root) {
-        z-index: 999;
-      }
-
-      html:not(.dark)::view-transition-old(root) {
-        z-index: 999;
-      }
-      html:not(.dark)::view-transition-new(root) {
-        z-index: 1;
       }
     </style>
-  </head>
-  <body>
-    <Navbar />
-    <slot />
     <script is:inline>
-      // Initialize Feather Icons
+      // Initialize theme before page load
+      const theme = localStorage.getItem('theme') || 
+        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.classList.add(theme);
+
+      // Theme toggle functionality
+      document.addEventListener('astro:after-swap', () => {
+        const theme = localStorage.getItem('theme') || 
+          (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.classList.remove('light', 'dark');
+        document.documentElement.classList.add(theme);
+      });
+
       document.addEventListener('astro:page-load', () => {
+        const themeToggle = document.getElementById('theme-toggle');
+        
+        if (themeToggle) {
+          themeToggle.addEventListener('click', () => {
+            const isDark = document.documentElement.classList.contains('dark');
+            document.documentElement.classList.remove(isDark ? 'dark' : 'light');
+            document.documentElement.classList.add(isDark ? 'light' : 'dark');
+            localStorage.setItem('theme', isDark ? 'light' : 'dark');
+          });
+        }
+
+        // Initialize Feather icons
         // @ts-ignore
         feather?.replace();
       });
     </script>
+  </head>
+  <body>
+    <Navbar />
+    <slot />
   </body>
 </html> 

@@ -316,14 +316,16 @@ import Navbar from '../components/Navbar.astro';
     padding: 0;
     max-height: 0;
     overflow: hidden;
-    transition: all 0.3s ease-out;
     opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   }
   
   .item-content.active {
     padding: 12px 0 0;
     max-height: 500px;
     opacity: 1;
+    transform: translateY(0);
   }
 
   .item-content p {

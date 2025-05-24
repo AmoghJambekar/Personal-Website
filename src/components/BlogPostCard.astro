@@ -40,13 +40,19 @@ const formattedDate = new Date(date).toLocaleDateString('en-US', {
     border-radius: 12px;
     background: var(--bg-secondary);
     text-decoration: none;
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     border: 1px solid var(--border-color);
+    will-change: transform;
   }
 
   .post-item:hover {
     transform: translateY(-2px);
     border-color: var(--text-tertiary);
+  }
+
+  .post-item:active {
+    transform: translateY(0);
+    transition-duration: 0.1s;
   }
 
   .post-title {
@@ -99,29 +105,29 @@ const formattedDate = new Date(date).toLocaleDateString('en-US', {
   }
 
   /* Specific tag colors */
-  .tag:is([data-tag="personal"]) { background-color: #FF7A00; } /* More vibrant orange */
-  .tag:is([data-tag="documentation"]) { background-color: #3B82F6; } /* Blue */
-  .tag:is([data-tag="lessons"]) { background-color: #8B5CF6; } /* Purple */
-  .tag:is([data-tag="tech"]) { background-color: #10B981; } /* Green */
-  .tag:is([data-tag="guides"]) { background-color: #EAB308; } /* Yellow */
-  .tag:is([data-tag="updates"]) { background-color: #EC4899; } /* Pink */
-  .tag:is([data-tag="daily"]) { background-color: #06B6D4; } /* Aqua */
-  .tag:is([data-tag="thoughts"]) { background-color: #9D4EDD; } /* Orchid */
+  .tag[data-tag="personal"] { background-color: #F59E0B; }
+  .tag[data-tag="docs"] { background-color: #3B82F6; }
+  .tag[data-tag="lessons"] { background-color: #8B5CF6; }
+  .tag[data-tag="tech"] { background-color: #10B981; }
+  .tag[data-tag="guides"] { background-color: #EAB308; }
+  .tag[data-tag="updates"] { background-color: #EC4899; }
+  .tag[data-tag="daily"] { background-color: #06B6D4; }
+  .tag[data-tag="thoughts"] { background-color: #9D4EDD; }
 
   /* Dark mode colors */
   html.dark .tag { 
     background-color: rgba(107, 114, 128, 0.2); 
     color: #9CA3AF; 
-  } /* Default gray in dark mode */
+  }
   
-  html.dark .tag:is([data-tag="personal"]) { background-color: rgba(255, 122, 0, 0.2); color: #FF9E3D; }
-  html.dark .tag:is([data-tag="documentation"]) { background-color: rgba(59, 130, 246, 0.2); color: #93C5FD; }
-  html.dark .tag:is([data-tag="lessons"]) { background-color: rgba(139, 92, 246, 0.2); color: #C4B5FD; }
-  html.dark .tag:is([data-tag="tech"]) { background-color: rgba(16, 185, 129, 0.2); color: #6EE7B7; }
-  html.dark .tag:is([data-tag="guides"]) { background-color: rgba(234, 179, 8, 0.2); color: #FDE047; }
-  html.dark .tag:is([data-tag="updates"]) { background-color: rgba(236, 72, 153, 0.2); color: #F9A8D4; }
-  html.dark .tag:is([data-tag="daily"]) { background-color: rgba(6, 182, 212, 0.2); color: #67E8F9; }
-  html.dark .tag:is([data-tag="thoughts"]) { background-color: rgba(157, 78, 221, 0.2); color: #D8B4FE; }
+  html.dark .tag[data-tag="personal"] { background-color: rgba(245, 158, 11, 0.2); color: #FBBF24; }
+  html.dark .tag[data-tag="docs"] { background-color: rgba(59, 130, 246, 0.2); color: #93C5FD; }
+  html.dark .tag[data-tag="lessons"] { background-color: rgba(139, 92, 246, 0.2); color: #C4B5FD; }
+  html.dark .tag[data-tag="tech"] { background-color: rgba(16, 185, 129, 0.2); color: #6EE7B7; }
+  html.dark .tag[data-tag="guides"] { background-color: rgba(234, 179, 8, 0.2); color: #FDE047; }
+  html.dark .tag[data-tag="updates"] { background-color: rgba(236, 72, 153, 0.2); color: #F9A8D4; }
+  html.dark .tag[data-tag="daily"] { background-color: rgba(6, 182, 212, 0.2); color: #67E8F9; }
+  html.dark .tag[data-tag="thoughts"] { background-color: rgba(157, 78, 221, 0.2); color: #D8B4FE; }
 
   @media (max-width: 768px) {
     .post-item {
