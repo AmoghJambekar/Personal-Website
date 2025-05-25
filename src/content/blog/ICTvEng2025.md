@@ -17,7 +17,7 @@ By the way, this website is now complete and on a link! Let me know if you like 
 
 ---
 
-![India vs England Test Series](./ICTvEng.jpg)
+![India vs England Test Series](./public/ICTvEng.jpg)
 
 ----
 
@@ -57,7 +57,7 @@ And **LSG are 6th**, mostly surviving due to **Pooran** and **Mitch Marsh**. If 
 
 Now given that Rahul has flourished as a pure batter, this decision does fall in line. But I would rather have had no vice-captain or even Bumrah who will play 3-4 matches out of 5 than Pant.
 
----
+
 
 ## Batting Breakdown
 
@@ -72,7 +72,7 @@ Now given that Rahul has flourished as a pure batter, this decision does fall in
 - **Abhimanyu Easwaran** — has waited forever. But if you’re not going to play him now, then **why not give that slot to Sarfaraz Khan? Or Shreyas Iyer?**
 - **Dhruv Jurel** — right now, India’s best backup Test keeper.
 
----
+
 
 ## All-Rounders & Bowling Unit
 
@@ -93,7 +93,7 @@ But the **omission of Axar Patel** still feels odd. He just won you a CT. He's g
 - **Prasidh Krishna** and **Akash Deep** will likely split matches when Bumrah is off.
 - **Shami** — Good decision to not pick him. Not in form, will not succeed.
 
----
+
 
 ## Selection Dilemmas
 
@@ -103,7 +103,7 @@ But the **omission of Axar Patel** still feels odd. He just won you a CT. He's g
 
 Iyer has flaws given his "weakness" against pace and injury history but realistically he's still better than several selected. If you’re backing Nair, why not Iyer? 
 
----
+
 
 ## Bigger Picture
 
@@ -115,11 +115,12 @@ India has been:
 This cycle must end with the mace. A **young, aggressive squad** could finally get it done.
 
 Also, I'd like to point out that the leadership triangle of **Gill (C)**, **Pant (VC)**, and **Gambhir (mentor)** will be worth watching. Three strong personalities, lots of ambition, and some clash potential too. Gambhir literally doesn't like Pant.
+<br />
 
 ---
-
+<br />
 ## My Playing XII
-```
+
 {
 1. Yashasvi Jaiswal  
 2. KL Rahul  
@@ -134,4 +135,3 @@ Also, I'd like to point out that the leadership triangle of **Gill (C)**, **Pant
 11. Kuldeep Yadav  
 12. (Rotate Siraj / Arshdeep)
 }
-```
