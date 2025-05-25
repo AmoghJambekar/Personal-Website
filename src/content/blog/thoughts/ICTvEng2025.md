@@ -1,6 +1,6 @@
 ---
 title: "Thoughts on the Indian Cricket Team's Tour of England"
-date: "2025-05-24"
+date: "2025-05-24T12:00:00-03:00"
 description: "A few thoughts and critiques of 🇮🇳's 18-man squad for the tour of 🏴󠁧󠁢󠁥󠁮󠁧󠁿 🏏"
 tags: ["thoughts", "personal"]
 ---
@@ -22,7 +22,6 @@ Let's start with the first player on the roster.
 <br />
 
 The captain of India is often the biggest player on the team. Kohli, Rohit, Gavaskar, Ganguly, Dhoni are all names that we know and love who were all huge captains.  
-<br />
 <br />
 
 That being said, I am happy for Shubman Gill being named captain and it's not undeserved given his recent form and grooming. But let's be honest:  
