@@ -1,4 +1,6 @@
-# Astro Starter Kit: Minimal
+# Personal Website
+
+Hello! This is my personal website. Please use the links below to access it.
 
 ```sh
 npm create astro@latest -- --template minimal
