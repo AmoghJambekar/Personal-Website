@@ -13,16 +13,6 @@ This is a random post but I just wanted to talk about the **Indian Cricket Teamâ
 
 By the way, this website is now complete and on a link! Let me know if you like it.
 
-<br />
-
----
-
-![India vs England Test Series](./public/ICTvEng.jpg)
-
-----
-
-<br />
-
 
 ## Captaincy Decisions
 
