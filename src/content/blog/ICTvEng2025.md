@@ -2,7 +2,7 @@
 title: "Thoughts on the Indian Cricket Team's Tour of England"
 date: "2025-05-24"
 description: "A few thoughts and critiques of 🇮🇳's 18-man squad for the tour of 🏴󠁧󠁢󠁥󠁮󠁧󠁿 🏏"
-tags: [""thoughts", "personal", ]
+tags: ["thoughts", "personal"]
 ---
 
 
