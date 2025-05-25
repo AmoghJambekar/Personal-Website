@@ -21,7 +21,7 @@ The captain of India is often the biggest player on the team. Kohli, Rohit, Gava
 <br />
 <br />
 
-That being said, I am happy for Shubman Gill being named captain and it’s not undeserved given his recent form and grooming. But let’s be honest:  
+That being said, I am happy for Shubman Gill being named captain and it's not undeserved given his recent form and grooming. But let's be honest:  
 <br />
 
 #### KL Rahul deserved the captaincy.  
@@ -48,14 +48,14 @@ Pant is an excellent player, but his leadership record is underwhelming:
 <br />
 <br />
 
-Here’s a brutal stat from IPL 2025:  
+Here's a brutal stat from IPL 2025:  
 > **Pant has scored 151 runs** (with 63 in one match)  
 > **Average:** 13.73  
 > **Strike Rate:** 107.09  
 > **Cost per run (USD):** \$2,032,778.15  
 <br />
 
-And **LSG are 6th**, mostly surviving due to **Pooran** and **Mitch Marsh**. If you’re rewarding leadership, **KL Rahul** makes far more sense as VC.  
+And **LSG are 6th**, mostly surviving due to **Pooran** and **Mitch Marsh**. If you're rewarding leadership, **KL Rahul** makes far more sense as VC.  
 <br />
 Now given that Rahul has flourished as a pure batter, this decision does fall in line. But I would rather have had no vice-captain or even Bumrah who will play 3–4 matches out of 5 than Pant.  
 <br />
@@ -66,15 +66,15 @@ Now given that Rahul has flourished as a pure batter, this decision does fall in
 ### Core  
 - **Yashasvi Jaiswal** — a lock after a sensational 18 months.  
 - **Shubman Gill** — captain and future of Indian batting.  
-- **KL Rahul** — still India’s most complete batter across formats.  
+- **KL Rahul** — still India's most complete batter across formats.  
 - **Sai Sudharsan** — richly deserved call-up. Look at his numbers!  
 - **Karun Nair** — great redemption story and deserved call.  
 <br />
 <br />
 
 ### Backups  
-- **Abhimanyu Easwaran** — has waited forever. But if you’re not going to play him now, then **why not give that slot to Sarfaraz Khan? Or Shreyas Iyer?**  
-- **Dhruv Jurel** — right now, India’s best backup Test keeper.  
+- **Abhimanyu Easwaran** — has waited forever. But if you're not going to play him now, then **why not give that slot to Sarfaraz Khan? Or Shreyas Iyer?**  
+- **Dhruv Jurel** — right now, India's best backup Test keeper.  
 <br />
 <br />
 
@@ -82,7 +82,7 @@ Now given that Rahul has flourished as a pure batter, this decision does fall in
 <br />
 
 ### Seam-Bowling All-Rounders  
-- **Nitish Kumar Reddy** should be India’s long-term #6. Huge potential.  
+- **Nitish Kumar Reddy** should be India's long-term #6. Huge potential.  
 - **Shardul Thakur** — always a handy option in England.  
 - **Washington Sundar** — fits the format; can be valuable.  
 <br />
@@ -93,7 +93,7 @@ But the **omission of Axar Patel** still feels odd. He just won you a CT. He's g
 
 ### Spin Attack  
 - **Kuldeep Yadav** — finally getting the consistent backing he deserves.  
-- **Jadeja** — still world-class, but it’s time India starts playing **Kotian** for post-Jadeja succession. With the retirements of Kohli and Rohit, he should really step down.  
+- **Jadeja** — still world-class, but it's time India starts playing **Kotian** for post-Jadeja succession. With the retirements of Kohli and Rohit, he should really step down.  
 <br />
 <br />
 
@@ -113,7 +113,7 @@ Do you play Arshdeep as the 3rd seamer, or back Reddy/Thakur?  <br />
 Does Jadeja's continued presence slow down development of younger spinners?  <br />
 <br />
 
-And the big one: Shreyas Iyer not even in the India A setup. He is literally scoring runs for fun right now. He's a future India captain. Iyer has flaws given his "weakness" against pace and injury history but realistically he's still better than several selected. If you’re backing Nair, why not Iyer?  
+And the big one: Shreyas Iyer not even in the India A setup. He is literally scoring runs for fun right now. He's a future India captain. Iyer has flaws given his "weakness" against pace and injury history but realistically he's still better than several selected. If you're backing Nair, why not Iyer?  
 <br />
 
 ## Bigger Picture  
