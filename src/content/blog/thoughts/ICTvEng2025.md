@@ -35,7 +35,7 @@ The real reason he probably lost out is his flexibility given he's pushed around
 But honestly, I don't mind that.  
 <br />
 
-###But why is Rishabh Pant vice-captain?  
+### But why is Rishabh Pant vice-captain?  
 <br />
 
 Pant is an excellent player, but his leadership record is underwhelming:  
