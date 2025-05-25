@@ -1,14 +1,15 @@
 ---
 interface Props {
   title: string;
-  date: Date;
+  date: Date | string;
   excerpt: string;
   tags: string[];
   url: string;
 }
 
 const { title, date, excerpt, tags, url } = Astro.props;
-const formattedDate = new Date(date).toLocaleDateString('en-US', {
+const dateObj = date instanceof Date ? date : new Date(date);
+const formattedDate = dateObj.toLocaleDateString('en-US', {
   year: 'numeric',
   month: 'long',
   day: 'numeric'
@@ -20,7 +21,7 @@ const formattedDate = new Date(date).toLocaleDateString('en-US', {
     <h3 class="post-title">{title}</h3>
     <p class="post-excerpt">{excerpt}</p>
     <div class="post-meta">
-      <time datetime={date.toISOString()} class="post-date">
+      <time datetime={dateObj.toISOString()} class="post-date">
         <i data-feather="calendar"></i>
         {formattedDate}
       </time>

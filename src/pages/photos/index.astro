@@ -1,138 +1,451 @@
 ---
-import Navbar from '../../components/Navbar.astro';
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
 
-// Get all photo collections
-// const photoCollections = await getCollection('photos');
-const photoCollections = [] // Temporary empty array until content is set up
+interface ImageData {
+  url: string;
+  caption?: string;
+  alt?: string;
+  protection?: string;
+}
+
+// Get all photo collections and sort them by protection status first, then date
+const photoCollections = await getCollection('photos');
+const albumsWithStats = photoCollections.map(album => {
+  const protectedPhotos = (album.data.images as (string | ImageData)[]).filter(img => {
+    const protection = typeof img === 'string' ? 'public' : (img.protection || 'protected');
+    return protection !== 'public';
+  }).length;
+  
+  return {
+    album,
+    stats: {
+      totalPhotos: album.data.images.length,
+      protectedPhotos
+    }
+  };
+});
+
+// Sort albums: protected first, then by date
+albumsWithStats.sort((a, b) => {
+  // First sort by whether they have protected photos
+  if (a.stats.protectedPhotos > 0 && b.stats.protectedPhotos === 0) return -1;
+  if (a.stats.protectedPhotos === 0 && b.stats.protectedPhotos > 0) return 1;
+  // Then sort by date
+  return new Date(b.album.data.date).getTime() - new Date(a.album.data.date).getTime();
+});
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Photos | Amogh Jambekar</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<Layout title="Photos | Amogh Jambekar">
+  <main>
+    <div class="header-container">
+      <h1>Photos</h1>
+      <div class="coupon-container">
+        <input 
+          type="text" 
+          id="couponInput" 
+          placeholder="Enter Code"
+          aria-label="Enter Code"
+          autocomplete="off"
+        />
+        <button id="applyCoupon" aria-label="Apply access code">
+          <i data-feather="arrow-right"></i>
+        </button>
+      </div>
+    </div>
+
+    <div id="activeCoupons" class="active-coupons"></div>
+
+    <div class="album-grid">
+      {albumsWithStats.map(({ album, stats }) => (
+        <a href={`/photos/${album.slug}`} class="album-card">
+          <div class="album-image">
+            <img src={album.data.coverImage} alt={album.data.title} />
+          </div>
+          <div class="album-info">
+            <h2>{album.data.title}</h2>
+            <time>
+              {new Date(album.data.date).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+              })}
+            </time>
+            <p>{album.data.description}</p>
+            <div class="photo-count">
+              {stats.totalPhotos} photos
+            </div>
+          </div>
+        </a>
+      ))}
+    </div>
+  </main>
+</Layout>
+
     <style>
-      :root {
-        --text-primary: #111827;
-        --text-secondary: #4B5563;
-        --bg-primary: #FFFFFF;
-        --bg-secondary: #F3F4F6;
-        --border-color: #E5E7EB;
-      }
-
-      html.dark {
-        --text-primary: #F9FAFB;
-        --text-secondary: #D1D5DB;
-        --bg-primary: #111827;
-        --bg-secondary: #1F2937;
-        --border-color: #374151;
-      }
-
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-      }
-
-      body {
-        background-color: var(--bg-primary);
-        color: var(--text-primary);
-        transition: background-color 0.3s ease, color 0.3s ease;
-      }
-
-      .container {
-        max-width: 1200px;
+      main {
+        max-width: 1600px;
         margin: 0 auto;
-        padding: 40px 20px;
+        padding: 120px 80px 80px 80px;
+      }
+
+      .header-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
       }
 
       h1 {
         font-size: 2.5rem;
         font-weight: 700;
-        margin-bottom: 2rem;
+        color: var(--text-primary);
         letter-spacing: -0.025em;
+        margin: 0;
       }
 
-      .photo-grid {
+      .coupon-container {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+      }
+
+      #couponInput {
+        padding: 0.5rem 1rem;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        font-size: 0.9rem;
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+        transition: border-color 0.2s ease;
+        width: 180px;
+      }
+
+      #couponInput:focus {
+        outline: none;
+        border-color: var(--accent-color);
+      }
+
+      #applyCoupon {
+        padding: 0.5rem;
+        background: none;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-primary);
+        transition: opacity 0.2s ease;
+      }
+
+      #applyCoupon:hover {
+        opacity: 0.8;
+      }
+
+      #applyCoupon i {
+        width: 20px;
+        height: 20px;
+        stroke-width: 2px;
+      }
+
+      .active-coupons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .coupon-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.25rem 0.75rem;
+        background-color: #d1ffd1 !important;
+        border-radius: 6px !important;
+        font-size: 0.9rem !important;
+        color: #000000 !important;
+        font-weight: 500 !important;
+        border: 1px solid #4ade80 !important;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+      }
+
+      .coupon-tag button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: #000000 !important;
+        font-size: 0.9rem !important;
+        padding: 0 !important;
+        margin-left: 6px !important;
+        font-weight: normal !important;
+        line-height: 1 !important;
+        opacity: 0.6 !important;
+        transition: opacity 0.2s ease !important;
+      }
+
+      .coupon-tag button:hover {
+        opacity: 1 !important;
+      }
+
+      .album-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        gap: 24px;
-        padding: 20px 0;
+        gap: 2rem;
       }
 
-      .photo-item {
-        position: relative;
-        aspect-ratio: 3/2;
-        overflow: hidden;
+      .album-card {
+        text-decoration: none;
+        color: inherit;
+        background: var(--bg-secondary);
         border-radius: 12px;
-        cursor: pointer;
-        transition: transform 0.3s ease;
+        overflow: hidden;
+        transition: transform 0.2s ease;
       }
 
-      .photo-item:hover {
-        transform: scale(1.02);
+      .album-card:hover {
+        transform: translateY(-4px);
       }
 
-      .photo-item img {
+      .album-image {
+        aspect-ratio: 4/3;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .album-image img {
         width: 100%;
         height: 100%;
         object-fit: cover;
       }
 
-      .photo-overlay {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        padding: 20px;
-        background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-        color: white;
+      .album-info {
+        padding: 1.5rem;
       }
 
-      .photo-title {
+      .album-info h2 {
         font-size: 1.25rem;
         font-weight: 600;
-        margin-bottom: 4px;
+        margin: 0 0 0.5rem 0;
+        color: var(--text-primary);
       }
 
-      .photo-date {
+      .album-info time {
+        display: block;
         font-size: 0.875rem;
-        opacity: 0.8;
+        color: var(--text-secondary);
+        margin-bottom: 0.75rem;
+        text-decoration: underline;
+        font-weight: 600;
+      }
+
+      .album-info p {
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+        margin: 0;
+        line-height: 1.5;
+        font-weight: 400;
+      }
+
+      .protection-badge {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        background: rgba(0, 0, 0, 0.6);
+        color: white;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+      }
+
+      .photo-count {
+        margin-top: 0.5rem;
+        font-size: 0.8rem;
+        color: var(--text-secondary);
       }
 
       @media (max-width: 768px) {
-        .photo-grid {
-          grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-          gap: 16px;
+        main {
+          padding: 100px 40px 40px 40px;
+        }
+
+        .header-container {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 1rem;
         }
 
         h1 {
           font-size: 2rem;
         }
+
+        .coupon-container {
+          width: 100%;
+        }
+
+        #couponInput {
+          flex: 1;
+        }
+
+        .album-grid {
+          grid-template-columns: 1fr;
+        }
       }
     </style>
-  </head>
-  <body>
-    <div class="container">
-      <h1>Photos</h1>
-      <div class="photo-grid">
-        {/* Temporarily commented out until content is ready */}
-        {/*photoCollections.map((collection) => (
-          <a href={`/photos/${collection.slug}`} class="photo-item">
-            <img src={collection.data.coverImage} alt={collection.data.title} />
-            <div class="photo-overlay">
-              <div class="photo-title">{collection.data.title}</div>
-              <div class="photo-date">{collection.data.date}</div>
-            </div>
-          </a>
-        ))*/}
-        <p>Photo collections coming soon...</p>
-      </div>
-    </div>
-    <Navbar />
-  </body>
-</html>
+
+<style is:global>
+  /* Completely isolated coupon styles */
+  div#activeCoupons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+  }
+
+  div#activeCoupons > div.coupon-tag {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    padding: 0.25rem 0.75rem !important;
+    background-color: #d1ffd1 !important;
+    border-radius: 6px !important;
+    font-size: 0.9rem !important;
+    color: #000000 !important;
+    font-weight: 500 !important;
+    border: 1px solid #4ade80 !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+  }
+
+  div#activeCoupons > div.coupon-tag > button {
+    background: none !important;
+    border: none !important;
+    cursor: pointer !important;
+    color: #000000 !important;
+    font-size: 0.9rem !important;
+    padding: 0 !important;
+    margin-left: 6px !important;
+    font-weight: normal !important;
+    line-height: 1 !important;
+    opacity: 0.6 !important;
+    transition: opacity 0.2s ease !important;
+  }
+
+  div#activeCoupons > div.coupon-tag > button:hover {
+    opacity: 1 !important;
+  }
+</style>
+
+<script>
+  let activeCoupons: Set<string> = new Set();
+
+  function setupCouponHandlers() {
+    const input = document.getElementById('couponInput') as HTMLInputElement;
+    const applyButton = document.getElementById('applyCoupon');
+
+    if (!input || !applyButton) {
+      console.error('Coupon input elements not found');
+      return;
+    }
+
+    applyButton.addEventListener('click', () => {
+      if (input.value) {
+        addCoupon(input.value.trim());
+        input.value = '';
+      }
+    });
+
+    input.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter' && input.value) {
+        addCoupon(input.value.trim());
+        input.value = '';
+      }
+    });
+
+    // Close on click outside
+    document.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest('.coupon-container') && !target.closest('.active-coupons')) {
+        input.value = '';
+      }
+    });
+  }
+
+  function addCoupon(code: string) {
+    console.log('Adding coupon:', code);
+    if (!activeCoupons.has(code)) {
+      activeCoupons.add(code);
+      const couponsArray = Array.from(activeCoupons);
+      console.log('Saving coupons:', couponsArray);
+      localStorage.setItem('photoCoupons', JSON.stringify(couponsArray));
+      renderActiveCoupons();
+
+      // Dispatch storage event for other tabs
+      window.dispatchEvent(new StorageEvent('storage', {
+        key: 'photoCoupons',
+        newValue: JSON.stringify(couponsArray)
+      }));
+    }
+  }
+
+  function removeCoupon(code: string) {
+    console.log('Removing coupon:', code);
+    activeCoupons.delete(code);
+    const couponsArray = Array.from(activeCoupons);
+    console.log('Saving coupons:', couponsArray);
+    localStorage.setItem('photoCoupons', JSON.stringify(couponsArray));
+    renderActiveCoupons();
+
+    // Dispatch storage event for other tabs
+    window.dispatchEvent(new StorageEvent('storage', {
+      key: 'photoCoupons',
+      newValue: JSON.stringify(couponsArray)
+    }));
+  }
+
+  function renderActiveCoupons() {
+    const container = document.getElementById('activeCoupons');
+    if (!container) return;
+
+    container.innerHTML = '';
+    activeCoupons.forEach((code: string) => {
+      const tag = document.createElement('div');
+      tag.className = 'coupon-tag';
+      
+      const codeSpan = document.createElement('span');
+      codeSpan.textContent = code;
+      
+      const closeButton = document.createElement('button');
+      closeButton.onclick = () => removeCoupon(code);
+      closeButton.setAttribute('aria-label', 'Remove coupon');
+      closeButton.textContent = '×';
+      
+      tag.appendChild(codeSpan);
+      tag.appendChild(closeButton);
+      container.appendChild(tag);
+    });
+  }
+
+  // Initialize Feather icons and load coupons
+  document.addEventListener('astro:page-load', () => {
+    // @ts-ignore
+    feather?.replace();
+    
+    // Load saved coupons
+    const savedCoupons = localStorage.getItem('photoCoupons');
+    console.log('Loading saved coupons:', savedCoupons);
+    
+    if (savedCoupons) {
+      try {
+        const parsed = JSON.parse(savedCoupons);
+        if (Array.isArray(parsed) && parsed.every(item => typeof item === 'string')) {
+          activeCoupons = new Set(parsed);
+          console.log('Active coupons:', Array.from(activeCoupons));
+          renderActiveCoupons();
+        }
+      } catch (e) {
+        console.error('Failed to parse saved coupons:', e);
+      }
+    }
+    
+    setupCouponHandlers();
+  });
+</script>
