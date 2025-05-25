@@ -12,11 +12,15 @@ This is a random post but I just wanted to talk about the Indian Cricket Team's 
 
 By the way, this website is now complete and on a link! Let me know if you like it.  
 <br />
+
+<img src="/photos/ICTvEng.jpg" alt="Indian Cricket Team's Tour of England" width="400" />
+
 ## Captaincy Decisions  
 <br />
 Let's start with the first player on the roster.  
 <br />
 <br />
+
 The captain of India is often the biggest player on the team. Kohli, Rohit, Gavaskar, Ganguly, Dhoni are all names that we know and love who were all huge captains.  
 <br />
 <br />
