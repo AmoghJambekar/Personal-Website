@@ -190,16 +190,17 @@ const formattedDate = new Date(post.data.date).toLocaleDateString('en-US', {
   }
 
   .content p {
-    margin-bottom: 32px;
+    margin-bottom: 24px;
     font-size: 17px;
     line-height: 1.8;
+    white-space: pre-line;
   }
 
   .content h2 {
     font-size: 32px;
     font-weight: 600;
     color: var(--text-primary);
-    margin: 64px 0 32px;
+    margin: 48px 0 24px;
     letter-spacing: -0.025em;
   }
 
@@ -207,22 +208,23 @@ const formattedDate = new Date(post.data.date).toLocaleDateString('en-US', {
     font-size: 24px;
     font-weight: 600;
     color: var(--text-primary);
-    margin: 48px 0 24px;
+    margin: 32px 0 16px;
   }
 
   .content ul, .content ol {
-    margin: 32px 0;
+    margin: 24px 0;
     padding-left: 24px;
   }
 
   .content li {
-    margin-bottom: 16px;
+    margin-bottom: 12px;
     font-size: 17px;
     line-height: 1.7;
+    white-space: pre-line;
   }
 
   .content li:last-child {
-    margin-bottom: 32px;
+    margin-bottom: 24px;
   }
 
   .content a {
