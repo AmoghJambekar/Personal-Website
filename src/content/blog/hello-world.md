@@ -15,7 +15,7 @@ Stay tuned for more posts about:
 - Technology
 - Programming
 - Personal projects
-- And more!
+- And more! 
 
 Here's an example of line breaks in a list:
 1. First item
