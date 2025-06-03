@@ -30,7 +30,7 @@ Great, fun weekend with a bad Knicks loss but overall an 8.<br /><br />
 Gotta get back to it this week.
 Thanks for the read.<br /><br />
 <div style="display: flex; gap: 0;">
-<img src="/photos/IMG_5995.JPG" alt="Image 5995" style="width: 25%; height: auto;" />
+<img src="/photos/IMG_5955.JPG" alt="Image 5955" style="width: 25%; height: auto;" />
 <img src="/photos/IMG_5965.JPG" alt="Image 5965" style="width: 25%; height: auto;" />
 <img src="/photos/IMG_5971.JPG" alt="Image 5971" style="width: 25%; height: auto;" />
 <img src="/photos/IMG_5974.JPG" alt="Image 5974" style="width: 25%; height: auto;" />
