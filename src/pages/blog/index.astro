@@ -6,6 +6,11 @@ import BlogPostCard from '../../components/BlogPostCard.astro';
 
 // Get all blog posts
 const posts = await getCollection('blog');
+console.log('All blog posts:', posts.map(post => ({
+  title: post.data.title,
+  date: post.data.date,
+  slug: post.slug
+})));
 
 // Get unique tags
 const allTags = [...new Set(posts.flatMap(post => post.data.tags))];
@@ -14,6 +19,11 @@ const allTags = [...new Set(posts.flatMap(post => post.data.tags))];
 const sortedPosts = [...posts].sort((a, b) => 
   new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
 );
+console.log('Sorted posts:', sortedPosts.map(post => ({
+  title: post.data.title,
+  date: post.data.date,
+  slug: post.slug
+})));
 ---
 
 <Layout title="Blog | Amogh Jambekar">
