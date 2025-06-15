@@ -164,6 +164,13 @@ images:
     caption: "Senior Prank + Class Party"
     alt: "Senior Prank + Class Party Photo"
     protection: "public"
+  - url: "/photos/Prank-Party-Week/32826144_Unknown.JPG"
+    caption: "Senior Prank + Class Party"
+    alt: "Senior Prank + Class Party Photo"
+    protection: "public"
+  - url: "/photos/Prank-Party-Week/32826160_Unknown.JPG"
+    caption: "Senior Prank + Class Party"
+    alt: "Senior Prank + Class Party Photo"
+    protection: "public"
 ---
 
-Photos from the senior prank and class party. 
