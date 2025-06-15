@@ -9,7 +9,7 @@ interface ImageData {
   protection?: string;
 }
 
-// Get all photo collections and sort them by protection status first, then date
+// Get all photo collections and sort them by date (most recent first)
 const photoCollections = await getCollection('photos');
 const albumsWithStats = photoCollections.map(album => {
   const protectedPhotos = (album.data.images as (string | ImageData)[]).filter(img => {
@@ -26,14 +26,26 @@ const albumsWithStats = photoCollections.map(album => {
   };
 });
 
-// Sort albums: protected first, then by date
+// Sort albums by date (most recent first)
 albumsWithStats.sort((a, b) => {
-  // First sort by whether they have protected photos
-  if (a.stats.protectedPhotos > 0 && b.stats.protectedPhotos === 0) return -1;
-  if (a.stats.protectedPhotos === 0 && b.stats.protectedPhotos > 0) return 1;
-  // Then sort by date
-  return new Date(b.album.data.date).getTime() - new Date(a.album.data.date).getTime();
+  const dateA = new Date(a.album.data.date);
+  const dateB = new Date(b.album.data.date);
+  return dateB.getTime() - dateA.getTime();
 });
+
+// Debug log all albums before sorting
+console.log('Albums before sorting:', albumsWithStats.map(({ album }) => ({
+  title: album.data.title,
+  date: album.data.date,
+  parsedDate: new Date(album.data.date).toISOString()
+})));
+
+// Debug log all albums after sorting
+console.log('Albums after sorting:', albumsWithStats.map(({ album }) => ({
+  title: album.data.title,
+  date: album.data.date,
+  parsedDate: new Date(album.data.date).toISOString()
+})));
 ---
 
 <Layout title="Photos | Amogh Jambekar">
