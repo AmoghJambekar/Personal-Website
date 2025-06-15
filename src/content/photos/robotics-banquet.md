@@ -2,7 +2,7 @@
 title: "Robotics Banquet"
 date: "2025-06-14"
 description: "Robotics team end of year banquet..."
-coverImage: "/photos/Robotics-Banquet/32826256_Unknown.JPG"
+coverImage: "/photos/Robotics-Banquet/32826496_Unknown.JPG"
 images:
   - url: "/photos/Robotics-Banquet/32826256_Unknown.JPG"
     caption: "Robotics Banquet"
