@@ -1,6 +1,8 @@
 ---
 import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
+import fs from 'fs/promises';
+import path from 'path';
 
 interface ImageData {
   url: string;
@@ -11,7 +13,25 @@ interface ImageData {
 
 // Get all photo collections and sort them by date (most recent first)
 const photoCollections = await getCollection('photos');
-const albumsWithStats = photoCollections.map(album => {
+const albumsWithStats = await Promise.all(photoCollections.map(async album => {
+  // For the Last Day album, get the actual count from the filesystem
+  if (album.slug === 'last-day-of-school-2025') {
+    const lastDayDir = path.join(process.cwd(), 'public', 'photos', 'Last-Day');
+    const files = await fs.readdir(lastDayDir);
+    const imageFiles = files.filter(file => 
+      /\.(jpg|jpeg|png|gif|heic)$/i.test(file)
+    );
+    
+    return {
+      album,
+      stats: {
+        totalPhotos: imageFiles.length,
+        protectedPhotos: 0
+      }
+    };
+  }
+  
+  // For other albums, use the collection data
   const protectedPhotos = (album.data.images as (string | ImageData)[]).filter(img => {
     const protection = typeof img === 'string' ? 'public' : (img.protection || 'protected');
     return protection !== 'public';
@@ -24,7 +44,7 @@ const albumsWithStats = photoCollections.map(album => {
       protectedPhotos
     }
   };
-});
+}));
 
 // Sort albums by date (most recent first)
 albumsWithStats.sort((a, b) => {

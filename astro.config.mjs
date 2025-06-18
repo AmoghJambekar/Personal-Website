@@ -10,5 +10,12 @@ export default defineConfig({
       theme: 'github-dark',
       wrap: true
     }
+  },
+  content: {
+    collections: {
+      photos: {
+        limit: 200 // Allow up to 200 photos per album
+      }
+    }
   }
 });

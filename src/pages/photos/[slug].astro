@@ -1,6 +1,8 @@
 ---
 import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
+import fs from 'fs/promises';
+import path from 'path';
 
 interface ImageData {
   url: string;
@@ -20,22 +22,30 @@ export async function getStaticPaths() {
 const { album } = Astro.props;
 const { Content } = await album.render();
 
+// Get all images from the Last-Day directory
+const lastDayDir = path.join(process.cwd(), 'public', 'photos', 'Last-Day');
+const files = await fs.readdir(lastDayDir);
+const imageFiles = files.filter(file => 
+  /\.(jpg|jpeg|png|gif|heic)$/i.test(file)
+);
+
+// Create image objects for all files
+const allImageObjects = imageFiles.map(file => ({
+  url: `/photos/Last-Day/${file}`,
+  caption: "Last Day of School 2025",
+  alt: "Last Day of School Photo",
+  protection: "public"
+}));
+
 // Sort images to put protected ones first when unlocked
-const sortedImages = (album.data.images as (string | ImageData)[]).sort((a, b) => {
-  const protectionA = typeof a === 'string' ? 'public' : (a.protection || 'protected');
-  const protectionB = typeof b === 'string' ? 'public' : (b.protection || 'protected');
+const sortedImages = allImageObjects.sort((a, b) => {
+  const protectionA = a.protection || 'protected';
+  const protectionB = b.protection || 'protected';
   
   // Protected images first
   if (protectionA !== 'public' && protectionB === 'public') return -1;
   if (protectionA === 'public' && protectionB !== 'public') return 1;
   return 0;
-});
-
-// Debug log
-console.log('Album data:', {
-  title: album.data.title,
-  imageCount: album.data.images.length,
-  images: album.data.images
 });
 ---
 
@@ -71,8 +81,8 @@ console.log('Album data:', {
       <!-- Photo Grid -->
       <div class="photo-grid">
         {sortedImages.map((image, index) => {
-          const imgSrc = typeof image === 'string' ? image : image.url;
-          const protection = typeof image === 'string' ? 'public' : (image.protection || 'protected');
+          const imgSrc = image.url;
+          const protection = image.protection || 'protected';
           const isProtected = protection !== 'public';
           
           return (
@@ -80,11 +90,12 @@ console.log('Album data:', {
               class="photo-item"
               data-image={imgSrc}
               data-protection={protection}
+              data-index={index}
             >
               <img
                 src={imgSrc}
-                alt={typeof image === 'string' ? album.data.title : (image.alt || album.data.title)}
-                loading="eager"
+                alt={image.alt || album.data.title}
+                loading="lazy"
                 onload="this.parentElement.classList.add('loaded')"
               />
               {isProtected && <div class="protected-indicator"></div>}
