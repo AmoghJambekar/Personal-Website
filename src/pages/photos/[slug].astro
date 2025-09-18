@@ -22,20 +22,43 @@ export async function getStaticPaths() {
 const { album } = Astro.props;
 const { Content } = await album.render();
 
-// Get all images from the Last-Day directory
-const lastDayDir = path.join(process.cwd(), 'public', 'photos', 'Last-Day');
-const files = await fs.readdir(lastDayDir);
-const imageFiles = files.filter(file => 
-  /\.(jpg|jpeg|png|gif|heic)$/i.test(file)
-);
+// Get images based on the album slug
+let allImageObjects = [];
 
-// Create image objects for all files
-const allImageObjects = imageFiles.map(file => ({
-  url: `/photos/Last-Day/${file}`,
-  caption: "Last Day of School 2025",
-  alt: "Last Day of School Photo",
-  protection: "public"
-}));
+if (album.slug === 'last-day-of-school-2025') {
+  // For Last Day album, get images from filesystem
+  const lastDayDir = path.join(process.cwd(), 'public', 'photos', 'Last-Day');
+  const files = await fs.readdir(lastDayDir);
+  const imageFiles = files.filter(file => 
+    /\.(jpg|jpeg|png|gif|heic)$/i.test(file)
+  );
+  
+  allImageObjects = imageFiles.map(file => ({
+    url: `/photos/Last-Day/${file}`,
+    caption: "Last Day of School 2025",
+    alt: "Last Day of School Photo",
+    protection: "public"
+  }));
+} else {
+  // For other albums, use the collection data
+  allImageObjects = album.data.images.map(img => {
+    if (typeof img === 'string') {
+      return {
+        url: img,
+        caption: album.data.title,
+        alt: album.data.title,
+        protection: "public"
+      };
+    } else {
+      return {
+        url: img.url,
+        caption: img.caption || album.data.title,
+        alt: img.alt || album.data.title,
+        protection: img.protection || "public"
+      };
+    }
+  });
+}
 
 // Sort images to put protected ones first when unlocked
 const sortedImages = allImageObjects.sort((a, b) => {
