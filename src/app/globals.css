@@ -1,0 +1,7 @@
+@import "tailwindcss";
+@config "../../tailwind.config.ts";
+
+/* Tailwind v4: EB Garamond comes from next/font via --font-eb-garamond on <html> */
+@theme inline {
+  --font-garamond: var(--font-eb-garamond), ui-serif, Georgia, "Times New Roman", serif;
+}
