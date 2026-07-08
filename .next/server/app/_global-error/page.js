@@ -1,0 +1,10 @@
+var R=require("../../chunks/ssr/[turbopack]_runtime.js")("server/app/_global-error/page.js")
+R.c("server/chunks/ssr/[root-of-the-server]__0kjps13._.js")
+R.c("server/chunks/ssr/0oma_0xv4rch._.js")
+R.c("server/chunks/ssr/0oma_next_dist_esm_build_templates_app-page_0k1y5ep.js")
+R.c("server/chunks/ssr/[root-of-the-server]__0msnfcs._.js")
+R.c("server/chunks/ssr/[root-of-the-server]__0m.7s9q._.js")
+R.c("server/chunks/ssr/0oma_next_dist_client_components_builtin_global-error_0o~~p5g.js")
+R.c("server/chunks/ssr/amogh-website__next-internal_server_app__global-error_page_actions_01cq7xe.js")
+R.m(22561)
+module.exports=R.m(22561).exports
