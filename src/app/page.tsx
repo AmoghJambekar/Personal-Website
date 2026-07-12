@@ -212,7 +212,7 @@ export default function Home() {
           {/* Heading */}
           <h1
             className="text-5xl md:text-6xl lg:text-7xl mb-6 leading-tight transition-colors duration-300"
-            style={{ ...FONT_HEADING, color: COLORS.primary }}
+            style={{ ...FONT_HEADING, color: "#2e2e2e", fontWeight: 700 }}
           >
             Amogh Jambekar
           </h1>
