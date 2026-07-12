@@ -2,197 +2,196 @@ import Image from "next/image";
 
 /* ── Types ─────────────────────────────────────────────── */
 
-type InlineLink = {
-  text: string;
-  href: string;
-  icon?: string;
-  iconWidth?: number;
-  iconHeight?: number;
-  iconInvert?: boolean;
+type IconConfig = {
+  src: string;
+  alt: string;
+  size?: number;
+  radius?: number;
+  dy?: number;
+  bg?: string;
+  fit?: "contain" | "fill" | "cover";
+  grayscale?: boolean;
+  invert?: boolean;
+  brightness?: number;
+  zoom?: number;
 };
 
-type HeroSegment =
-  | { type: "text"; value: string }
-  | { type: "link"; link: InlineLink }
-  | { type: "blink" };
+type LinkSegment = {
+  link: { text: string; url: string; icon?: IconConfig };
+};
+type TextSegment = { text: string };
+type Segment = LinkSegment | TextSegment;
 
-/* ── Content — swap these with your own later ──────────── */
+/* ── Content — swap with your own ─────────────────────── */
 
-const HERO_CONTENT: HeroSegment[][] = [
+const LINES: Segment[][] = [
   [
-    { type: "text", value: "Building " },
+    { text: "Currently building " },
     {
-      type: "link",
       link: {
         text: "Emocentric",
-        href: "https://emo.studio",
-        icon: "/emocentric.svg",
-        iconWidth: 20,
-        iconHeight: 20,
+        url: "https://www.emo.studio",
+        icon: { src: "/emocentric.svg", alt: "Emocentric" },
       },
     },
-    { type: "blink" },
-  ],
-  [
-    { type: "text", value: "Co-founding " },
+    { text: ", Co-founding " },
     {
-      type: "link",
       link: {
         text: "Resonance",
-        href: "https://rsnc.ai",
-        icon: "/pally.svg",
-        iconWidth: 18,
-        iconHeight: 18,
+        url: "https://rsnc.ai",
+        icon: { src: "/pally.svg", alt: "Pally" },
       },
     },
-    { type: "blink" },
   ],
-];
-
-type ExperienceItem = {
-  prefix: string;
-  role: string;
-  company: string;
-  detail: string;
-  icon: string;
-  iconWidth: number;
-  iconHeight: number;
-  iconInvert?: boolean;
-};
-
-const EXPERIENCE: ExperienceItem[] = [
-  {
-    prefix: "#2",
-    role: "Founding Engineer",
-    company: "Icon",
-    detail: "$12M ARR",
-    icon: "/icon.png",
-    iconWidth: 20,
-    iconHeight: 20,
-    iconInvert: true,
-  },
-  {
-    prefix: "",
-    role: "Scout",
-    company: "Soma Capital",
-    detail: "$1B AUM",
-    icon: "/soma.png",
-    iconWidth: 20,
-    iconHeight: 20,
-  },
-  {
-    prefix: "",
-    role: "Founder in Residence",
-    company: "Photon",
-    detail: "0.375%",
-    icon: "/photon.png",
-    iconWidth: 20,
-    iconHeight: 20,
-  },
-  {
-    prefix: "",
-    role: "ML & PL",
-    company: "Penn Medicine",
-    detail: "Prof. Rajapakse",
-    icon: "/penn.png",
-    iconWidth: 20,
-    iconHeight: 20,
-  },
-  {
-    prefix: "",
-    role: "Content Strategist",
-    company: "Blackbox",
-    detail: "2M+ views",
-    icon: "/blackbox.png",
-    iconWidth: 20,
-    iconHeight: 20,
-    iconInvert: true,
-  },
-  {
-    prefix: "",
-    role: "SWE & PM",
-    company: "United Nations",
-    detail: "acquired @ 16",
-    icon: "/un.png",
-    iconWidth: 20,
-    iconHeight: 20,
-  },
+  [{ text: "Previously I was..." }],
+  [
+    { text: "- #2 Founding Engineer @ " },
+    {
+      link: {
+        text: "Icon",
+        url: "https://icon.com",
+        icon: { src: "/icon.png", alt: "Icon", dy: 1 },
+      },
+    },
+    { text: " ($12M ARR)" },
+  ],
+  [
+    { text: "- Scout @ " },
+    {
+      link: {
+        text: "Soma Capital",
+        url: "https://somacap.com/",
+        icon: { src: "/soma.png", alt: "Soma Capital", fit: "contain" },
+      },
+    },
+    { text: " ($1B AUM)" },
+  ],
+  [
+    { text: "- Founder in Residence @ " },
+    {
+      link: {
+        text: "Photon",
+        url: "https://photon.codes",
+        icon: { src: "/photon.png", alt: "Photon" },
+      },
+    },
+    { text: " (0.375%)" },
+  ],
+  [
+    { text: "- ML & PL @ " },
+    {
+      link: {
+        text: "Penn Medicine",
+        url: "https://www.pennmedicine.org/",
+        icon: {
+          src: "/penn.png",
+          alt: "Penn Medicine",
+          size: 20,
+          dy: 1,
+          grayscale: true,
+        },
+      },
+    },
+    { text: " (Prof. Rajapakse)" },
+  ],
+  [
+    { text: "- Content Strategist @ " },
+    {
+      link: {
+        text: "Blackbox",
+        url: "https://blackbox.ai",
+        icon: { src: "/blackbox.png", alt: "Blackbox" },
+      },
+    },
+    { text: " (2M+ views)" },
+  ],
+  [
+    { text: "- SWE & PM @ " },
+    {
+      link: {
+        text: "United Nations",
+        url: "https://un.org",
+        icon: {
+          src: "/un.png",
+          alt: "United Nations",
+          size: 22,
+          grayscale: true,
+          brightness: 0.1,
+          zoom: 1,
+          fit: "contain",
+        },
+      },
+    },
+    { text: " (acq. @ 16)" },
+  ],
 ];
 
 const EMAIL = "him@jasonxu.me";
 
-const FOOTER_LINKS = [
-  { label: "Portfolio", href: "#" },
-  { label: "Lore", href: "#" },
-];
+const COLORS = {
+  background: "#ffffff",
+  primary: "#333333",
+  secondary: "#666666",
+};
 
-const STORY_LINKS = [
-  { label: "Portfolio", href: "#" },
-  { label: "Lore", href: "#" },
-];
+const FONT_BODY = {
+  fontFamily: "var(--font-montserrat), sans-serif",
+  fontWeight: 300 as const,
+};
 
-/* ── Components ────────────────────────────────────────── */
+const FONT_HEADING = {
+  fontFamily: "var(--font-garamond), serif",
+  fontWeight: 300 as const,
+};
 
-function InlineLinkEl({ link }: { link: InlineLink }) {
+/* ── Helpers ───────────────────────────────────────────── */
+
+function lineSpacing(index: number): string | undefined {
+  if (index === 0) return undefined;
+  if (index === 1) return "mt-6";
+  return "mt-2";
+}
+
+function IconBadge({ icon }: { icon: IconConfig }) {
+  const size = icon.size ?? 18;
+  const radius = icon.radius ?? 5;
+
+  const filterParts = [
+    icon.grayscale && "grayscale(1)",
+    icon.invert && "invert(1)",
+    icon.brightness != null && `brightness(${icon.brightness})`,
+  ].filter(Boolean);
+
+  const fitClass =
+    icon.fit === "contain"
+      ? "object-contain"
+      : icon.fit === "fill"
+        ? "object-fill"
+        : "object-cover";
+
   return (
-    <a
-      href={link.href}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="inline-link"
+    <span
+      className="inline-block align-middle mr-1 overflow-hidden"
+      style={{
+        width: `${size}px`,
+        height: `${size}px`,
+        borderRadius: `${radius}px`,
+        marginTop: `${-4 + (icon.dy ?? 0)}px`,
+        backgroundColor: icon.bg,
+      }}
     >
-      {link.icon && (
-        <Image
-          src={link.icon}
-          alt=""
-          width={link.iconWidth ?? 18}
-          height={link.iconHeight ?? 18}
-          className={`mr-1 inline-block align-middle ${
-            link.iconInvert ? "invert" : ""
-          }`}
-        />
-      )}
-      {link.text}
-    </a>
-  );
-}
-
-function HeroLine({ segments }: { segments: HeroSegment[] }) {
-  return (
-    <p className="text-base md:text-lg">
-      {segments.map((seg, i) => {
-        if (seg.type === "text") return <span key={i}>{seg.value}</span>;
-        if (seg.type === "link")
-          return <InlineLinkEl key={i} link={seg.link} />;
-        if (seg.type === "blink")
-          return (
-            <span key={i} className="animate-blink">
-              |
-            </span>
-          );
-        return null;
-      })}
-    </p>
-  );
-}
-
-function ExperienceRow({ item }: { item: ExperienceItem }) {
-  return (
-    <p className="text-sm md:text-base">
       <Image
-        src={item.icon}
-        alt=""
-        width={item.iconWidth}
-        height={item.iconHeight}
-        className={`mr-1 inline-block align-middle ${
-          item.iconInvert ? "brightness-75 grayscale invert" : "grayscale"
-        }`}
+        src={icon.src}
+        alt={icon.alt}
+        width={size}
+        height={size}
+        className={`h-full w-full ${fitClass}`}
+        style={{
+          ...(icon.zoom ? { transform: `scale(${icon.zoom})` } : {}),
+          filter: filterParts.length ? filterParts.join(" ") : undefined,
+        }}
       />
-      {item.prefix && <span className="font-semibold">{item.prefix} </span>}
-      {item.role} @{" "}
-      <span className="font-semibold">{item.company}</span>{" "}
-      <span className="text-sm opacity-60">({item.detail})</span>
-    </p>
+    </span>
   );
 }
 
@@ -200,55 +199,77 @@ function ExperienceRow({ item }: { item: ExperienceItem }) {
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen w-full items-center justify-center px-6 md:px-12">
-      <div className="w-full max-w-3xl">
-        {/* Heading */}
-        <h1
-          className="text-5xl leading-tight md:text-6xl lg:text-7xl"
-          style={{ fontFamily: "var(--font-garamond)" }}
-        >
-          Amogh Jambekar
-        </h1>
+    <div
+      className="min-h-screen transition-colors duration-300"
+      style={{
+        ...FONT_BODY,
+        backgroundColor: COLORS.background,
+        color: COLORS.primary,
+      }}
+    >
+      <section className="min-h-screen flex items-center justify-center px-6 md:px-12">
+        <div className="w-full max-w-3xl mt-6 mb-6">
+          {/* Heading */}
+          <h1
+            className="text-5xl md:text-6xl lg:text-7xl mb-6 leading-tight transition-colors duration-300"
+            style={{ ...FONT_HEADING, color: COLORS.primary }}
+          >
+            Amogh Jambekar
+          </h1>
 
-        {/* Hero lines */}
-        <div className="mt-6">
-          {HERO_CONTENT.map((line, i) => (
-            <HeroLine key={i} segments={line} />
-          ))}
-        </div>
+          {/* Content lines */}
+          <div
+            className="text-base md:text-lg transition-colors duration-300"
+            style={{ color: COLORS.secondary, lineHeight: 1.7 }}
+          >
+            {LINES.map((segments, lineIdx) => (
+              <p key={lineIdx} className={lineSpacing(lineIdx)}>
+                {segments.map((seg, segIdx) =>
+                  "link" in seg ? (
+                    <a
+                      key={segIdx}
+                      href={seg.link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-link"
+                    >
+                      {seg.link.icon && <IconBadge icon={seg.link.icon} />}
+                      {seg.link.text}
+                    </a>
+                  ) : (
+                    <span key={segIdx}>{seg.text}</span>
+                  )
+                )}
+                {lineIdx === 0 && (
+                  <span
+                    className="animate-blink"
+                    style={{ color: COLORS.secondary }}
+                  >
+                    {" "}
+                    ░
+                  </span>
+                )}
+              </p>
+            ))}
+          </div>
 
-        {/* Previously */}
-        <h2 className="mt-8 mb-4 text-2xl md:text-3xl" style={{ fontFamily: "var(--font-garamond)" }}>
-          Previously
-        </h2>
-        <div className="space-y-1">
-          {EXPERIENCE.map((item, i) => (
-            <ExperienceRow key={i} item={item} />
-          ))}
-        </div>
-
-        {/* Contact */}
-        <div className="mt-8">
-          <p className="text-base md:text-lg">
-            Reach me at{" "}
+          {/* Email */}
+          <h2>
             <a
               href={`mailto:${EMAIL}`}
-              className="contact-link underline"
+              className="contact-link text-2xl md:text-3xl mt-6 leading-tight inline-block transition-colors duration-300"
+              style={{
+                ...FONT_HEADING,
+                color: COLORS.primary,
+                textDecoration: "none",
+                transformOrigin: "left center",
+              }}
             >
               {EMAIL}
             </a>
-          </p>
+          </h2>
         </div>
-
-        {/* Footer nav */}
-        <nav className="mt-6 mb-6 flex flex-wrap gap-x-6 gap-y-3 md:gap-x-8">
-          {FOOTER_LINKS.map((link, i) => (
-            <a key={i} href={link.href} className="nav-link text-sm">
-              {link.label}
-            </a>
-          ))}
-        </nav>
-      </div>
-    </main>
+      </section>
+    </div>
   );
 }
