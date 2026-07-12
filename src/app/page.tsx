@@ -28,9 +28,9 @@ const CURRENT_LINE: Segment[] = [
   { text: "Currently building " },
   {
     link: {
-      text: "Emocentric",
-      url: "https://www.emo.studio",
-      icon: { src: "/emocentric.svg", alt: "Emocentric" },
+      text: "Tandem",
+      url: "",
+      icon: { src: "", alt: "" },
     },
   },
   { text: ", Student at " },
@@ -38,7 +38,7 @@ const CURRENT_LINE: Segment[] = [
     link: {
       text: "Northeastern",
       url: "https://catalog.northeastern.edu/undergraduate/engineering/electrical-computer/computer-engineering-bscompe/",
-      icon: { src: "/northeastern.png", alt: "Northeastern" },
+      icon: { src: "/northeastern.png", alt: "Northeastern", size: 24 },
     },
   },
 ];
