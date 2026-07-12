@@ -22,30 +22,30 @@ type LinkSegment = {
 type TextSegment = { text: string };
 type Segment = LinkSegment | TextSegment;
 
-/* ── Content — swap with your own ─────────────────────── */
 
-const LINES: Segment[][] = [
-  [
-    { text: "Currently building " },
-    {
-      link: {
-        text: "Emocentric",
-        url: "https://www.emo.studio",
-        icon: { src: "/emocentric.svg", alt: "Emocentric" },
-      },
+
+const CURRENT_LINE: Segment[] = [
+  { text: "Currently building " },
+  {
+    link: {
+      text: "Emocentric",
+      url: "https://www.emo.studio",
+      icon: { src: "/emocentric.svg", alt: "Emocentric" },
     },
-    { text: ", Co-founding " },
-    {
-      link: {
-        text: "Resonance",
-        url: "https://rsnc.ai",
-        icon: { src: "/pally.svg", alt: "Pally" },
-      },
+  },
+  { text: ", Student at " },
+  {
+    link: {
+      text: "Northeastern",
+      url: "https://catalog.northeastern.edu/undergraduate/engineering/electrical-computer/computer-engineering-bscompe/",
+      icon: { src: "/northeastern.png", alt: "Northeastern" },
     },
-  ],
-  [{ text: "Previously I was..." }],
+  },
+];
+
+const EXPERIENCE: Segment[][] = [
   [
-    { text: "• #2 Founding Engineer @ " },
+    { text: "#2 Founding Engineer @ " },
     {
       link: {
         text: "Icon",
@@ -56,7 +56,7 @@ const LINES: Segment[][] = [
     { text: " ($12M ARR)" },
   ],
   [
-    { text: "• Scout @ " },
+    { text: "Scout @ " },
     {
       link: {
         text: "Soma Capital",
@@ -67,7 +67,7 @@ const LINES: Segment[][] = [
     { text: " ($1B AUM)" },
   ],
   [
-    { text: "• Founder in Residence @ " },
+    { text: "Founder in Residence @ " },
     {
       link: {
         text: "Photon",
@@ -78,7 +78,7 @@ const LINES: Segment[][] = [
     { text: " (0.375%)" },
   ],
   [
-    { text: "• ML & PL @ " },
+    { text: "ML & PL @ " },
     {
       link: {
         text: "Penn Medicine",
@@ -95,7 +95,7 @@ const LINES: Segment[][] = [
     { text: " (Prof. Rajapakse)" },
   ],
   [
-    { text: "• Content Strategist @ " },
+    { text: "Content Strategist @ " },
     {
       link: {
         text: "Blackbox",
@@ -106,7 +106,7 @@ const LINES: Segment[][] = [
     { text: " (2M+ views)" },
   ],
   [
-    { text: "• SWE & PM @ " },
+    { text: "SWE & PM @ " },
     {
       link: {
         text: "United Nations",
@@ -125,6 +125,9 @@ const LINES: Segment[][] = [
     { text: " (acq. @ 16)" },
   ],
 ];
+
+const FREE_TIME =
+  "In my free time, I like to play pickup basketball, eat a lot of food and explore the world.";
 
 const EMAIL = "him@jasonxu.me";
 
@@ -146,10 +149,27 @@ const FONT_HEADING = {
 
 /* ── Helpers ───────────────────────────────────────────── */
 
-function lineSpacing(index: number): string | undefined {
-  if (index === 0) return undefined;
-  if (index === 1) return "mt-6";
-  return "mt-2";
+function SegmentRenderer({ segments }: { segments: Segment[] }) {
+  return (
+    <>
+      {segments.map((seg, i) =>
+        "link" in seg ? (
+          <a
+            key={i}
+            href={seg.link.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-link"
+          >
+            {seg.link.icon && <IconBadge icon={seg.link.icon} />}
+            {seg.link.text}
+          </a>
+        ) : (
+          <span key={i}>{seg.text}</span>
+        )
+      )}
+    </>
+  );
 }
 
 function IconBadge({ icon }: { icon: IconConfig }) {
@@ -217,31 +237,27 @@ export default function Home() {
             Amogh Jambekar
           </h1>
 
-          {/* Content lines */}
+          {/* Current */}
           <div
             className="text-base md:text-lg transition-colors duration-300"
             style={{ color: COLORS.secondary, lineHeight: 1.7 }}
           >
-            {LINES.map((segments, lineIdx) => (
-              <p key={lineIdx} className={lineSpacing(lineIdx)}>
-                {segments.map((seg, segIdx) =>
-                  "link" in seg ? (
-                    <a
-                      key={segIdx}
-                      href={seg.link.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-link"
-                    >
-                      {seg.link.icon && <IconBadge icon={seg.link.icon} />}
-                      {seg.link.text}
-                    </a>
-                  ) : (
-                    <span key={segIdx}>{seg.text}</span>
-                  )
-                )}
-              </p>
-            ))}
+            <p>
+              <SegmentRenderer segments={CURRENT_LINE} />
+            </p>
+
+            {/* Previously */}
+            <p className="mt-6">Previously I was...</p>
+            <ul className="mt-2 pl-5 space-y-1" style={{ listStyleType: "'•  '" }}>
+              {EXPERIENCE.map((segments, i) => (
+                <li key={i}>
+                  <SegmentRenderer segments={segments} />
+                </li>
+              ))}
+            </ul>
+
+            {/* Free time */}
+            <p className="mt-6">{FREE_TIME}</p>
           </div>
 
           {/* Email */}
