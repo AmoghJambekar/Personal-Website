@@ -45,7 +45,7 @@ const LINES: Segment[][] = [
   ],
   [{ text: "Previously I was..." }],
   [
-    { text: "- #2 Founding Engineer @ " },
+    { text: "• #2 Founding Engineer @ " },
     {
       link: {
         text: "Icon",
@@ -56,7 +56,7 @@ const LINES: Segment[][] = [
     { text: " ($12M ARR)" },
   ],
   [
-    { text: "- Scout @ " },
+    { text: "• Scout @ " },
     {
       link: {
         text: "Soma Capital",
@@ -67,7 +67,7 @@ const LINES: Segment[][] = [
     { text: " ($1B AUM)" },
   ],
   [
-    { text: "- Founder in Residence @ " },
+    { text: "• Founder in Residence @ " },
     {
       link: {
         text: "Photon",
@@ -78,7 +78,7 @@ const LINES: Segment[][] = [
     { text: " (0.375%)" },
   ],
   [
-    { text: "- ML & PL @ " },
+    { text: "• ML & PL @ " },
     {
       link: {
         text: "Penn Medicine",
@@ -95,7 +95,7 @@ const LINES: Segment[][] = [
     { text: " (Prof. Rajapakse)" },
   ],
   [
-    { text: "- Content Strategist @ " },
+    { text: "• Content Strategist @ " },
     {
       link: {
         text: "Blackbox",
@@ -106,7 +106,7 @@ const LINES: Segment[][] = [
     { text: " (2M+ views)" },
   ],
   [
-    { text: "- SWE & PM @ " },
+    { text: "• SWE & PM @ " },
     {
       link: {
         text: "United Nations",
@@ -239,15 +239,6 @@ export default function Home() {
                   ) : (
                     <span key={segIdx}>{seg.text}</span>
                   )
-                )}
-                {lineIdx === 0 && (
-                  <span
-                    className="animate-blink"
-                    style={{ color: COLORS.secondary }}
-                  >
-                    {" "}
-                    ░
-                  </span>
                 )}
               </p>
             ))}
