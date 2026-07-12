@@ -1,7 +1,108 @@
 @import "tailwindcss";
 @config "../../tailwind.config.ts";
 
-/* Tailwind v4: EB Garamond comes from next/font via --font-eb-garamond on <html> */
 @theme inline {
-  --font-garamond: var(--font-eb-garamond), ui-serif, Georgia, "Times New Roman", serif;
+  --font-garamond: var(--font-eb-garamond), ui-serif, Georgia, "Times New Roman",
+    serif;
+  --font-montserrat: var(--font-montserrat-var), ui-sans-serif, system-ui,
+    sans-serif;
+}
+
+:root {
+  --background: #fff;
+  --foreground: #171717;
+}
+
+* {
+  cursor: none;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-montserrat);
+}
+
+/* Blob cursor */
+.blob-cursor {
+  position: fixed;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.1);
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: background-color 0.2s, border-radius 0.2s;
+}
+
+.blob-cursor.hover-header,
+.blob-cursor.hover-button {
+  background: rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+}
+
+.blob-cursor.hover-contact {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 0;
+}
+
+.blob-cursor.hover-skill {
+  background: rgba(0, 0, 0, 0.02);
+  border-radius: 50%;
+}
+
+.blob-cursor.hover-underline {
+  background: #333;
+  border-radius: 2px;
+  height: 3px !important;
+  transition: background 0.2s, border-radius 0.2s, height 0.2s;
+  box-shadow: 0 0 8px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* Nav links */
+.nav-link {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+  white-space: nowrap;
+  transition: transform 0.2s;
+  transform-origin: center;
+}
+
+.nav-link:hover {
+  transform: scale(1.02);
+}
+
+/* Inline links */
+.inline-link {
+  display: inline-block;
+  text-decoration: none;
+  color: #000;
+  font-weight: 500;
+  transition: transform 0.2s, color 0.3s;
+  transform-origin: left;
+}
+
+/* Blink animation */
+@keyframes blink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  51%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.animate-blink {
+  animation: blink 1s step-end infinite;
+}
+
+/* Selection highlight */
+::selection {
+  background: #000;
+  color: #fff;
 }

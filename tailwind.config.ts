@@ -10,6 +10,7 @@ const config: Config = {
     extend: {
       fontFamily: {
         garamond: ["var(--font-eb-garamond)", "serif"],
+        montserrat: ["var(--font-montserrat-var)", "sans-serif"],
       },
     },
   },
