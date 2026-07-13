@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { PageLoader } from "@/components/PageLoader";
 
 /* ── Types ─────────────────────────────────────────────── */
 
@@ -216,6 +217,7 @@ function IconBadge({ icon }: { icon: IconConfig }) {
 
 export default function Home() {
   return (
+    <PageLoader>
     <div
       className="min-h-screen"
       style={{
@@ -299,5 +301,6 @@ export default function Home() {
         </div>
       </section>
     </div>
+    </PageLoader>
   );
 }
