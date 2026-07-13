@@ -34,7 +34,7 @@ const CURRENT_LINE: Segment[] = [
       icon: { src: "/tandem_transparent.png", alt: "Tandem", size: 22 },
     },
   },
-  { text: ",  Sophomore at " },
+  { text: " and entering my second-year at " },
   {
     link: {
       text: "Northeastern",
