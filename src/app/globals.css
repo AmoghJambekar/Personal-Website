@@ -1,0 +1,91 @@
+@import "tailwindcss";
+@config "../../tailwind.config.ts";
+
+@theme inline {
+  --font-heading: var(--font-playfair), ui-serif, Georgia, "Times New Roman",
+    serif;
+  --font-montserrat: var(--font-montserrat-var), ui-sans-serif, system-ui,
+    sans-serif;
+}
+
+:root {
+  --background: #fff;
+  --foreground: #1a1a1a;
+  --foreground-secondary: #3a3a3a;
+}
+
+@media (pointer: fine) {
+  * {
+    cursor: none;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-montserrat);
+}
+
+/* Blob cursor */
+.blob-cursor {
+  position: fixed;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.1);
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: background-color 0.2s, border-radius 0.2s;
+}
+
+.blob-cursor.hover-header {
+  background: rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+}
+
+.blob-cursor.hover-contact {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 0;
+}
+
+
+
+/* Focus styles */
+:focus-visible {
+  outline: 2px solid #000;
+  outline-offset: 2px;
+}
+
+/* Inline links */
+.inline-link {
+  display: inline-block;
+  text-decoration: none;
+  color: var(--foreground);
+  font-weight: 600;
+  transition: transform 0.2s, color 0.3s;
+  transform-origin: left;
+}
+
+/* Contact link */
+.contact-link {
+  transition: background-color 0.2s;
+  padding: 8px;
+  margin: -8px;
+  cursor: pointer;
+  pointer-events: auto;
+  text-decoration: none !important;
+}
+
+.contact-link:hover,
+.contact-link:focus,
+.contact-link:active {
+  background-color: rgba(0, 0, 0, 0.08);
+  text-decoration: none !important;
+}
+
+/* Selection highlight */
+::selection {
+  background: #000;
+  color: #fff;
+}
