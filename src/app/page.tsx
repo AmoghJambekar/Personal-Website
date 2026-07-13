@@ -45,6 +45,17 @@ const CURRENT_LINE: Segment[] = [
 
 const EXPERIENCE: Segment[][] = [
   [
+    { text: "Incoming Software Developer @ " },
+    {
+      link: {
+        text: "Sandbox",
+        url: "https://www.sandboxnu.com/",
+        icon: { src: "/sandbox.png", alt: "Sandbox" },
+      },
+    },
+    { text: " (Fall 2026)" },
+  ],
+  [
     { text: "Created " },
     {
       link: {
