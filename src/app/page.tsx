@@ -228,7 +228,7 @@ export default function Home() {
         <div className="w-full max-w-4xl mt-6 mb-6">
             {/* Heading */}
             <h1
-              className="text-6xl md:text-7xl lg:text-8xl mb-8 leading-tight"
+              className="text-5xl md:text-6xl lg:text-7xl mb-8 leading-tight"
               style={{ ...FONT_HEADING, color: COLORS.primary }}
             >
               Amogh Jambekar
@@ -236,7 +236,7 @@ export default function Home() {
 
             {/* Current */}
             <div
-              className="text-lg md:text-xl"
+              className="text-base md:text-lg"
               style={{ color: COLORS.secondary, lineHeight: 1.7 }}
             >
               <p>
@@ -259,7 +259,7 @@ export default function Home() {
             <h2 className="mt-4">
               <a
                 href={`mailto:${EMAIL}`}
-                className="contact-link text-2xl md:text-3xl leading-tight inline-block"
+                className="contact-link text-xl md:text-2xl leading-tight inline-block"
                 style={{
                   ...FONT_HEADING,
                   color: COLORS.primary,
