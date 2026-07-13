@@ -44,7 +44,7 @@ const CURRENT_LINE: Segment[] = [
 ];
 
 const EXPERIENCE: Segment[][] = [
-  [{ text: "Created JerseyStats: (NBA analytics by jersey colorway)" }],
+  [{ text: "Created JerseyStats: NBA analytics by jersey colorway" }],
   [{ text: "Built BackedX @ TartanHacks 2026 (Winner - Ripple Prize)" }],
   [
     {
