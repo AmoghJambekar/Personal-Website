@@ -58,6 +58,8 @@ export default function ContentWithTrail({ children, images }: ContentWithTrailP
                 src={src}
                 alt=""
                 className="w-full h-full object-cover"
+                loading="lazy"
+                decoding="async"
                 draggable={false}
               />
             </div>

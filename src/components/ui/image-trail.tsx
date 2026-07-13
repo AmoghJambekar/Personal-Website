@@ -1,6 +1,6 @@
 "use client"
 
-import React, { ElementType, HTMLAttributes, useEffect, useMemo } from "react"
+import React, { ElementType, HTMLAttributes, useEffect, useMemo, useCallback } from "react"
 import type { DOMKeyframesDefinition, AnimationOptions } from "framer-motion"
 import { useAnimate } from "framer-motion"
 
@@ -22,7 +22,6 @@ interface ImageTrailProps extends HTMLAttributes<HTMLDivElement> {
   repeatChildren?: number
   baseZIndex?: number
   zIndexDirection?: "new-on-top" | "old-on-top"
-  /** CSS selector for an element whose bounding rect should be excluded from spawning */
   excludeSelector?: string
 }
 
@@ -33,8 +32,11 @@ interface ImageTrailItemProps extends HTMLAttributes<HTMLDivElement> {
 
 const MathUtils = {
   lerp: (a: number, b: number, n: number) => (1 - n) * a + n * b,
-  distance: (x1: number, y1: number, x2: number, y2: number) =>
-    Math.hypot(x2 - x1, y2 - y1),
+  distanceSq: (x1: number, y1: number, x2: number, y2: number) => {
+    const dx = x2 - x1
+    const dy = y2 - y1
+    return dx * dx + dy * dy
+  },
 }
 
 const ImageTrail = ({
@@ -61,11 +63,29 @@ const ImageTrail = ({
   const cachedMousePos = React.useRef({ x: 0, y: 0 })
   const [containerRef, animate] = useAnimate()
   const zIndices = React.useRef<number[]>([])
+  const rafId = React.useRef(0)
+  const pendingEvent = React.useRef<{ clientX: number; clientY: number } | null>(null)
+
+  // Cache exclude element rect — recalculate on scroll/resize, not every move
+  const excludeRect = React.useRef<DOMRect | null>(null)
+  const excludeEl = React.useRef<Element | null>(null)
+
+  const thresholdSq = useMemo(() => threshold * threshold, [threshold])
 
   const clampedIntensity = useMemo(
     () => Math.max(0.0001, Math.min(1, intensity)),
     [intensity]
   )
+
+  const refreshExcludeRect = useCallback(() => {
+    if (!excludeSelector) return
+    if (!excludeEl.current) {
+      excludeEl.current = document.querySelector(excludeSelector)
+    }
+    if (excludeEl.current) {
+      excludeRect.current = excludeEl.current.getBoundingClientRect()
+    }
+  }, [excludeSelector])
 
   useEffect(() => {
     allImages.current = containerRef?.current?.querySelectorAll(
@@ -78,27 +98,42 @@ const ImageTrail = ({
     )
   }, [containerRef, allImages])
 
-  const handleMouseMove = (e: React.MouseEvent) => {
-    // Skip if mouse is inside the excluded element
-    if (excludeSelector) {
-      const excludeEl = document.querySelector(excludeSelector)
-      if (excludeEl) {
-        const rect = excludeEl.getBoundingClientRect()
-        if (
-          e.clientX >= rect.left &&
-          e.clientX <= rect.right &&
-          e.clientY >= rect.top &&
-          e.clientY <= rect.bottom
-        ) {
-          return
-        }
+  // Cache exclude rect on scroll/resize instead of every mouse move
+  useEffect(() => {
+    refreshExcludeRect()
+    window.addEventListener("resize", refreshExcludeRect)
+    window.addEventListener("scroll", refreshExcludeRect, { passive: true })
+    return () => {
+      window.removeEventListener("resize", refreshExcludeRect)
+      window.removeEventListener("scroll", refreshExcludeRect)
+      cancelAnimationFrame(rafId.current)
+    }
+  }, [refreshExcludeRect])
+
+  const processMove = useCallback(() => {
+    const e = pendingEvent.current
+    if (!e) return
+    pendingEvent.current = null
+
+    // Check exclude rect using cached value
+    if (excludeRect.current) {
+      const r = excludeRect.current
+      if (
+        e.clientX >= r.left &&
+        e.clientX <= r.right &&
+        e.clientY >= r.top &&
+        e.clientY <= r.bottom
+      ) {
+        return
       }
     }
 
     const containerRect = containerRef?.current?.getBoundingClientRect()
+    if (!containerRect) return
+
     const mousePos = {
-      x: e.clientX - (containerRect?.left || 0),
-      y: e.clientY - (containerRect?.top || 0),
+      x: e.clientX - containerRect.left,
+      y: e.clientY - containerRect.top,
     }
 
     cachedMousePos.current.x = MathUtils.lerp(
@@ -112,14 +147,15 @@ const ImageTrail = ({
       clampedIntensity
     )
 
-    const distance = MathUtils.distance(
+    // Use squared distance to avoid Math.hypot
+    const distSq = MathUtils.distanceSq(
       mousePos.x,
       mousePos.y,
       lastMousePos.current.x,
       lastMousePos.current.y
     )
 
-    if (distance > threshold && allImages?.current) {
+    if (distSq > thresholdSq && allImages?.current) {
       const N = allImages.current.length
       const current = currentId.current
 
@@ -135,24 +171,27 @@ const ImageTrail = ({
         zIndices.current[current] = 0
       }
 
-      allImages.current[current].style.display = "block"
+      const el = allImages.current[current]
+      // Position before showing to prevent flash at top-left
+      const startX = cachedMousePos.current.x - el.offsetWidth / 2
+      const startY = cachedMousePos.current.y - el.offsetHeight / 2
+      el.style.transform = `translate(${startX}px, ${startY}px)`
+      el.style.opacity = "0"
+      el.style.display = "block"
       allImages.current.forEach((img, index) => {
         img.style.zIndex = String(zIndices.current[index] + baseZIndex)
       })
 
       animate(
-        allImages.current[currentId.current],
+        el,
         {
           x: [
-            cachedMousePos.current.x -
-              allImages.current[currentId.current].offsetWidth / 2,
-            mousePos.x - allImages.current[currentId.current].offsetWidth / 2,
+            cachedMousePos.current.x - el.offsetWidth / 2,
+            mousePos.x - el.offsetWidth / 2,
           ],
           y: [
-            cachedMousePos.current.y -
-              allImages.current[currentId.current].offsetHeight / 2,
-            mousePos.y -
-              allImages.current[currentId.current].offsetHeight / 2,
+            cachedMousePos.current.y - el.offsetHeight / 2,
+            mousePos.y - el.offsetHeight / 2,
           ],
           ...keyframes,
         },
@@ -165,7 +204,17 @@ const ImageTrail = ({
       currentId.current = (current + 1) % N
       lastMousePos.current = { x: mousePos.x, y: mousePos.y }
     }
-  }
+  }, [
+    animate, baseZIndex, clampedIntensity, containerRef,
+    keyframes, keyframesOptions, thresholdSq,
+    trailElementAnimationKeyframes, zIndexDirection,
+  ])
+
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    pendingEvent.current = { clientX: e.clientX, clientY: e.clientY }
+    cancelAnimationFrame(rafId.current)
+    rafId.current = requestAnimationFrame(processMove)
+  }, [processMove])
 
   const ElementTag = as ?? "div"
 
