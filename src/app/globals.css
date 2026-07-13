@@ -13,8 +13,10 @@
   --foreground: #171717;
 }
 
-* {
-  cursor: none;
+@media (pointer: fine) {
+  * {
+    cursor: none;
+  }
 }
 
 body {
