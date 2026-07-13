@@ -20,7 +20,17 @@ const montserrat = Montserrat({
 
 export const metadata: Metadata = {
   title: "Amogh Jambekar",
-  description: "Portfolio",
+  description: "Software engineer and sophomore at Northeastern. Building Tandem.",
+  openGraph: {
+    title: "Amogh Jambekar",
+    description: "Software engineer and sophomore at Northeastern. Building Tandem.",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: "Amogh Jambekar",
+    description: "Software engineer and sophomore at Northeastern. Building Tandem.",
+  },
 };
 
 export default function RootLayout({

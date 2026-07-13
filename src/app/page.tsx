@@ -129,9 +129,9 @@ const FREE_TIME =
 const EMAIL = "jambekar.a@northeastern.edu";
 
 const COLORS = {
-  background: "#ffffff",
-  primary: "#1a1a1a",
-  secondary: "#3a3a3a",
+  background: "var(--background)",
+  primary: "var(--foreground)",
+  secondary: "var(--foreground-secondary)",
 };
 
 const FONT_BODY = {
@@ -141,7 +141,7 @@ const FONT_BODY = {
 
 const FONT_HEADING = {
   fontFamily: "var(--font-heading), serif",
-  fontWeight: 400 as const,
+  fontWeight: 500 as const,
 };
 
 /* ── Helpers ───────────────────────────────────────────── */
@@ -217,7 +217,7 @@ function IconBadge({ icon }: { icon: IconConfig }) {
 export default function Home() {
   return (
     <div
-      className="min-h-screen transition-colors duration-300"
+      className="min-h-screen"
       style={{
         ...FONT_BODY,
         backgroundColor: COLORS.background,
@@ -228,24 +228,22 @@ export default function Home() {
         <div className="w-full max-w-4xl mt-6 mb-6">
             {/* Heading */}
             <h1
-              className="text-6xl md:text-7xl lg:text-8xl mb-8 leading-tight transition-colors duration-300"
-              style={{ ...FONT_HEADING, color: "#000000", fontWeight: 600 }}
+              className="text-6xl md:text-7xl lg:text-8xl mb-8 leading-tight"
+              style={{ ...FONT_HEADING, color: COLORS.primary }}
             >
               Amogh Jambekar
             </h1>
 
             {/* Current */}
             <div
-              className="text-lg md:text-xl transition-colors duration-300"
+              className="text-lg md:text-xl"
               style={{ color: COLORS.secondary, lineHeight: 1.7 }}
             >
               <p>
                 <SegmentRenderer segments={CURRENT_LINE} />
               </p>
 
-              {/* Previously */}
-              <p className="mt-6">A little about me and what I've done...</p>
-              <ul className="mt-2 pl-5 space-y-1" style={{ listStyleType: "'•  '" }}>
+              <ul className="mt-6 pl-5 space-y-1" style={{ listStyleType: "'•  '" }}>
                 {EXPERIENCE.map((segments, i) => (
                   <li key={i}>
                     <SegmentRenderer segments={segments} />
@@ -261,7 +259,7 @@ export default function Home() {
             <h2 className="mt-4">
               <a
                 href={`mailto:${EMAIL}`}
-                className="contact-link text-3xl md:text-4xl leading-tight inline-block transition-colors duration-300"
+                className="contact-link text-2xl md:text-3xl leading-tight inline-block"
                 style={{
                   ...FONT_HEADING,
                   color: COLORS.primary,
@@ -274,12 +272,12 @@ export default function Home() {
             </h2>
 
             {/* Social links */}
-            <div className="flex items-center gap-5 mt-8">
+            <div className="flex items-center gap-4 mt-8">
               <a
                 href="https://linkedin.com/in/amoghjambekar"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-link"
+                className="inline-link p-2"
                 aria-label="LinkedIn"
               >
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="#0A66C2">
@@ -290,7 +288,7 @@ export default function Home() {
                 href="https://github.com/AmoghJambekar"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-link"
+                className="inline-link p-2"
                 aria-label="GitHub"
               >
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="#181717">

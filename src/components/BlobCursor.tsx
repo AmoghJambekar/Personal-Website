@@ -5,9 +5,6 @@ import { useEffect, useRef } from "react";
 const HOVER_CLASSES: Record<string, string> = {
   header: "hover-header",
   contact: "hover-contact",
-  button: "hover-button",
-  skill: "hover-skill",
-  underline: "hover-underline",
 };
 
 function expandRect(
@@ -44,26 +41,10 @@ function detectHover(x: number, y: number): HoverTarget {
 
   const pad = { top: 2, right: 8, bottom: 2, left: 8 };
 
-  for (const navLink of document.querySelectorAll(".nav-link")) {
-    const rect = navLink.getBoundingClientRect();
-    if (hitTest(x, y, rect)) {
-      return { type: "header", bounds: expandRect(rect, pad) };
-    }
-  }
-
   for (const inlineLink of document.querySelectorAll(".inline-link")) {
     const rect = inlineLink.getBoundingClientRect();
     if (hitTest(x, y, rect)) {
       return { type: "header", bounds: expandRect(rect, pad) };
-    }
-  }
-
-  const skillBubble = el.closest(".skill-bubble");
-  if (skillBubble) {
-    const rect = skillBubble.getBoundingClientRect();
-    const sPad = { top: 4, right: 8, bottom: 4, left: 8 };
-    if (hitTest(x, y, rect, sPad)) {
-      return { type: "skill", bounds: expandRect(rect, sPad) };
     }
   }
 
@@ -74,18 +55,6 @@ function detectHover(x: number, y: number): HoverTarget {
       type: "contact",
       bounds: new DOMRect(rect.left, rect.bottom - 2, rect.width, 2),
     };
-  }
-
-  const downloadBtn = el.closest(".download-btn");
-  if (downloadBtn) {
-    const rect = downloadBtn.getBoundingClientRect();
-    const bPad = { top: 2, right: 8, bottom: 2, left: 8 };
-    if (hitTest(x, y, rect, bPad)) {
-      return {
-        type: "button",
-        bounds: expandRect(rect, { top: 2, right: 4, bottom: 2, left: 4 }),
-      };
-    }
   }
 
   const h2 = el.closest("h2");
