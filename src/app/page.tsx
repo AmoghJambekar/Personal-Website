@@ -247,10 +247,10 @@ export default function Home() {
             </div>
 
             {/* Email */}
-            <h2>
+            <h2 className="mt-4">
               <a
                 href={`mailto:${EMAIL}`}
-                className="contact-link text-3xl md:text-4xl mt-8 leading-tight inline-block transition-colors duration-300"
+                className="contact-link text-3xl md:text-4xl leading-tight inline-block transition-colors duration-300"
                 style={{
                   ...FONT_HEADING,
                   color: COLORS.primary,
@@ -263,11 +263,12 @@ export default function Home() {
             </h2>
 
             {/* Social links */}
-            <div className="flex items-center gap-4 mt-4">
+            <div className="flex items-center gap-5 mt-8">
               <a
                 href="https://linkedin.com/in/amoghjambekar"
                 target="_blank"
                 rel="noopener noreferrer"
+                className="inline-link"
                 aria-label="LinkedIn"
               >
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="#0A66C2">
@@ -278,6 +279,7 @@ export default function Home() {
                 href="https://github.com/AmoghJambekar"
                 target="_blank"
                 rel="noopener noreferrer"
+                className="inline-link"
                 aria-label="GitHub"
               >
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="#181717">
