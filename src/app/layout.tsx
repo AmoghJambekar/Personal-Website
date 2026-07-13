@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
-import { EB_Garamond, Montserrat } from "next/font/google";
+import { Playfair_Display, Montserrat } from "next/font/google";
 import BlobCursor from "@/components/BlobCursor";
 import "./globals.css";
 
-const ebGaramond = EB_Garamond({
+const playfair = Playfair_Display({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   style: ["normal", "italic"],
   display: "swap",
-  variable: "--font-eb-garamond",
+  variable: "--font-playfair",
 });
 
 const montserrat = Montserrat({
@@ -31,7 +31,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${ebGaramond.variable} ${montserrat.variable} h-full`}
+      className={`${playfair.variable} ${montserrat.variable} h-full`}
     >
       <body
         className={`${montserrat.className} m-0 min-h-full overflow-x-hidden antialiased`}

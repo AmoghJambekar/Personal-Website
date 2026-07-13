@@ -44,28 +44,76 @@ const CURRENT_LINE: Segment[] = [
 ];
 
 const EXPERIENCE: Segment[][] = [
-  [{ text: "Created JerseyStats: NBA analytics by jersey colorway" }],
-  [{ text: "Built BackedX @ TartanHacks 2026 (Winner - Ripple Prize)" }],
   [
+    { text: "Created " },
     {
-      text: "Computer Architecture and Memory Management @ Northeastern COE (Prof. Kaeli)",
+      link: {
+        text: "JerseyStats",
+        url: "https://jerseystats.up.railway.app/",
+        icon: { src: "/jerseystats_favicon.png", alt: "JerseyStats", radius: 50 },
+      },
     },
-  ],
-  [{ text: "Growth @ EmberPay (Sourced 1,500+ waitlist signups)" }],
-  [
-    {
-      text: "SWE @ BestParents.com (Developed GPT4-native college essay writer for 1.5k+ low income students)",
-    },
+    { text: ": NBA analytics by jersey colorway" },
   ],
   [
+    { text: "Built " },
     {
-      text: "SWE @ Holonym Foundation (Solo dev for a identity verification tool for 10k+ downloads and a 5.5M$ seed round)",
+      link: {
+        text: "BackedX",
+        url: "https://github.com/1N4B0M9/BackedX",
+        icon: { src: "/backedx.png", alt: "BackedX" },
+      },
     },
+    { text: " @ TartanHacks 2026 (Winner: Ripple Prize)" },
+  ],
+  [
+    { text: "Computer Architecture @ " },
+    {
+      link: {
+        text: "Northeastern COE",
+        url: "https://ece.northeastern.edu/fac-ece/kaeli.html",
+        icon: { src: "/northeasterncoe.jpg", alt: "Northeastern COE", radius: 50 },
+      },
+    },
+    { text: " (Prof. Kaeli)" },
+  ],
+  [
+    { text: "Growth @ " },
+    {
+      link: {
+        text: "EmberPay",
+        url: "https://embercard.com",
+        icon: { src: "/emberpay.jpeg", alt: "EmberPay" },
+      },
+    },
+    { text: " (1,500+ waitlist signups)" },
+  ],
+  [
+    { text: "SWE @ " },
+    {
+      link: {
+        text: "BestParents.com",
+        url: "https://www.bestparents.com/copilot",
+        icon: { src: "/bestparents.jpeg", alt: "BestParents" },
+      },
+    },
+    { text: " (College essay wizard for 1.5k+ low income students)" },
+  ],
+  [
+    { text: "SWE @ " },
+    {
+      link: {
+        text: "Holonym Foundation",
+        url: "https://human.tech/",
+        icon: { src: "/holonym.jpeg", alt: "Holonym" },
+      },
+    },
+    { text: " (10k+ downloads, 5.5M$ seed, solo dev on project)" },
   ],
 ];
 
 const FREE_TIME =
-  "In my free time, I like to play pickup basketball, eat a lot of food and explore the world.";
+  "In my free time, I like to play basketball, eat food and explore nature and new places.";
 
 const EMAIL = "jambekar.a@northeastern.edu";
 
@@ -81,7 +129,7 @@ const FONT_BODY = {
 };
 
 const FONT_HEADING = {
-  fontFamily: "var(--font-garamond), serif",
+  fontFamily: "var(--font-heading), serif",
   fontWeight: 400 as const,
 };
 
@@ -170,7 +218,7 @@ export default function Home() {
           {/* Heading */}
           <h1
             className="text-5xl md:text-6xl lg:text-7xl mb-6 leading-tight transition-colors duration-300"
-            style={{ ...FONT_HEADING, color: "#000000", fontWeight: 700 }}
+            style={{ ...FONT_HEADING, color: "#000000", fontWeight: 600 }}
           >
             Amogh Jambekar
           </h1>

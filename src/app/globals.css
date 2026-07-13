@@ -2,7 +2,7 @@
 @config "../../tailwind.config.ts";
 
 @theme inline {
-  --font-garamond: var(--font-eb-garamond), ui-serif, Georgia, "Times New Roman",
+  --font-heading: var(--font-playfair), ui-serif, Georgia, "Times New Roman",
     serif;
   --font-montserrat: var(--font-montserrat-var), ui-sans-serif, system-ui,
     sans-serif;
@@ -80,7 +80,7 @@ body {
   display: inline-block;
   text-decoration: none;
   color: #000;
-  font-weight: 500;
+  font-weight: 600;
   transition: transform 0.2s, color 0.3s;
   transform-origin: left;
 }
