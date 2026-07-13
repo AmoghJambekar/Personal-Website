@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useRef, useEffect, useCallback } from "react";
 import ImageTrail, { ImageTrailItem } from "@/components/ui/image-trail";
 
 interface ContentWithTrailProps {
@@ -9,13 +9,30 @@ interface ContentWithTrailProps {
 }
 
 export default function ContentWithTrail({ children, images }: ContentWithTrailProps) {
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  // Apply dissolve glow to the content area
+  const applyGlow = useCallback(() => {
+    if (!wrapperRef.current) return;
+    const el = wrapperRef.current.querySelector("[data-trail-content]") as HTMLElement | null;
+    if (!el) return;
+    el.style.position = "relative";
+    el.style.zIndex = "5";
+    el.style.backgroundColor = "#ffffff";
+    el.style.boxShadow = "0 0 60px 40px #ffffff";
+  }, []);
+
+  useEffect(() => {
+    applyGlow();
+  }, [applyGlow]);
+
   if (images.length === 0) {
     return <>{children}</>;
   }
 
   return (
-    <div className="relative">
-      {/* Trail layer — full page, skips spawning over [data-trail-content] */}
+    <div className="relative min-h-screen" ref={wrapperRef}>
+      {/* Trail layer */}
       <ImageTrail
         threshold={500}
         intensity={0.2}
@@ -48,9 +65,12 @@ export default function ContentWithTrail({ children, images }: ContentWithTrailP
         ))}
       </ImageTrail>
 
-      {/* Page content — above trail, events pass through except on links */}
-      <div className="relative pointer-events-none" style={{ zIndex: 10 }}>
-        <div className="[&_a]:pointer-events-auto [&_button]:pointer-events-auto">
+      {/* Content — full height, pointer-events pass through except on links */}
+      <div
+        className="relative min-h-screen pointer-events-none"
+        style={{ zIndex: 10 }}
+      >
+        <div className="min-h-screen [&_a]:pointer-events-auto [&_button]:pointer-events-auto">
           {children}
         </div>
       </div>

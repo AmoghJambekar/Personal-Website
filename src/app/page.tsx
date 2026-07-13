@@ -232,15 +232,7 @@ export default function Home() {
     >
       <ContentWithTrail images={trailImages}>
         <section className="min-h-screen flex items-center justify-center px-6 md:px-12">
-          <div
-            className="w-full max-w-3xl mt-6 mb-6 relative"
-            data-trail-content
-            style={{
-              backgroundColor: "#ffffff",
-              boxShadow: "0 0 60px 40px #ffffff",
-              zIndex: 5,
-            }}
-          >
+          <div className="w-full max-w-3xl mt-6 mb-6" data-trail-content>
             {/* Heading */}
             <h1
               className="text-5xl md:text-6xl lg:text-7xl mb-6 leading-tight transition-colors duration-300"
