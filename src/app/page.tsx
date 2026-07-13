@@ -29,8 +29,8 @@ const CURRENT_LINE: Segment[] = [
   {
     link: {
       text: "Tandem",
-      url: "",
-      icon: { src: "", alt: "" },
+      url: "https://tandem.com",
+      icon: { src: "/tandem_transparent.png", alt: "Tandem", size: 22 },
     },
   },
   { text: ", Student at " },
@@ -44,107 +44,45 @@ const CURRENT_LINE: Segment[] = [
 ];
 
 const EXPERIENCE: Segment[][] = [
+  [{ text: "Created JerseyStats: (NBA analytics by jersey colorway)" }],
+  [{ text: "Built BackedX @ TartanHacks 2026 (Winner - Ripple Prize)" }],
   [
-    { text: "#2 Founding Engineer @ " },
     {
-      link: {
-        text: "Icon",
-        url: "https://icon.com",
-        icon: { src: "/icon.png", alt: "Icon", dy: 1 },
-      },
+      text: "Computer Architecture and Memory Management @ Northeastern COE (Prof. Kaeli)",
     },
-    { text: " ($12M ARR)" },
+  ],
+  [{ text: "Growth @ EmberPay (Sourced 1,500+ waitlist signups)" }],
+  [
+    {
+      text: "SWE @ BestParents.com (Developed GPT4-native college essay writer for 1.5k+ low income students)",
+    },
   ],
   [
-    { text: "Scout @ " },
     {
-      link: {
-        text: "Soma Capital",
-        url: "https://somacap.com/",
-        icon: { src: "/soma.png", alt: "Soma Capital", fit: "contain" },
-      },
+      text: "SWE @ Holonym Foundation (Solo dev for a identity verification tool for 10k+ downloads and a 5.5M$ seed round)",
     },
-    { text: " ($1B AUM)" },
-  ],
-  [
-    { text: "Founder in Residence @ " },
-    {
-      link: {
-        text: "Photon",
-        url: "https://photon.codes",
-        icon: { src: "/photon.png", alt: "Photon" },
-      },
-    },
-    { text: " (0.375%)" },
-  ],
-  [
-    { text: "ML & PL @ " },
-    {
-      link: {
-        text: "Penn Medicine",
-        url: "https://www.pennmedicine.org/",
-        icon: {
-          src: "/penn.png",
-          alt: "Penn Medicine",
-          size: 20,
-          dy: 1,
-          grayscale: true,
-        },
-      },
-    },
-    { text: " (Prof. Rajapakse)" },
-  ],
-  [
-    { text: "Content Strategist @ " },
-    {
-      link: {
-        text: "Blackbox",
-        url: "https://blackbox.ai",
-        icon: { src: "/blackbox.png", alt: "Blackbox" },
-      },
-    },
-    { text: " (2M+ views)" },
-  ],
-  [
-    { text: "SWE & PM @ " },
-    {
-      link: {
-        text: "United Nations",
-        url: "https://un.org",
-        icon: {
-          src: "/un.png",
-          alt: "United Nations",
-          size: 22,
-          grayscale: true,
-          brightness: 0.1,
-          zoom: 1,
-          fit: "contain",
-        },
-      },
-    },
-    { text: " (acq. @ 16)" },
   ],
 ];
 
 const FREE_TIME =
   "In my free time, I like to play pickup basketball, eat a lot of food and explore the world.";
 
-const EMAIL = "him@jasonxu.me";
+const EMAIL = "jambekar.a@northeastern.edu";
 
 const COLORS = {
   background: "#ffffff",
-  primary: "#333333",
-  secondary: "#666666",
+  primary: "#1a1a1a",
+  secondary: "#3a3a3a",
 };
 
 const FONT_BODY = {
   fontFamily: "var(--font-montserrat), sans-serif",
-  fontWeight: 300 as const,
+  fontWeight: 400 as const,
 };
 
 const FONT_HEADING = {
   fontFamily: "var(--font-garamond), serif",
-  fontWeight: 300 as const,
+  fontWeight: 400 as const,
 };
 
 /* ── Helpers ───────────────────────────────────────────── */
@@ -203,8 +141,8 @@ function IconBadge({ icon }: { icon: IconConfig }) {
       <Image
         src={icon.src}
         alt={icon.alt}
-        width={size}
-        height={size}
+        width={size * 3}
+        height={size * 3}
         className={`h-full w-full ${fitClass}`}
         style={{
           ...(icon.zoom ? { transform: `scale(${icon.zoom})` } : {}),
@@ -232,7 +170,7 @@ export default function Home() {
           {/* Heading */}
           <h1
             className="text-5xl md:text-6xl lg:text-7xl mb-6 leading-tight transition-colors duration-300"
-            style={{ ...FONT_HEADING, color: "#2e2e2e", fontWeight: 700 }}
+            style={{ ...FONT_HEADING, color: "#000000", fontWeight: 700 }}
           >
             Amogh Jambekar
           </h1>
@@ -247,7 +185,7 @@ export default function Home() {
             </p>
 
             {/* Previously */}
-            <p className="mt-6">Previously I was...</p>
+            <p className="mt-6">A little about me...</p>
             <ul className="mt-2 pl-5 space-y-1" style={{ listStyleType: "'•  '" }}>
               {EXPERIENCE.map((segments, i) => (
                 <li key={i}>
