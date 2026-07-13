@@ -1,4 +1,19 @@
+import fs from "fs";
+import path from "path";
 import Image from "next/image";
+import ContentWithTrail from "@/components/ContentWithTrail";
+
+const IMAGE_EXTENSIONS = new Set([".jpg", ".jpeg", ".png", ".webp", ".avif", ".gif"]);
+
+function getTrailImages(): string[] {
+  const dir = path.join(process.cwd(), "public", "trail-images");
+  if (!fs.existsSync(dir)) return [];
+  return fs
+    .readdirSync(dir)
+    .filter((f) => IMAGE_EXTENSIONS.has(path.extname(f).toLowerCase()))
+    .sort()
+    .map((f) => `/trail-images/${f}`);
+}
 
 /* ── Types ─────────────────────────────────────────────── */
 
@@ -204,6 +219,8 @@ function IconBadge({ icon }: { icon: IconConfig }) {
 /* ── Page ──────────────────────────────────────────────── */
 
 export default function Home() {
+  const trailImages = getTrailImages();
+
   return (
     <div
       className="min-h-screen transition-colors duration-300"
@@ -213,56 +230,66 @@ export default function Home() {
         color: COLORS.primary,
       }}
     >
-      <section className="min-h-screen flex items-center justify-center px-6 md:px-12">
-        <div className="w-full max-w-3xl mt-6 mb-6">
-          {/* Heading */}
-          <h1
-            className="text-5xl md:text-6xl lg:text-7xl mb-6 leading-tight transition-colors duration-300"
-            style={{ ...FONT_HEADING, color: "#000000", fontWeight: 600 }}
-          >
-            Amogh Jambekar
-          </h1>
-
-          {/* Current */}
+      <ContentWithTrail images={trailImages}>
+        <section className="min-h-screen flex items-center justify-center px-6 md:px-12">
           <div
-            className="text-base md:text-lg transition-colors duration-300"
-            style={{ color: COLORS.secondary, lineHeight: 1.7 }}
+            className="w-full max-w-3xl mt-6 mb-6 relative"
+            data-trail-content
+            style={{
+              backgroundColor: "#ffffff",
+              boxShadow: "0 0 60px 40px #ffffff",
+              zIndex: 5,
+            }}
           >
-            <p>
-              <SegmentRenderer segments={CURRENT_LINE} />
-            </p>
-
-            {/* Previously */}
-            <p className="mt-6">A little about me...</p>
-            <ul className="mt-2 pl-5 space-y-1" style={{ listStyleType: "'•  '" }}>
-              {EXPERIENCE.map((segments, i) => (
-                <li key={i}>
-                  <SegmentRenderer segments={segments} />
-                </li>
-              ))}
-            </ul>
-
-            {/* Free time */}
-            <p className="mt-6">{FREE_TIME}</p>
-          </div>
-
-          {/* Email */}
-          <h2>
-            <a
-              href={`mailto:${EMAIL}`}
-              className="contact-link text-2xl md:text-3xl mt-6 leading-tight inline-block transition-colors duration-300"
-              style={{
-                ...FONT_HEADING,
-                color: COLORS.primary,
-                textDecoration: "none",
-                transformOrigin: "left center",
-              }}
+            {/* Heading */}
+            <h1
+              className="text-5xl md:text-6xl lg:text-7xl mb-6 leading-tight transition-colors duration-300"
+              style={{ ...FONT_HEADING, color: "#000000", fontWeight: 600 }}
             >
-              {EMAIL}
-            </a>
-          </h2>
-        </div>
-      </section>
+              Amogh Jambekar
+            </h1>
+
+            {/* Current */}
+            <div
+              className="text-base md:text-lg transition-colors duration-300"
+              style={{ color: COLORS.secondary, lineHeight: 1.7 }}
+            >
+              <p>
+                <SegmentRenderer segments={CURRENT_LINE} />
+              </p>
+
+              {/* Previously */}
+              <p className="mt-6">A little about me...</p>
+              <ul className="mt-2 pl-5 space-y-1" style={{ listStyleType: "'•  '" }}>
+                {EXPERIENCE.map((segments, i) => (
+                  <li key={i}>
+                    <SegmentRenderer segments={segments} />
+                  </li>
+                ))}
+              </ul>
+
+              {/* Free time */}
+              <p className="mt-6">{FREE_TIME}</p>
+            </div>
+
+            {/* Email */}
+            <h2>
+              <a
+                href={`mailto:${EMAIL}`}
+                className="contact-link text-2xl md:text-3xl mt-6 leading-tight inline-block transition-colors duration-300"
+                style={{
+                  ...FONT_HEADING,
+                  color: COLORS.primary,
+                  textDecoration: "none",
+                  transformOrigin: "left center",
+                }}
+              >
+                {EMAIL}
+              </a>
+            </h2>
+          </div>
+        </section>
+      </ContentWithTrail>
     </div>
   );
 }
