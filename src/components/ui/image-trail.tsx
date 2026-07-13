@@ -1,256 +1,397 @@
-"use client"
+"use client";
 
-import React, { ElementType, HTMLAttributes, useEffect, useMemo, useCallback } from "react"
-import type { DOMKeyframesDefinition, AnimationOptions } from "framer-motion"
-import { useAnimate } from "framer-motion"
+import * as React from "react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { cn } from "@/lib/utils";
 
-function cx(...classes: (string | undefined | null | false)[]) {
-  return classes.filter(Boolean).join(" ")
-}
+export type ImageTrailImage = {
+  src: string;
+  alt?: string;
+};
 
-interface ImageTrailProps extends HTMLAttributes<HTMLDivElement> {
-  children: React.ReactNode
-  as?: ElementType
-  threshold?: number
-  intensity?: number
-  keyframes?: DOMKeyframesDefinition
-  keyframesOptions?: AnimationOptions
-  trailElementAnimationKeyframes?: {
-    x?: AnimationOptions
-    y?: AnimationOptions
-  }
-  repeatChildren?: number
-  baseZIndex?: number
-  zIndexDirection?: "new-on-top" | "old-on-top"
-  excludeSelector?: string
-}
+export type ImageTrailSettings = {
+  /** How long (ms) each image stays visible before fading out. */
+  duration?: number;
+  /** Minimum cursor travel distance (px) before spawning the next image. */
+  spacing?: number;
+  /** Animation smoothness multiplier from 0–1. */
+  smoothness?: number;
+};
 
-interface ImageTrailItemProps extends HTMLAttributes<HTMLDivElement> {
-  as?: ElementType
-  children: React.ReactNode
-}
+export type ImageTrailAppearance = {
+  /** Width and height of each trail image (px). */
+  imageSize?: number;
+  /** Border radius of each image (px). */
+  cornerRadius?: number;
+  /** CSS object-fit used by the image. */
+  objectFit?: "cover" | "contain";
+};
 
-const MathUtils = {
-  lerp: (a: number, b: number, n: number) => (1 - n) * a + n * b,
-  distanceSq: (x1: number, y1: number, x2: number, y2: number) => {
-    const dx = x2 - x1
-    const dy = y2 - y1
-    return dx * dx + dy * dy
+export type ImageTrailAnimation = {
+  /** Fade-in duration (seconds). */
+  fadeInDuration?: number;
+  /** Fade-out duration (seconds). */
+  fadeOutDuration?: number;
+  /** Blur applied on entry (px). */
+  fadeInBlur?: number;
+  /** Blur applied on exit (px). */
+  fadeOutBlur?: number;
+};
+
+export type ImageTrailMagneticSettings = {
+  /** Strength multiplier of the magnetic force from 0–1. */
+  magneticStrength?: number;
+  /** Max distance (px) at which magnetic force kicks in. */
+  magneticRadius?: number;
+};
+
+export type ImageTrailProps = {
+  /** Images cycled through as the cursor moves. */
+  images?: ImageTrailImage[];
+  /** Framer-style grouped trail controls. */
+  trailSettings?: ImageTrailSettings;
+  /** Framer-style grouped appearance controls. */
+  appearance?: ImageTrailAppearance;
+  /** Framer-style grouped animation controls. */
+  animation?: ImageTrailAnimation;
+  /** Enable magnetic pull of trail images toward the cursor. */
+  magneticEffect?: boolean;
+  /** Framer-style grouped magnetic controls. */
+  magneticSettings?: ImageTrailMagneticSettings;
+  /** Render a deterministic static preview instead of listening to pointer movement. */
+  staticPreview?: boolean;
+  /** Max number of live trail images kept in state. */
+  maxTrailImages?: number;
+  /** className applied to the root container. */
+  className?: string;
+  /** Foreground content rendered above the trail layer. */
+  children?: React.ReactNode;
+
+  /** Flat prop aliases kept for copy-paste ergonomics and backward compatibility. */
+  spacing?: number;
+  duration?: number;
+  smoothness?: number;
+  imageSize?: number;
+  cornerRadius?: number;
+  objectFit?: "cover" | "contain";
+  fadeInDuration?: number;
+  fadeOutDuration?: number;
+  fadeInBlur?: number;
+  fadeOutBlur?: number;
+  magneticRadius?: number;
+  magneticStrength?: number;
+};
+
+type TrailEntry = {
+  id: number;
+  x: number;
+  y: number;
+  timestamp: number;
+  imageIndex: number;
+};
+
+const DEFAULT_IMAGES: ImageTrailImage[] = [
+  {
+    src: "https://framerusercontent.com/images/GfGkADagM4KEibNcIiRUWlfrR0.jpg",
+    alt: "Trail image 1",
   },
+  {
+    src: "https://framerusercontent.com/images/aNsAT3jCvt4zglbWCUoFe33Q.jpg",
+    alt: "Trail image 2",
+  },
+  {
+    src: "https://framerusercontent.com/images/BYnxEV1zjYb9bhWh1IwBZ1ZoS60.jpg",
+    alt: "Trail image 3",
+  },
+];
+
+function clamp(value: number, min: number, max: number) {
+  return Math.min(max, Math.max(min, value));
 }
 
-const ImageTrail = ({
+function distance(a: { x: number; y: number }, b: { x: number; y: number }) {
+  const dx = a.x - b.x;
+  const dy = a.y - b.y;
+  return Math.sqrt(dx * dx + dy * dy);
+}
+
+export function ImageTrail({
+  images = DEFAULT_IMAGES,
+  trailSettings,
+  appearance,
+  animation,
+  magneticEffect = false,
+  magneticSettings,
+  staticPreview = false,
+  maxTrailImages = 36,
   className,
-  as = "div",
   children,
-  threshold = 100,
-  intensity = 0.3,
-  keyframes,
-  keyframesOptions,
-  repeatChildren = 3,
-  trailElementAnimationKeyframes = {
-    x: { duration: 1, type: "tween", ease: "easeOut" },
-    y: { duration: 1, type: "tween", ease: "easeOut" },
-  },
-  baseZIndex = 0,
-  zIndexDirection = "new-on-top",
-  excludeSelector,
-  ...props
-}: ImageTrailProps) => {
-  const allImages = React.useRef<NodeListOf<HTMLElement>>(undefined)
-  const currentId = React.useRef(0)
-  const lastMousePos = React.useRef({ x: 0, y: 0 })
-  const cachedMousePos = React.useRef({ x: 0, y: 0 })
-  const [containerRef, animate] = useAnimate()
-  const zIndices = React.useRef<number[]>([])
-  const rafId = React.useRef(0)
-  const pendingEvent = React.useRef<{ clientX: number; clientY: number } | null>(null)
+  spacing,
+  duration,
+  smoothness,
+  imageSize,
+  cornerRadius,
+  objectFit,
+  fadeInDuration,
+  fadeOutDuration,
+  fadeInBlur,
+  fadeOutBlur,
+  magneticRadius,
+  magneticStrength,
+}: ImageTrailProps) {
+  const reduceMotion = useReducedMotion() === true;
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const lastPositionRef = React.useRef({ x: 0, y: 0 });
+  const imageIdRef = React.useRef(0);
+  const imageIndexRef = React.useRef(0);
+  const [trailImages, setTrailImages] = React.useState<TrailEntry[]>([]);
+  const [mousePosition, setMousePosition] = React.useState({ x: 0, y: 0 });
 
-  // Cache exclude element rect — recalculate on scroll/resize, not every move
-  const excludeRect = React.useRef<DOMRect | null>(null)
-  const excludeEl = React.useRef<Element | null>(null)
+  const resolvedDuration = Math.max(120, duration ?? trailSettings?.duration ?? 1000);
+  const resolvedSpacing = Math.max(4, spacing ?? trailSettings?.spacing ?? 40);
+  const resolvedSmoothness = clamp(smoothness ?? trailSettings?.smoothness ?? 0.7, 0, 1);
+  const resolvedImageSize = Math.max(20, imageSize ?? appearance?.imageSize ?? 100);
+  const resolvedCornerRadius = Math.max(0, cornerRadius ?? appearance?.cornerRadius ?? 4);
+  const resolvedObjectFit = objectFit ?? appearance?.objectFit ?? "cover";
+  const resolvedFadeInDuration = Math.max(0.05, fadeInDuration ?? animation?.fadeInDuration ?? 0.3);
+  const resolvedFadeOutDuration = Math.max(0.05, fadeOutDuration ?? animation?.fadeOutDuration ?? 0.5);
+  const resolvedFadeInBlur = Math.max(0, fadeInBlur ?? animation?.fadeInBlur ?? 0);
+  const resolvedFadeOutBlur = Math.max(0, fadeOutBlur ?? animation?.fadeOutBlur ?? 5);
+  const resolvedMagneticStrength = clamp(
+    magneticStrength ?? magneticSettings?.magneticStrength ?? 0.3,
+    0,
+    1,
+  );
+  const resolvedMagneticRadius = Math.max(
+    20,
+    magneticRadius ?? magneticSettings?.magneticRadius ?? 100,
+  );
 
-  const thresholdSq = useMemo(() => threshold * threshold, [threshold])
+  const addTrailImage = React.useCallback(
+    (x: number, y: number) => {
+      if (images.length === 0) return;
+      const nextPosition = { x, y };
+      if (distance(nextPosition, lastPositionRef.current) < resolvedSpacing) return;
 
-  const clampedIntensity = useMemo(
-    () => Math.max(0.0001, Math.min(1, intensity)),
-    [intensity]
-  )
+      lastPositionRef.current = nextPosition;
 
-  const refreshExcludeRect = useCallback(() => {
-    if (!excludeSelector) return
-    if (!excludeEl.current) {
-      excludeEl.current = document.querySelector(excludeSelector)
-    }
-    if (excludeEl.current) {
-      excludeRect.current = excludeEl.current.getBoundingClientRect()
-    }
-  }, [excludeSelector])
+      React.startTransition(() => {
+        setTrailImages((previous) => {
+          const next: TrailEntry = {
+            id: imageIdRef.current,
+            x,
+            y,
+            timestamp: Date.now(),
+            imageIndex: imageIndexRef.current % images.length,
+          };
+          imageIdRef.current += 1;
+          imageIndexRef.current += 1;
+          return [next, ...previous].slice(0, Math.max(1, maxTrailImages));
+        });
+      });
+    },
+    [images.length, maxTrailImages, resolvedSpacing],
+  );
 
-  useEffect(() => {
-    allImages.current = containerRef?.current?.querySelectorAll(
-      ".image-trail-item"
-    ) as NodeListOf<HTMLElement>
+  const updateFromPointer = React.useCallback(
+    (clientX: number, clientY: number) => {
+      const node = containerRef.current;
+      if (!node) return;
+      const rect = node.getBoundingClientRect();
+      const x = clientX - rect.left;
+      const y = clientY - rect.top;
+      setMousePosition({ x, y });
+      addTrailImage(x, y);
+    },
+    [addTrailImage],
+  );
 
-    zIndices.current = Array.from(
-      { length: allImages.current.length },
-      (_, index) => index
-    )
-  }, [containerRef, allImages])
+  const handleMouseMove = React.useCallback(
+    (event: MouseEvent) => {
+      updateFromPointer(event.clientX, event.clientY);
+    },
+    [updateFromPointer],
+  );
 
-  // Cache exclude rect on scroll/resize instead of every mouse move
-  useEffect(() => {
-    refreshExcludeRect()
-    window.addEventListener("resize", refreshExcludeRect)
-    window.addEventListener("scroll", refreshExcludeRect, { passive: true })
+  const handleTouchMove = React.useCallback(
+    (event: TouchEvent) => {
+      const touch = event.touches[0];
+      if (!touch) return;
+      event.preventDefault();
+      updateFromPointer(touch.clientX, touch.clientY);
+    },
+    [updateFromPointer],
+  );
+
+  React.useEffect(() => {
+    if (staticPreview) return;
+    const container = containerRef.current;
+    if (!container) return;
+
+    container.addEventListener("mousemove", handleMouseMove);
+    container.addEventListener("touchmove", handleTouchMove, { passive: false });
     return () => {
-      window.removeEventListener("resize", refreshExcludeRect)
-      window.removeEventListener("scroll", refreshExcludeRect)
-      cancelAnimationFrame(rafId.current)
-    }
-  }, [refreshExcludeRect])
+      container.removeEventListener("mousemove", handleMouseMove);
+      container.removeEventListener("touchmove", handleTouchMove);
+    };
+  }, [handleMouseMove, handleTouchMove, staticPreview]);
 
-  const processMove = useCallback(() => {
-    const e = pendingEvent.current
-    if (!e) return
-    pendingEvent.current = null
+  React.useEffect(() => {
+    if (staticPreview) return;
+    const interval = window.setInterval(() => {
+      const now = Date.now();
+      React.startTransition(() => {
+        setTrailImages((previous) =>
+          previous.filter((image) => now - image.timestamp < resolvedDuration),
+        );
+      });
+    }, 50);
 
-    // Check exclude rect using cached value
-    if (excludeRect.current) {
-      const r = excludeRect.current
-      if (
-        e.clientX >= r.left &&
-        e.clientX <= r.right &&
-        e.clientY >= r.top &&
-        e.clientY <= r.bottom
-      ) {
-        return
-      }
-    }
+    return () => window.clearInterval(interval);
+  }, [resolvedDuration, staticPreview]);
 
-    const containerRect = containerRef?.current?.getBoundingClientRect()
-    if (!containerRect) return
+  React.useEffect(() => {
+    images.forEach((image) => {
+      const img = new Image();
+      img.src = image.src;
+    });
+  }, [images]);
 
-    const mousePos = {
-      x: e.clientX - containerRect.left,
-      y: e.clientY - containerRect.top,
-    }
+  const calculateMagneticOffset = React.useCallback(
+    (imageX: number, imageY: number) => {
+      if (!magneticEffect) return { x: 0, y: 0 };
+      const dx = mousePosition.x - imageX;
+      const dy = mousePosition.y - imageY;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist > resolvedMagneticRadius) return { x: 0, y: 0 };
 
-    cachedMousePos.current.x = MathUtils.lerp(
-      cachedMousePos.current.x || mousePos.x,
-      mousePos.x,
-      clampedIntensity
-    )
-    cachedMousePos.current.y = MathUtils.lerp(
-      cachedMousePos.current.y || mousePos.y,
-      mousePos.y,
-      clampedIntensity
-    )
+      const force = (resolvedMagneticRadius - dist) / resolvedMagneticRadius;
+      return {
+        x: dx * force * resolvedMagneticStrength,
+        y: dy * force * resolvedMagneticStrength,
+      };
+    },
+    [magneticEffect, mousePosition, resolvedMagneticRadius, resolvedMagneticStrength],
+  );
 
-    // Use squared distance to avoid Math.hypot
-    const distSq = MathUtils.distanceSq(
-      mousePos.x,
-      mousePos.y,
-      lastMousePos.current.x,
-      lastMousePos.current.y
-    )
+  const previewTrail = React.useMemo<TrailEntry[]>(() => {
+    if (!staticPreview || images.length === 0) return [];
+    return Array.from({ length: Math.min(images.length, 5) }, (_, index) => ({
+      id: index,
+      x: 100 + index * resolvedSpacing * 0.8,
+      y: 110 + index * 20,
+      timestamp: 0,
+      imageIndex: index % images.length,
+    }));
+  }, [images.length, resolvedSpacing, staticPreview]);
 
-    if (distSq > thresholdSq && allImages?.current) {
-      const N = allImages.current.length
-      const current = currentId.current
-
-      if (zIndexDirection === "new-on-top") {
-        for (let i = 0; i < N; i++) {
-          if (i !== current) zIndices.current[i] -= 1
-        }
-        zIndices.current[current] = N - 1
-      } else {
-        for (let i = 0; i < N; i++) {
-          if (i !== current) zIndices.current[i] += 1
-        }
-        zIndices.current[current] = 0
-      }
-
-      const el = allImages.current[current]
-      // Position before showing to prevent flash at top-left
-      const startX = cachedMousePos.current.x - el.offsetWidth / 2
-      const startY = cachedMousePos.current.y - el.offsetHeight / 2
-      el.style.transform = `translate(${startX}px, ${startY}px)`
-      el.style.opacity = "0"
-      el.style.display = "block"
-      allImages.current.forEach((img, index) => {
-        img.style.zIndex = String(zIndices.current[index] + baseZIndex)
-      })
-
-      animate(
-        el,
-        {
-          x: [
-            cachedMousePos.current.x - el.offsetWidth / 2,
-            mousePos.x - el.offsetWidth / 2,
-          ],
-          y: [
-            cachedMousePos.current.y - el.offsetHeight / 2,
-            mousePos.y - el.offsetHeight / 2,
-          ],
-          ...keyframes,
-        },
-        {
-          ...trailElementAnimationKeyframes.x,
-          ...trailElementAnimationKeyframes.y,
-          ...keyframesOptions,
-        }
-      )
-      currentId.current = (current + 1) % N
-      lastMousePos.current = { x: mousePos.x, y: mousePos.y }
-    }
-  }, [
-    animate, baseZIndex, clampedIntensity, containerRef,
-    keyframes, keyframesOptions, thresholdSq,
-    trailElementAnimationKeyframes, zIndexDirection,
-  ])
-
-  const handleMouseMove = useCallback((e: React.MouseEvent) => {
-    pendingEvent.current = { clientX: e.clientX, clientY: e.clientY }
-    cancelAnimationFrame(rafId.current)
-    rafId.current = requestAnimationFrame(processMove)
-  }, [processMove])
-
-  const ElementTag = as ?? "div"
+  const entries = staticPreview ? previewTrail : trailImages;
 
   return (
-    <ElementTag
-      className={cx("h-full w-full relative", className)}
-      onMouseMove={handleMouseMove}
+    <div
       ref={containerRef}
-      {...props}
-    >
-      {Array.from({ length: repeatChildren }).map((_, i) => (
-        <React.Fragment key={i}>{children}</React.Fragment>
-      ))}
-    </ElementTag>
-  )
-}
-
-export const ImageTrailItem = ({
-  className,
-  children,
-  as = "div",
-  ...props
-}: ImageTrailItemProps) => {
-  const ElementTag = as ?? "div"
-  return (
-    <ElementTag
-      {...props}
-      className={cx(
-        "absolute top-0 left-0 will-change-transform hidden",
+      className={cn(
+        "relative overflow-hidden",
+        !staticPreview && "cursor-none touch-none",
+        "transform-[translateZ(0)] backface-hidden",
         className,
-        "image-trail-item"
       )}
     >
-      {children}
-    </ElementTag>
-  )
+      {children ? <div className="relative" style={{ zIndex: 50 }}>{children}</div> : null}
+      <AnimatePresence mode="popLayout">
+        {entries.map((entry, index) => {
+          const image = images[entry.imageIndex];
+          if (!image) return null;
+          const magneticOffset = calculateMagneticOffset(entry.x, entry.y);
+          const staticOpacity = Math.max(0.2, 1 - index * 0.15);
+
+          return (
+            <motion.div
+              key={entry.id}
+              initial={
+                reduceMotion || staticPreview
+                  ? { opacity: staticPreview ? staticOpacity : 0.7 }
+                  : {
+                      opacity: 1,
+                      scale: 0.8,
+                      filter: `blur(${resolvedFadeInBlur}px)`,
+                    }
+              }
+              animate={
+                reduceMotion || staticPreview
+                  ? {
+                      opacity: staticPreview ? staticOpacity : 0.7,
+                      x: staticPreview ? 0 : magneticOffset.x,
+                      y: staticPreview ? 0 : magneticOffset.y,
+                      filter: `blur(${resolvedFadeInBlur}px)`,
+                    }
+                  : {
+                      opacity: 1,
+                      scale: 1,
+                      filter: "blur(0px)",
+                      x: magneticOffset.x,
+                      y: magneticOffset.y,
+                    }
+              }
+              exit={
+                reduceMotion
+                  ? { opacity: 0 }
+                  : {
+                      opacity: 0,
+                      scale: 0.5,
+                      filter: `blur(${resolvedFadeOutBlur}px)`,
+                    }
+              }
+              transition={
+                reduceMotion
+                  ? { duration: 0.15 }
+                  : {
+                      duration: resolvedSmoothness * resolvedFadeInDuration * 0.8,
+                      ease: "easeOut",
+                      opacity: { duration: resolvedFadeOutDuration * 0.7, ease: "easeIn" },
+                      x: { duration: 0.1, ease: "easeOut" },
+                      y: { duration: 0.1, ease: "easeOut" },
+                    }
+              }
+              style={{
+                position: "absolute",
+                left: entry.x - resolvedImageSize / 2,
+                top: entry.y - resolvedImageSize / 2,
+                width: resolvedImageSize,
+                height: resolvedImageSize,
+                pointerEvents: "none",
+                zIndex: entries.length - index,
+                willChange: "transform, opacity, filter",
+                transform: "translateZ(0)",
+              }}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={image.src}
+                alt={image.alt ?? ""}
+                loading="lazy"
+                decoding="async"
+                draggable={false}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  maxWidth: "100%",
+                  maxHeight: "100%",
+                  objectFit: resolvedObjectFit,
+                  borderRadius: resolvedCornerRadius,
+                  display: "block",
+                  transform: "translateZ(0)",
+                  backfaceVisibility: "hidden",
+                }}
+              />
+            </motion.div>
+          );
+        })}
+      </AnimatePresence>
+    </div>
+  );
 }
 
-export default ImageTrail
+export const MagneticImageTrail = ImageTrail;
+
+export default ImageTrail;

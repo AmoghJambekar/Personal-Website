@@ -232,10 +232,17 @@ export default function Home() {
     >
       <ContentWithTrail images={trailImages}>
         <section className="min-h-screen flex items-center justify-center px-6 md:px-12">
-          <div className="w-full max-w-3xl mt-6 mb-6" data-trail-content>
+          <div
+            className="w-full max-w-4xl mt-6 mb-6 relative"
+            style={{
+              zIndex: 20,
+              backgroundColor: "#ffffff",
+              boxShadow: "0 0 60px 40px #ffffff",
+            }}
+          >
             {/* Heading */}
             <h1
-              className="text-5xl md:text-6xl lg:text-7xl mb-6 leading-tight transition-colors duration-300"
+              className="text-6xl md:text-7xl lg:text-8xl mb-8 leading-tight transition-colors duration-300"
               style={{ ...FONT_HEADING, color: "#000000", fontWeight: 600 }}
             >
               Amogh Jambekar
@@ -243,7 +250,7 @@ export default function Home() {
 
             {/* Current */}
             <div
-              className="text-base md:text-lg transition-colors duration-300"
+              className="text-lg md:text-xl transition-colors duration-300"
               style={{ color: COLORS.secondary, lineHeight: 1.7 }}
             >
               <p>
@@ -251,7 +258,7 @@ export default function Home() {
               </p>
 
               {/* Previously */}
-              <p className="mt-6">A little about me...</p>
+              <p className="mt-6">A little about me and what I've done...</p>
               <ul className="mt-2 pl-5 space-y-1" style={{ listStyleType: "'•  '" }}>
                 {EXPERIENCE.map((segments, i) => (
                   <li key={i}>
@@ -268,7 +275,7 @@ export default function Home() {
             <h2>
               <a
                 href={`mailto:${EMAIL}`}
-                className="contact-link text-2xl md:text-3xl mt-6 leading-tight inline-block transition-colors duration-300"
+                className="contact-link text-3xl md:text-4xl mt-8 leading-tight inline-block transition-colors duration-300"
                 style={{
                   ...FONT_HEADING,
                   color: COLORS.primary,
