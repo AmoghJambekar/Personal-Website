@@ -30,7 +30,7 @@ const CURRENT_LINE: Segment[] = [
   {
     link: {
       text: "Tandem",
-      url: "https://tandem.com",
+      url: "https://amoghjam.me",
       icon: { src: "/tandem_transparent.png", alt: "Tandem", size: 22 },
     },
   },
@@ -245,7 +245,11 @@ export default function Home() {
                 <SegmentRenderer segments={CURRENT_LINE} />
               </p>
 
-              <ul className="mt-6 pl-5 space-y-1" style={{ listStyleType: "'•  '" }}>
+              <p className="mt-8" style={{ color: COLORS.primary }}>
+                A little about me...
+              </p>
+
+              <ul className="mt-0 pl-5 space-y-1" style={{ listStyleType: "'•  '" }}>
                 {EXPERIENCE.map((segments, i) => (
                   <li key={i}>
                     <SegmentRenderer segments={segments} />
@@ -254,11 +258,11 @@ export default function Home() {
               </ul>
 
               {/* Free time */}
-              <p className="mt-6">{FREE_TIME}</p>
+              <p className="mt-8">{FREE_TIME}</p>
             </div>
 
             {/* Email */}
-            <h2 className="mt-4">
+            <h2 className="mt-8">
               <a
                 href={`mailto:${EMAIL}`}
                 className="contact-link text-xl md:text-2xl leading-tight inline-block"
@@ -274,7 +278,7 @@ export default function Home() {
             </h2>
 
             {/* Social links */}
-            <div className="flex items-center gap-4 mt-8">
+            <div className="flex items-center gap-4 mt-4 -ml-2">
               <a
                 href="https://linkedin.com/in/amoghjambekar"
                 target="_blank"
