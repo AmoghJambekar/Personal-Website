@@ -26,15 +26,7 @@ type Segment = LinkSegment | TextSegment;
 
 
 const CURRENT_LINE: Segment[] = [
-  { text: "Currently building " },
-  {
-    link: {
-      text: "Tandem",
-      url: "https://amoghjam.me",
-      icon: { src: "/tandem_transparent.png", alt: "Tandem", size: 22 },
-    },
-  },
-  { text: " and entering my second-year at " },
+  { text: "Currently a Computer Engineering student entering my second-year at " },
   {
     link: {
       text: "Northeastern",
