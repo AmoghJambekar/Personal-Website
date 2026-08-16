@@ -195,6 +195,7 @@ function IconBadge({ icon }: { icon: IconConfig }) {
         alt={icon.alt}
         width={size * 3}
         height={size * 3}
+        priority
         className={`h-full w-full ${fitClass}`}
         style={{
           ...(icon.zoom ? { transform: `scale(${icon.zoom})` } : {}),

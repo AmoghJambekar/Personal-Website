@@ -52,35 +52,38 @@ export function PageLoader({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <AnimatePresence mode="wait">
-      {loading ? (
-        <motion.div
-          key="loader"
-          initial={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.4, ease: "easeInOut" }}
-          style={{
-            position: "fixed",
-            inset: 0,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            backgroundColor: "var(--background)",
-            zIndex: 50,
-          }}
-        >
-          <SpiralLoader size={32} />
-        </motion.div>
-      ) : (
-        <motion.div
-          key="content"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-        >
-          {children}
-        </motion.div>
-      )}
-    </AnimatePresence>
+    <>
+      {/* Always render children so images start loading immediately */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: loading ? 0 : 1 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+      >
+        {children}
+      </motion.div>
+
+      {/* Loader overlay on top */}
+      <AnimatePresence>
+        {loading && (
+          <motion.div
+            key="loader"
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.4, ease: "easeInOut" }}
+            style={{
+              position: "fixed",
+              inset: 0,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: "var(--background)",
+              zIndex: 50,
+            }}
+          >
+            <SpiralLoader size={32} />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }
