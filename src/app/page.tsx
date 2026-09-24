@@ -26,7 +26,7 @@ type Segment = LinkSegment | TextSegment;
 
 
 const CURRENT_LINE: Segment[] = [
-  { text: "Currently a Computer Engineering student entering my second-year at " },
+  { text: "Currently a Computer Engineering student in my second year at " },
   {
     link: {
       text: "Northeastern",
@@ -36,40 +36,30 @@ const CURRENT_LINE: Segment[] = [
   },
 ];
 
-const EXPERIENCE: Segment[][] = [
+const CURRENT: Segment[][] = [
   [
-    { text: "Incoming Software Developer @ " },
+    { text: "Incoming Spring SWE Co-op at " },
     {
       link: {
-        text: "Sandbox",
+        text: "Shopify",
+        url: "https://www.shopify.com/",
+        icon: { src: "/icon_shopify.png", alt: "Shopify" },
+      },
+    },
+  ],
+  [
+    { text: "Software Developer at " },
+    {
+      link: {
+        text: "Sandbox at Northeastern",
         url: "https://www.sandboxnu.com/",
-        icon: { src: "/sandbox.png", alt: "Sandbox" },
+        icon: { src: "/sandbox.png", alt: "Sandbox at Northeastern" },
       },
     },
-    { text: " (Fall 2026)" },
   ],
-  [
-    { text: "Created " },
-    {
-      link: {
-        text: "JerseyStats",
-        url: "https://jerseystats.up.railway.app/",
-        icon: { src: "/jerseystats_favicon.png", alt: "JerseyStats", radius: 50 },
-      },
-    },
-    { text: ": NBA analytics by jersey colorway" },
-  ],
-  [
-    { text: "Built " },
-    {
-      link: {
-        text: "BackedX",
-        url: "https://github.com/1N4B0M9/BackedX",
-        icon: { src: "/backedx.png", alt: "BackedX" },
-      },
-    },
-    { text: " @ TartanHacks 2026 (Winner: Ripple Prize)" },
-  ],
+];
+
+const PREVIOUS: Segment[][] = [
   [
     { text: "Computer Architecture @ " },
     {
@@ -112,12 +102,14 @@ const EXPERIENCE: Segment[][] = [
         icon: { src: "/holonym.jpeg", alt: "Holonym" },
       },
     },
-    { text: " (10k+ downloads, 5.5M$ seed, solo dev on project)" },
+    { text: " (10k+ downloads, raised 5.5M$ seed as solo dev)" },
   ],
 ];
 
-const FREE_TIME =
-  "In my free time, I like to play basketball, eat food and explore nature and new places.";
+const FREE_TIME_BEFORE =
+  "In my free time, I like to play basketball, meet new people, eat food and explore new places. I also make a ton of projects involving different tech - ";
+
+const PROJECTS_URL = "https://amoghjam.me";
 
 const EMAIL = "jambekar.a@northeastern.edu";
 
@@ -181,12 +173,13 @@ function IconBadge({ icon }: { icon: IconConfig }) {
 
   return (
     <span
-      className="inline-block align-middle mr-1 overflow-hidden"
+      className="inline-block mx-1 overflow-hidden"
       style={{
         width: `${size}px`,
         height: `${size}px`,
         borderRadius: `${radius}px`,
-        marginTop: `${-4 + (icon.dy ?? 0)}px`,
+        // em-based so the icon rides the baseline at any font size
+        verticalAlign: icon.dy ? `calc(-0.18em + ${icon.dy}px)` : "-0.18em",
         backgroundColor: icon.bg,
       }}
     >
@@ -231,19 +224,31 @@ export default function Home() {
 
             {/* Current */}
             <div
-              className="text-base md:text-lg"
+              className="text-base md:text-lg max-w-3xl"
               style={{ color: COLORS.secondary, lineHeight: 1.7 }}
             >
               <p>
                 <SegmentRenderer segments={CURRENT_LINE} />
               </p>
 
-              <p className="mt-8" style={{ color: COLORS.primary }}>
-                A little about me...
+              <p className="mt-6" style={{ color: COLORS.primary }}>
+                Right now I&apos;m...
               </p>
 
               <ul className="mt-0 pl-5 space-y-1" style={{ listStyleType: "'•  '" }}>
-                {EXPERIENCE.map((segments, i) => (
+                {CURRENT.map((segments, i) => (
+                  <li key={i}>
+                    <SegmentRenderer segments={segments} />
+                  </li>
+                ))}
+              </ul>
+
+              <p className="mt-4" style={{ color: COLORS.primary }}>
+                Previously I was...
+              </p>
+
+              <ul className="mt-0 pl-5 space-y-1" style={{ listStyleType: "'•  '" }}>
+                {PREVIOUS.map((segments, i) => (
                   <li key={i}>
                     <SegmentRenderer segments={segments} />
                   </li>
@@ -251,11 +256,28 @@ export default function Home() {
               </ul>
 
               {/* Free time */}
-              <p className="mt-8">{FREE_TIME}</p>
+              <p className="mt-6">
+                {FREE_TIME_BEFORE}
+                <a
+                  href={PROJECTS_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-link"
+                  style={{
+                    color: "inherit",
+                    fontWeight: 600,
+                    textDecoration: "underline",
+                    textUnderlineOffset: "3px",
+                  }}
+                >
+                  check them out here
+                </a>
+                !
+              </p>
             </div>
 
             {/* Email */}
-            <h2 className="mt-8">
+            <h2 className="mt-6">
               <a
                 href={`mailto:${EMAIL}`}
                 className="contact-link text-xl md:text-2xl leading-tight inline-block"
